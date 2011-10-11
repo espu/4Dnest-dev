@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Master" id="1" x="10" y="10" measuredWidth="396" measuredHeight="790">
+    <screen xsi:type="model:WidgetGroup" href="assets/NexusOne.screen#Phone"/>
+  </widgets>
+  <widgets xsi:type="model:Window" id="11" x="58" y="408" width="300" height="140" text="*Information*" measuredWidth="300" measuredHeight="140" closeButton="false"/>
+  <widgets xsi:type="model:Rectangle" id="12" x="120" y="185" width="177" height="217" measuredWidth="177" measuredHeight="217" link="MainMenu.screen">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Rectangle" id="4" x="128" y="192" width="161" height="177" text="Photo\npreview" measuredWidth="161" measuredHeight="177" icon="image (xlarge)">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:Button" id="6" x="68" y="437" width="280" height="37" text="Tag1, tag2, tag3" measuredWidth="280" measuredHeight="37" textAlignment="Left">
+    <font bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Button" id="7" x="68" y="473" width="280" height="64" text="Description" measuredWidth="280" measuredHeight="64">
+    <font bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none">
+    <font size="14" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Button" id="9" x="48" y="560" width="320" height="73" text="Add this to current Egg" measuredWidth="320" measuredHeight="73" link="MainMenu.screen">
+    <font size="14" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="13" x="128" y="368" width="161" text="Send" measuredWidth="161" measuredHeight="23" textAlignment="Center">
+    <font bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="16" x="304" y="199" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
+  <widgets xsi:type="model:TextArea" id="17" x="472" y="192" width="161" height="54" text="Press image button to send as standalone" measuredWidth="161" measuredHeight="54">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="18" x="336" y="576" width="153" height="25" measuredWidth="153" measuredHeight="25" annotation="true" foreground="#3d85c6" direction="bottom"/>
+  <widgets xsi:type="model:TextArea" id="19" x="504" y="568" width="113" height="49" text="Add to Egg for later sending" measuredWidth="113" measuredHeight="49">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:TextArea" id="20" x="472" y="337" width="185" height="184" text="Press anywhere in this field to access Profile editing screen.&#xD;&#xA;&#xD;&#xA;If accessed from here, changes will only affect settings for the current image" measuredWidth="185" measuredHeight="184">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="21" x="296" y="437" width="169" height="30" measuredWidth="169" measuredHeight="30" annotation="true" foreground="#3d85c6"/>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>
