@@ -6,7 +6,7 @@
   <widgets xsi:type="model:Rectangle" id="2" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:List" id="4" x="48" y="163" width="320" height="390" text="Biketrip&#xD;&#xA;Nature&#xD;&#xA;Work&#xD;&#xA;Snacks&#xD;&#xA;QuakeGame&#xD;&#xA;Create new Profile...&#xD;&#xA; " measuredWidth="320" measuredHeight="390" selection="0" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
+  <widgets xsi:type="model:List" id="4" x="48" y="163" width="320" height="472" text="Biketrip&#xD;&#xA;Nature&#xD;&#xA;Work&#xD;&#xA;Snacks&#xD;&#xA;QuakeGame&#xD;&#xA;Create new Profile...&#xD;&#xA; " measuredWidth="320" measuredHeight="472" selection="0" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
     <font/>
     <items x="0" y="2" width="303" height="50" text="Biketrip"/>
     <items x="0" y="52" width="303" height="50" text="Nature"/>
@@ -21,9 +21,6 @@
   <widgets xsi:type="model:Icon" id="7" x="312" y="280" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="8" x="312" y="328" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="9" x="312" y="378" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Button" id="10" x="48" y="552" width="320" height="83" text="Back" measuredWidth="320" measuredHeight="83">
-    <font size="20" bold="true"/>
-  </widgets>
   <widgets xsi:type="model:Icon" id="11" x="312" y="424" measuredWidth="32" measuredHeight="32" icon="circled-plus (large)"/>
   <hRuler/>
   <vRuler/>

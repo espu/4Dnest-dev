@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore" xmlns:o="http://wireframesketcher.com/1.0/model/overrides">
-  <widgets xsi:type="model:Master" id="4" x="12" y="13" measuredWidth="621" measuredHeight="790">
+  <widgets xsi:type="model:Master" id="4" x="12" y="13" measuredWidth="717" measuredHeight="790">
     <screen xsi:type="model:WidgetGroup" href="assets/NexusOne.screen#Phone"/>
     <overrides>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:TextArea" x="476" y="515" width="145" height="129" text="Press to see information of the Egg">
+        <object xsi:type="model:ButtonBar" x="38" y="560" width="320" height="65" text="Track\nRoute, Profile" selection="0">
+          <font size="14" bold="true"/>
+          <items text="Track\nRoute"/>
+          <items text="Profile"/>
+        </object>
+      </widgetChanges>
+      <widgetChanges xsi:type="o:Insert" newIndex="3">
+        <object xsi:type="model:TextArea" x="572" y="485" width="145" height="81" text="Press to add media library data to current egg">
           <font size="12"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Arrow" x="268" y="547" width="201" height="25" annotation="true"/>
+        <object xsi:type="model:Arrow" x="332" y="523" width="201" height="25" annotation="true"/>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:TextArea" x="58" y="504" width="280" height="111" text="*Photos*: 2&#xA;*Text*: 1">
-          <font size="12"/>
-        </object>
-      </widgetChanges>
-      <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Window" x="48" y="475" width="300" height="150" text="*Current egg*" closeButton="false"/>
-      </widgetChanges>
-      <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="48" y="475" width="300" height="150" text="OK" link="EggInfo.screen">
-          <font/>
+        <object xsi:type="model:Button" x="38" y="491" width="320" height="70" text="Pick from Media Library" icon="open (large)">
+          <font size="14" bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
@@ -30,27 +29,27 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:TextField" x="38" y="155" width="320" text="&lt;&lt;Nests                               Menu                             Profile>>">
+        <object xsi:type="model:TextField" x="38" y="155" width="320" text="&lt;&lt;Read                               Create                   Stored Eggs>>">
           <font bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="212" y="339" width="113" height="113" background="#cfe2f3" icon="word (xlarge)">
+        <object xsi:type="model:Button" x="212" y="363" width="113" height="113" background="#cfe2f3" icon="word (xlarge)">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="68" y="339" width="113" height="113" background="#cfe2f3" icon="microphone (xlarge)">
+        <object xsi:type="model:Button" x="68" y="363" width="113" height="113" background="#cfe2f3" icon="microphone (xlarge)">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="212" y="195" width="113" height="113" background="#cfe2f3" icon="video (xlarge)">
+        <object xsi:type="model:Button" x="212" y="219" width="113" height="113" background="#cfe2f3" icon="video (xlarge)">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="68" y="195" width="113" height="113" background="#cfe2f3" icon="snapshot (xlarge)" link="PhotoEdit.screen">
+        <object xsi:type="model:Button" x="68" y="219" width="113" height="113" background="#cfe2f3" icon="snapshot (xlarge)" link="PhotoEdit.screen">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>

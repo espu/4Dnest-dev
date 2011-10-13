@@ -6,25 +6,29 @@
   <widgets xsi:type="model:Rectangle" id="2" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:List" id="3" x="48" y="163" width="320" height="390" text="Egg001&#xD;&#xA;Egg002&#xD;&#xA;Egg003&#xD;&#xA;Egg004&#xD;&#xA;*Egg005*&#xD;&#xA;Create new Egg...&#xD;&#xA; " measuredWidth="320" measuredHeight="390" selection="4" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
+  <widgets xsi:type="model:Window" id="13" x="48" y="424" width="320" height="211" text="Sent Eggs" measuredWidth="320" measuredHeight="211" closeButton="false"/>
+  <widgets xsi:type="model:Window" id="12" x="48" y="185" width="320" height="240" text="Unsent Eggs" measuredWidth="320" measuredHeight="240" closeButton="false"/>
+  <widgets xsi:type="model:List" id="3" x="48" y="204" width="320" height="221" text="Egg004&#xD;&#xA;*Egg005*&#xD;&#xA;Create new Egg...&#xD;&#xA; " measuredWidth="320" measuredHeight="221" selection="4" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
     <font/>
-    <items x="0" y="2" width="303" height="50" text="Egg001"/>
-    <items x="0" y="52" width="303" height="50" text="Egg002"/>
-    <items x="0" y="102" width="303" height="50" text="Egg003"/>
-    <items x="0" y="152" width="303" height="50" text="Egg004"/>
-    <items x="0" y="202" width="303" height="50" text="*Egg005*"/>
-    <items x="0" y="252" width="303" height="50" text="Create new Egg..."/>
-    <items x="0" y="302" width="303" height="50" text=" "/>
+    <items x="0" y="2" width="303" height="50" text="Egg004"/>
+    <items x="0" y="52" width="303" height="50" text="*Egg005*"/>
+    <items x="0" y="102" width="303" height="50" text="Create new Egg..."/>
+    <items x="0" y="152" width="303" height="50" text=" "/>
   </widgets>
-  <widgets xsi:type="model:Icon" id="4" x="312" y="176" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Icon" id="5" x="312" y="232" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Icon" id="6" x="312" y="280" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Icon" id="7" x="312" y="328" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Icon" id="8" x="312" y="378" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:Button" id="9" x="48" y="552" width="320" height="83" text="Back" measuredWidth="320" measuredHeight="83">
-    <font size="20" bold="true"/>
+  <widgets xsi:type="model:List" id="17" x="48" y="443" width="320" height="192" text="Egg002&#xD;&#xA;Egg003&#xD;&#xA; " measuredWidth="320" measuredHeight="192" selection="4" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
+    <font/>
+    <items x="0" y="2" width="303" height="50" text="Egg002"/>
+    <items x="0" y="52" width="303" height="50" text="Egg003"/>
+    <items x="0" y="102" width="303" height="50" text=" "/>
   </widgets>
-  <widgets xsi:type="model:Icon" id="10" x="312" y="424" measuredWidth="32" measuredHeight="32" icon="circled-plus (large)"/>
+  <widgets xsi:type="model:Icon" id="4" x="312" y="453" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
+  <widgets xsi:type="model:Icon" id="5" x="312" y="507" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
+  <widgets xsi:type="model:Icon" id="6" x="312" y="224" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
+  <widgets xsi:type="model:Icon" id="7" x="312" y="272" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
+  <widgets xsi:type="model:Icon" id="10" x="312" y="328" measuredWidth="32" measuredHeight="32" icon="circled-plus (large)"/>
+  <widgets xsi:type="model:TextField" id="14" x="48" y="163" width="320" text="&lt;&lt;Main                            Stored Eggs" measuredWidth="320" measuredHeight="23">
+    <font bold="true"/>
+  </widgets>
   <hRuler/>
   <vRuler/>
   <font/>

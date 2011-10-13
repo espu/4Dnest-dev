@@ -19,7 +19,7 @@
   <widgets xsi:type="model:TextArea" id="20" x="496" y="169" width="225" height="59" text="Press to see your collection of eggs" measuredWidth="225" measuredHeight="59">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="21" x="48" y="163" width="320" height="72" text="Current Egg" measuredWidth="320" measuredHeight="72" icon="pie-chart (medium)">
+  <widgets xsi:type="model:Button" id="21" x="48" y="163" width="320" height="72" text="Current Egg" measuredWidth="320" measuredHeight="72" icon="pie-chart (medium)" link="Eggs.screen">
     <font size="16" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="19" x="328" y="184" width="153" height="17" measuredWidth="153" measuredHeight="17" annotation="true" foreground="#3d85c6"/>
