@@ -6,14 +6,11 @@
   <widgets xsi:type="model:Rectangle" id="12" x="120" y="185" width="177" height="217" measuredWidth="177" measuredHeight="217">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="4" x="128" y="192" width="161" height="177" text="Photo\npreview" measuredWidth="161" measuredHeight="177" icon="image (xlarge)">
+  <widgets xsi:type="model:Rectangle" id="4" x="128" y="192" width="161" height="177" text="Media\npreview" measuredWidth="161" measuredHeight="177" icon="image (xlarge)">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Button" id="6" x="68" y="512" width="280" height="28" text="Tag1, tag2, tag3" measuredWidth="280" measuredHeight="28" textAlignment="Left">
     <font bold="true"/>
-  </widgets>
-  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none">
-    <font size="14" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Button" id="9" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
     <font size="14" bold="true"/>
@@ -21,12 +18,8 @@
   <widgets xsi:type="model:Label" id="13" x="128" y="368" width="161" text="Preview" measuredWidth="161" measuredHeight="23" textAlignment="Center">
     <font bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="16" x="304" y="199" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
-  <widgets xsi:type="model:TextArea" id="17" x="472" y="192" width="161" height="54" text="Press image button to see a larger preview" measuredWidth="161" measuredHeight="54">
-    <font size="12"/>
-  </widgets>
-  <widgets xsi:type="model:Arrow" id="18" x="336" y="576" width="153" height="25" measuredWidth="153" measuredHeight="25" annotation="true" foreground="#3d85c6" direction="bottom"/>
-  <widgets xsi:type="model:TextArea" id="19" x="496" y="568" width="185" height="137" text="Add to Egg stash for later sending.&#xD;&#xA;&#xD;&#xA;Button functionality and description changes according to preferences" measuredWidth="185" measuredHeight="137">
+  <widgets xsi:type="model:Arrow" id="16" x="304" y="227" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
+  <widgets xsi:type="model:TextArea" id="17" x="472" y="210" width="161" height="54" text="Press image button to see a larger preview" measuredWidth="161" measuredHeight="54">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:TextArea" id="20" x="464" y="384" width="185" height="177" text="Press this field to access tag editing(also present in Profile editing screen).&#xD;&#xA;&#xD;&#xA;If accessed from here, changes will only affect settings for the current image" measuredWidth="185" measuredHeight="177">
@@ -39,8 +32,12 @@
   <widgets xsi:type="model:TextArea" id="24" x="68" y="416" width="280" height="89" text="Add Caption here..." measuredWidth="280" measuredHeight="89">
     <font/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="26" x="704" y="384" width="217" height="321" text="Back button will ask the user whether they want to discard changes or save to send queue." measuredWidth="217" measuredHeight="321">
+  <widgets xsi:type="model:TextArea" id="26" x="504" y="592" width="217" height="97" text="Back button will ask the user whether they want to discard changes or save to send queue." measuredWidth="217" measuredHeight="97">
     <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:Image" id="28" x="472" y="600" width="25" height="25" measuredWidth="25" measuredHeight="25" src="../assets/android_back.jpg"/>
+  <widgets xsi:type="model:Rectangle" id="29" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+    <font size="14" bold="true"/>
   </widgets>
   <hRuler/>
   <vRuler/>
