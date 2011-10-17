@@ -17,7 +17,7 @@
       <widgetChanges xsi:type="o:Insert" newIndex="3">
         <object xsi:type="model:ButtonBar" y="811" width="396" height="57" text="Swipe Left, Swipe Right" selection="0">
           <font size="12" bold="false" italic="false"/>
-          <items text="Swipe Left"/>
+          <items link="Stream.screen" text="Swipe Left"/>
           <items link="Eggs.screen" text="Swipe Right"/>
         </object>
       </widgetChanges>
