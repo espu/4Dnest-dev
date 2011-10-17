@@ -29,7 +29,7 @@
   <widgets xsi:type="model:TextArea" id="11" x="472" y="540" width="169" height="73" text="Caption section height scales to accomodate for the entire caption." measuredWidth="169" measuredHeight="73">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="12" x="456" y="696" width="249" height="73" text="Swipe Down" measuredWidth="249" measuredHeight="73">
+  <widgets xsi:type="model:Button" id="12" x="456" y="696" width="249" height="73" text="Swipe Down" measuredWidth="249" measuredHeight="73" link="EggView2.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>
