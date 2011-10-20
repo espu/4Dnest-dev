@@ -10,6 +10,9 @@
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Window" id="6" x="48" y="187" width="320" height="448" text="*Newest.*" measuredWidth="320" measuredHeight="448"/>
+  <widgets xsi:type="model:Button" id="14" x="48" y="206" width="305" height="107" text="OK" measuredWidth="305" measuredHeight="107" link="Eggview.screen">
+    <font/>
+  </widgets>
   <widgets xsi:type="model:List" id="8" x="48" y="206" width="320" height="429" text="Egg002&#xD;&#xA;Egg003&#xD;&#xA; " measuredWidth="320" measuredHeight="429" selection="4" verticalScrollbar="true" rowHeight="50" horizontalLines="true">
     <font/>
     <items x="0" y="2" width="303" height="50" text="Egg002"/>

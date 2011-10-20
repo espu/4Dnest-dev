@@ -10,7 +10,7 @@
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="4" x="304" y="227" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
-  <widgets xsi:type="model:TextArea" id="5" x="472" y="168" width="169" height="201" text="Media Preview enlarged to maximum constraints of the screen (width).&#xD;&#xA;" measuredWidth="169" measuredHeight="201">
+  <widgets xsi:type="model:TextArea" id="5" x="472" y="168" width="169" height="97" text="Media Preview enlarged to maximum constraints of the screen (width).&#xD;&#xA;" measuredWidth="169" measuredHeight="97">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:TextArea" id="6" x="464" y="86" width="217" height="54" text="Egg Viewing screen will be fairly similar for all data types." measuredWidth="217" measuredHeight="54">

@@ -22,17 +22,17 @@
   <widgets xsi:type="model:TextArea" id="17" x="472" y="210" width="161" height="54" text="Press image button to see a larger preview" measuredWidth="161" measuredHeight="54">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="20" x="464" y="384" width="185" height="177" text="Press this field to access tag editing(also present in Profile editing screen).&#xD;&#xA;&#xD;&#xA;If accessed from here, changes will only affect settings for the current image" measuredWidth="185" measuredHeight="177">
+  <widgets xsi:type="model:TextArea" id="20" x="464" y="312" width="185" height="249" text="Default tags obtained from profile information.&#xD;&#xA;&#xD;&#xA;Press this field to access tag editing(also present in Profile editing screen).&#xD;&#xA;&#xD;&#xA;If accessed from here, changes will only affect settings for the current image" measuredWidth="185" measuredHeight="249">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="21" x="288" y="520" width="169" height="22" measuredWidth="169" measuredHeight="22" annotation="true" foreground="#3d85c6"/>
   <widgets xsi:type="model:TextArea" id="23" x="464" y="56" width="217" height="54" text="Data editing screen will be fairly similar for all data types." measuredWidth="217" measuredHeight="54">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:TextArea" id="24" x="68" y="416" width="280" height="89" text="Add Caption here..." measuredWidth="280" measuredHeight="89">
     <font/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="26" x="504" y="592" width="217" height="97" text="Back button will ask the user whether they want to discard changes or save to send queue." measuredWidth="217" measuredHeight="97">
+  <widgets xsi:type="model:Arrow" id="21" x="304" y="424" width="153" height="105" measuredWidth="153" measuredHeight="105" annotation="true" foreground="#3d85c6" direction="bottom"/>
+  <widgets xsi:type="model:TextArea" id="26" x="504" y="592" width="177" height="177" text="Back button will ask the user whether they want to discard changes or save to send queue.&#xD;&#xA;&#xD;&#xA;Show toast to user, describing what was done." measuredWidth="177" measuredHeight="177">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Image" id="28" x="472" y="600" width="25" height="25" measuredWidth="25" measuredHeight="25" src="../assets/android_back.jpg"/>

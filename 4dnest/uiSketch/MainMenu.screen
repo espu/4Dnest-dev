@@ -41,7 +41,7 @@
         <object xsi:type="model:ButtonBar" x="38" y="560" width="320" height="65" text="Track\nRoute, Biketrip" selection="0">
           <font size="14" bold="true"/>
           <items text="Track\nRoute"/>
-          <items link="Profile.screen" text="Biketrip"/>
+          <items link="Profiles.screen" text="Biketrip"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">

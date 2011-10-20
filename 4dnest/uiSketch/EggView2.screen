@@ -9,7 +9,7 @@
   <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Label" id="9" x="48" y="163" width="320" text="Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
+  <widgets xsi:type="model:Label" id="9" x="48" y="163" width="320" text=" Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
     <font size="12" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Button" id="12" x="448" y="27" width="249" height="73" text="Swipe Up" measuredWidth="249" measuredHeight="73" link="Eggview.screen">
