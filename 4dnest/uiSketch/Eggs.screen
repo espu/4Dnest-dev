@@ -27,7 +27,7 @@
   <widgets xsi:type="model:Icon" id="5" x="312" y="507" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="6" x="312" y="224" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="7" x="312" y="272" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
-  <widgets xsi:type="model:TextField" id="14" x="48" y="163" width="320" text="&lt;&lt;Main                            Stored Eggs" measuredWidth="320" measuredHeight="23">
+  <widgets xsi:type="model:TextField" id="14" x="48" y="163" width="320" text="&lt;&lt;Create                         Stored Eggs" measuredWidth="320" measuredHeight="23">
     <font bold="true"/>
   </widgets>
   <widgets xsi:type="model:Button" id="18" x="10" y="816" width="396" height="73" text="Swipe Left" measuredWidth="396" measuredHeight="73" link="MainMenu.screen">
