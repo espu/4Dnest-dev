@@ -6,7 +6,13 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-
+/**
+ * Manages shared resources, including the preferences and singletons like
+ * services and databases.
+ * The application object is accessible from any part of the program which 
+ * has access to the application context, through
+ * FourDNestApplication application = (FourDNestApplication) getApplication() 
+ */
 public class FourDNestApplication extends Application
 	implements OnSharedPreferenceChangeListener {
 	private static final String TAG = FourDNestApplication.class.getSimpleName();
@@ -26,9 +32,18 @@ public class FourDNestApplication extends Application
 		
 	}
 
+	/**
+	 * Gets the id of the currently active Nest.
+	 * @return The id of the currently active Nest. 
+	 */
 	public synchronized String getCurrentNestId() {
 		return this.prefs.getString("currentNestId", "");
 	}
+	/**
+	 * Sets the currently active Nest. The setting is persisted between
+	 * restarts of the application.
+	 * @param newNestId Id of the new active Nest. Must be a valid Nest id.
+	 */
 	public synchronized void setCurrentNestId(String newNestId) {
 		//FIXME check that newNestId is valid?
 		SharedPreferences.Editor prefEditor = this.prefs.edit();
