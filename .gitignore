@@ -3,6 +3,7 @@
 *.dex
 *.class
 local.properties
+.classpath
 
 bin/
 gen/
