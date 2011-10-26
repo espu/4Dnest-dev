@@ -2,6 +2,14 @@ package org.fourdnest.androidclient.services;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * The WorkerThread is a system for passing units of work to a separate thread
+ * in Services, in order to ensure smooth running of UI thread. Communication
+ * with the WorkerThread happens through a @see ConcurrentLinkedQueue, which
+ * is passed to the constructor.
+ * @param <W> WorkerThread and its ConcurrentLinkedQueue are parameterized to
+ * ensure that only work that is understood by the Service can be scheduled.
+ */
 public abstract class WorkerThread<W> extends Thread {
 	protected ConcurrentLinkedQueue<W> queue;
 	protected boolean running;
@@ -26,6 +34,9 @@ public abstract class WorkerThread<W> extends Thread {
 		}
 	}
 
+	/**
+	 * Instructs the Thread to stop looping and exit. 
+	 */
 	public synchronized void dispose() {
 		running = false;
         notify();
