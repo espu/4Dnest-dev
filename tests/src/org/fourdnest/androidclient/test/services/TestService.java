@@ -15,6 +15,7 @@ public class TestService {
 		this.works = 0;
 		this.queue = new ConcurrentLinkedQueue<TestWork>();
 		this.thread = new TestWorkerThread("TestWorkerThread", this.queue);
+		this.thread.setDelay(100);
 		this.thread.start();
 	}
 
@@ -23,10 +24,8 @@ public class TestService {
 	}
 
 	
-	public void scheduleWork() {
-		this.queue.add(new TestWork("First"));
-		this.queue.add(new TestWork("Second"));
-		this.queue.add(new TestWork("Third"));
+	public void scheduleWork(String tag) {
+		this.queue.add(new TestWork(tag));
 	}
 	
 	public int getPeriodicals() {
@@ -42,6 +41,10 @@ public class TestService {
 			this.name = name;
 		}
 		public void doWork() {
+			try {
+				// simulating work
+				Thread.sleep(100);
+			} catch(InterruptedException ex) { }
 			TestService.this.works++;
 			System.out.printf("Did work %s\n", name);
 		}

@@ -21,6 +21,10 @@ public abstract class WorkerThread<W> extends Thread {
 		this.running = true;
 	}
 	
+	public void setDelay(long delay) {
+		this.delay = delay;
+	}
+	
 	public void run() {
 		W work;
 		while(running) {

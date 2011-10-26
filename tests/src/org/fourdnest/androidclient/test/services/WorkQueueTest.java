@@ -17,16 +17,6 @@ public class WorkQueueTest {
 	@Before
 	public void setUp() throws Exception {
 		this.testService = new TestService();
-		this.testService.scheduleWork();
-		/* We need to sleep before running tests to make sure that the thread
-		 * has time to see the work and run it. */
-		boolean slept = false;
-		try {
-			while(!slept) {
-				Thread.sleep(2000);
-				slept = true;
-			}
-		} catch(InterruptedException ex) { }
 	}
 
 	@After
@@ -36,12 +26,41 @@ public class WorkQueueTest {
 
 	@Test
 	public void testPeriodicalsLtZero() {
+		guaranteeSleep(500);
 		assertTrue(this.testService.getPeriodicals() > 0);
 	}
 
 	@Test
 	public void testWorksEqThree() {
+		this.testService.scheduleWork("First");
+		this.testService.scheduleWork("Second");
+		this.testService.scheduleWork("Third");
+		guaranteeSleep(500);
 		assertEquals(this.testService.getWorks(), 3);
 	}
+	
+	@Test
+	public void testFastScheduling() {
+		long allowed = 1000;	// Using 1s, real maximum is 10s
+		long timestamp = System.currentTimeMillis();
+		// Schedule 1000 pieces of work
+		for(int i=0; i<1000; i++) {
+			this.testService.scheduleWork("FastScheduling");
+		}
+		long duration = System.currentTimeMillis() - timestamp;
+		System.out.printf("Scheduling duration: %d\n", duration);
+		assertTrue(duration <= allowed);
+	}
 
+	/** We need to sleep before running tests to make sure that the thread
+	 * has time to see the work and run it. */
+	private void guaranteeSleep(long delay) {
+		boolean slept = false;
+		try {
+			while(!slept) {
+				Thread.sleep(delay);
+				slept = true;
+			}
+		} catch(InterruptedException ex) { }
+	}
 }
