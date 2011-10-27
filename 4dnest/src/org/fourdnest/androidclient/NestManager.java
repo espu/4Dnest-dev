@@ -46,7 +46,33 @@ public class NestManager {
 	 */
 	public ArrayList<Nest> listNests() {
 		
+		SQLiteDatabase db = this.nestDb.getReadableDatabase();
+		
+		Cursor result = db.query(TABLE,
+				new String[]{
+				C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS, C_PROTOCOL
+				}, // Columns
+				null, // No WHERE
+				null, // No arguments in selection
+				null, // No GROUP BY
+				null, // No HAVING
+				C_NAME, // Order by name
+				"1"); // Limit 1
+		
 		ArrayList<Nest> nests = new ArrayList<Nest>();
+		
+		result.moveToFirst();
+		while(!result.isLast()) {
+			Nest nest = new Nest(
+					result.getInt(0),
+					result.getString(1),
+					result.getString(2),
+					result.getString(3),
+					result.getString(4)
+					);
+			
+			nests.add(nest);
+		}
 		
 		return nests;
 	}
@@ -56,7 +82,7 @@ public class NestManager {
 	 * @param id of nest
 	 * @return Nest with specified id or null
 	 */
-	public synchronized Nest getNest(int id) {
+	public Nest getNest(int id) {
 
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
@@ -97,7 +123,7 @@ public class NestManager {
 	 * @param nest object to save
 	 * @return long row id or -1 on failure
 	 */
-	public synchronized long saveNest(Nest nest) {
+	public long saveNest(Nest nest) {
 		
 		
 		SQLiteDatabase db = this.nestDb.getWritableDatabase();
@@ -132,11 +158,6 @@ public class NestManager {
 				throw new SQLiteException("Error replacing existing nest with id + "
 						+ nest.id + " in database");
 			}
-
-			if(rowid != nest.id) {
-				throw new SQLiteException("Row id " + rowid
-						+ " and Nest id " + nest.id + " do not match");
-			}
 			
 			Log.d(TAG, "Updated Nest in db");
 			
@@ -145,10 +166,6 @@ public class NestManager {
 			rowid = db.insert(TABLE, null, values);
 			if(rowid < 0) {
 				throw new SQLiteException("Error inserting new nest to database");
-			}
-
-			if(rowid != nest.id) {
-				throw new SQLiteException("Row id and Nest id do not match");
 			}
 			
 			Log.d(TAG, "Inserted new Nest to db");
@@ -186,7 +203,7 @@ public class NestManager {
 			// Prepare SQL table creation query 
 			String tableCreateQuery = String.format(
 						"CREATE TABLE %s(" +
-						"%d int PRIMARY KEY," +
+						"%s int PRIMARY KEY," +
 						"%s text," +
 						"%s text," +
 						"%s text," +
