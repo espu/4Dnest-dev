@@ -12,8 +12,10 @@ import java.util.List;
  */
 public class Egg {
 	//private static final String TAG = Egg.class.getSimpleName();
+	/** Id of the Nest that this Egg was or will be sent to */
+	private String nestId;
 	/** URI to the media file. Is null for status updates (text only Eggs). */
-	private String mediaFileURI;
+	private String mediaFileURI;	//FIXME need local and remote separately and a cache mechanism
 	/** Caption text. */
 	private String caption;
 	/** Tags attached to this Egg. */
@@ -25,7 +27,18 @@ public class Egg {
 		this.caption = caption;
 		this.tags = new ArrayList<Tag>(tags);
 	}
-	
+
+	/**
+	 * @param nestId Id of Nest that this Egg 
+	 */
+	public void setNestId(String nestId) {
+		this.nestId = nestId;
+	}
+	public String getNestId() {
+		return nestId;
+	}
+
+
 	/**
 	 * @param mediaFileURI the mediaFileURI to set
 	 */
