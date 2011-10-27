@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @param <W> WorkerThread and its ConcurrentLinkedQueue are parameterized to
  * ensure that only work that is understood by the Service can be scheduled.
  */
-public abstract class WorkerThread<W> extends Thread {
+public abstract class WorkerThread<W extends Work> extends Thread {
 	protected ConcurrentLinkedQueue<W> queue;
 	protected boolean running;
 	protected long delay = 1000; //FIXME
@@ -60,7 +60,12 @@ public abstract class WorkerThread<W> extends Thread {
 	 * This method is executed whenever work has been assigned to this thread
 	 * through the queue. There is an unspecified delay between assigning the
 	 * work and its execution.
+	 * 
+	 * Default implementation calls doWork() on the work object. This will
+	 * probably be enough for most needs.
 	 * @param work The work to be performed.
 	 */
-	protected abstract void doWork(W work);
+	protected void doWork(W work) {
+		work.doWork();
+	}
 }

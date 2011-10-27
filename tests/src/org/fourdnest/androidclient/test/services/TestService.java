@@ -2,6 +2,7 @@ package org.fourdnest.androidclient.test.services;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.fourdnest.androidclient.services.Work;
 import org.fourdnest.androidclient.services.WorkerThread;
 
 public class TestService {
@@ -35,7 +36,7 @@ public class TestService {
 		return this.works;
 	}
 	
-	private class TestWork {
+	private class TestWork implements Work {
 		private String name;
 		public TestWork(String name) {
 			this.name = name;
@@ -62,9 +63,5 @@ public class TestService {
 			System.out.println("Did periodical");
 		}
 
-		@Override
-		protected void doWork(TestWork work) {
-			work.doWork();
-		}
 	}
 }

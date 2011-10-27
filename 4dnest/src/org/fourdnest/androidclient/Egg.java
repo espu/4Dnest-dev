@@ -29,11 +29,14 @@ public class Egg {
 	}
 
 	/**
-	 * @param nestId Id of Nest that this Egg 
+	 * @param nestId Id of Nest that this Egg was or will be sent to.
 	 */
 	public void setNestId(String nestId) {
 		this.nestId = nestId;
 	}
+	/**
+	 * @return Id of Nest that this Egg was or will be sent to.
+	 */
 	public String getNestId() {
 		return nestId;
 	}
@@ -51,6 +54,7 @@ public class Egg {
 	public String getMediaFileURI() {
 		return mediaFileURI;
 	}
+
 	/**
 	 * @param caption the caption to set
 	 */
@@ -63,6 +67,7 @@ public class Egg {
 	public String getCaption() {
 		return caption;
 	}
+
 	/**
 	 * @param tags the tag list to replace the current tags with.
 	 */
