@@ -32,9 +32,13 @@ public class NestManagerTest extends AndroidTestCase {
 		
 		ArrayList<Nest> nests = this.nestManager.listNests();
 		
-		assertEquals(2, nests.size());		
-		assertTrue(nest1.equals(nests.get(0)));
-		assertTrue(nest2.equals(nests.get(1)));
+		// 2 nests should be saves
+		assertEquals(2, nests.size());
+				
+		// Nest1 should be returned as #2, result set is  ordered by name
+		assertTrue(nest1.equals(nests.get(1)));
+		assertTrue(nest2.equals(nests.get(0)));
+		
 	}
 
 	public void testSaveAndGetNest() {
@@ -49,8 +53,6 @@ public class NestManagerTest extends AndroidTestCase {
 		
 		// Check that some other id does not return equal nest
 		assertFalse(nest.equals(this.nestManager.getNest(2)));
-		
-		
 	}
 	
 	

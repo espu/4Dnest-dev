@@ -1,3 +1,5 @@
+
+
 package org.fourdnest.androidclient;
 
 public class Nest {
@@ -7,7 +9,7 @@ public class Nest {
 	int id;
 	String name;
 	String description;	
-	String address;
+	String baseURL;
 	String protocolName;
 	
 	public Nest(int id,
@@ -18,15 +20,10 @@ public class Nest {
 		
 		this.id = id;
 		this.name = name;
-		this.description = description;
-		this.address = address;
+		this.description = description;		
+		this.baseURL = address;		
 		this.protocolName = protocolName;
 	}
-	
-	public Nest() {
-
-	}
-	
 	
 	public boolean equals(Nest nest) {
 		
@@ -35,7 +32,7 @@ public class Nest {
 		boolean eq = (this.id == nest.id &&
 				this.name.equals(nest.name) &&
 				this.description.equals(nest.description) &&
-				this.address.equals(nest.address) &&
+				this.baseURL.equals(nest.baseURL) &&
 				this.protocolName.equals(nest.protocolName)
 		);
 		
@@ -68,12 +65,12 @@ public class Nest {
 		this.description = description;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getBaseURL() {
+		return this.baseURL;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setBaseURL(String address) {
+		this.baseURL = address;
 	}
 
 	public String getProtocolName() {

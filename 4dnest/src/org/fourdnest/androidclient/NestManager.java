@@ -57,21 +57,26 @@ public class NestManager {
 				null, // No GROUP BY
 				null, // No HAVING
 				C_NAME, // Order by name
-				"1"); // Limit 1
+				"100"); // Limit 100
 		
 		ArrayList<Nest> nests = new ArrayList<Nest>();
 		
-		result.moveToFirst();
-		while(!result.isLast()) {
-			Nest nest = new Nest(
-					result.getInt(0),
-					result.getString(1),
-					result.getString(2),
-					result.getString(3),
-					result.getString(4)
-					);
+		if(result.getCount() > 0) {
+			result.moveToFirst();
 			
-			nests.add(nest);
+			while(!result.isAfterLast()) {
+				Nest nest = new Nest(
+						result.getInt(0),
+						result.getString(1),
+						result.getString(2),
+						result.getString(3),
+						result.getString(4)
+						);
+				
+				nests.add(nest);
+				
+				result.moveToNext();
+			} 
 		}
 		
 		return nests;
@@ -146,7 +151,7 @@ public class NestManager {
 		values.put(C_ID, nest.id);
 		values.put(C_NAME, nest.name);
 		values.put(C_DESCRIPTION, nest.description);
-		values.put(C_ADDRESS, nest.address);
+		values.put(C_ADDRESS, nest.baseURL);
 		values.put(C_PROTOCOL, nest.protocolName);
 		
 		long rowid;
