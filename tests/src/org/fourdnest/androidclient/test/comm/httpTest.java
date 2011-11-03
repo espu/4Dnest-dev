@@ -33,9 +33,9 @@ public class httpTest extends AndroidTestCase {
 	@Test
 	public void testHttpPost() throws Exception {
 		FourDNestProtocol protocol = new FourDNestProtocol();
-		String get = protocol.postTest();
-		assertTrue(get.length() != 0);
-		Log.v("httppost", get);
+		String post = protocol.postTest();
+		assertTrue(post.length() != 0);
+		Log.v("httppost", post);
 	}
 
 }
