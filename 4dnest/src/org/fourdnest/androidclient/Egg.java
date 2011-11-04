@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,47 +14,77 @@ import java.util.List;
 public class Egg {
 	//private static final String TAG = Egg.class.getSimpleName();
 	/** Id of the Nest that this Egg was or will be sent to */
-	private String nestId;
-	/** URI to the media file. Is null for status updates (text only Eggs). */
-	private String mediaFileURI;	//FIXME need local and remote separately and a cache mechanism
+	private int nestId;
+	
+	/** URI to local media file. Is null for status updates (text only Eggs). */
+	private URI localFileURI;
+	
+	/** URI to remote media file (uploaded to a nest). Is null for text only Eggs
+	 * and Eggs that have not been successfully uploaded yet*/
+	private URI remoteFileURI;
+		
 	/** Caption text. */
 	private String caption;
+	
 	/** Tags attached to this Egg. */
 	private List<Tag> tags;
+	
 	// FIXME: automatic metadata.
 	
-	public Egg(String mediaFileURI, String caption, List<Tag> tags) {
-		this.mediaFileURI = mediaFileURI;
+	/**
+	 * Creates new Egg with given params
+	 * @param id
+	 * @param localFileURI
+	 * @param caption
+	 * @param tags
+	 */
+	public Egg(int id, URI localFileURI, String caption, List<Tag> tags) {
+		this.localFileURI = localFileURI;
 		this.caption = caption;
 		this.tags = new ArrayList<Tag>(tags);
 	}
-
+	
 	/**
 	 * @param nestId Id of Nest that this Egg was or will be sent to.
 	 */
-	public void setNestId(String nestId) {
+	public void setNestId(int nestId) {
 		this.nestId = nestId;
 	}
 	/**
 	 * @return Id of Nest that this Egg was or will be sent to.
 	 */
-	public String getNestId() {
+	public int getNestId() {
 		return nestId;
 	}
 
-
 	/**
-	 * @param mediaFileURI the mediaFileURI to set
+	 * @param mediaFileURI the localFileURI to set
 	 */
-	public void setMediaFileURI(String mediaFileURI) {
-		this.mediaFileURI = mediaFileURI;
+	public void setLocalFileURI(URI mediaFileURI) {
+		this.localFileURI = mediaFileURI;
 	}
 	/**
-	 * @return the mediaFileURI
+	 * @return the localFileURI
 	 */
-	public String getMediaFileURI() {
-		return mediaFileURI;
+	public URI getLocalFileURI() {
+		return localFileURI;
 	}
+	
+	/**
+	 * 
+	 * @param remoteFileURI the remoteFileURI to set
+	 */
+	public void setRemoteFileURI(URI remoteFileURI) {
+		this.remoteFileURI = remoteFileURI;
+	}
+	
+	/**
+	 * 
+	 * @return the remoteFileURI
+	 */
+	public URI getRemoteFileURI() {
+		return remoteFileURI;
+	}	
 
 	/**
 	 * @param caption the caption to set
