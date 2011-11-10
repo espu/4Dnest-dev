@@ -29,9 +29,9 @@ public class ReadFragment extends Fragment {
         }
 		View view = (View)inflater.inflate(R.layout.read_view, container, false);
 		TextView txt = (TextView) view.findViewById(R.id.massiveText);
-		String lol = "";
+		String lol = "Read View\n";
 		for(int i = 0; i<1000; i++){
-			lol = lol.concat("lol");
+			lol = lol.concat("OL");
 		}
 		txt.setText(lol);
 		return view;
