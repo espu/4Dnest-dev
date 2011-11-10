@@ -105,8 +105,8 @@
 		<delete dir="../javadocs"/>
 		<mkdir dir="../javadocs"/>
 		<javadoc sourcepath="src" destdir="../javadocs">
-			<link href="http://download.oracle.com/javase/7/docs/api"/>
-			<link href="http://www.androidjavadoc.com/2.3"/>
+			<link href="http://download.oracle.com/javase/7/docs/api/"/>
+			<link offline="true" href="http://d.android.com/reference/" packagelistLoc="/home/autobuild/antlib/android-sdk-linux/docs/reference/package-list"/>
 		</javadoc>
 	</target>
 
