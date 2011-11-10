@@ -1,26 +1,17 @@
 package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.R;
-import org.fourdnest.androidclient.R.id;
-import org.fourdnest.androidclient.R.layout;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
-public class AwesomePagerActivity extends Activity {
+public class AwesomePagerActivity extends FragmentActivity {
 
 	private ViewPager awesomePager;
 	private static int NUM_AWESOME_VIEWS = 3;
@@ -38,27 +29,6 @@ public class AwesomePagerActivity extends Activity {
 		awesomePager = (ViewPager) findViewById(R.id.awesomepager);
 		awesomePager.setAdapter(awesomeAdapter);
 		awesomePager.setCurrentItem(1);
-	}
-
-	private class FragAdapter extends FragmentPagerAdapter {
-
-		public FragAdapter(FragmentManager fm) {
-			super(fm);
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public Fragment getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
 	}
 
 	private class AwesomePagerAdapter extends PagerAdapter {
@@ -84,18 +54,18 @@ public class AwesomePagerActivity extends Activity {
 		 */
 		@Override
 		public Object instantiateItem(View collection, int position) {
-			View defaultView = findViewById(R.layout.default_view);
+			View defaultView = findViewById(R.layout.create_view);
 			if (defaultView == null) {
 				LayoutInflater inflater = LayoutInflater.from(awesomePager
 						.getContext());
-				defaultView = inflater.inflate(R.layout.default_view,
+				defaultView = inflater.inflate(R.layout.create_view,
 						awesomePager, false);
 			}
-			TextView tex = (TextView) defaultView.findViewById(R.id.text_field);
-			tex.setText("Testies! :D ");
-			for (int i = 0; i < 1000; i++) {
-				tex.append("OL");
-			}
+//			TextView tex = (TextView) defaultView.findViewById(R.id.text_field);
+//			tex.setText("Testies! :D ");
+//			for (int i = 0; i < 1000; i++) {
+//				tex.append("OL");
+//			}
 
 			// TextView tv = new TextView(cxt);
 			// tv.setText("Bonjour PAUG " + position);

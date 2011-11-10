@@ -1,11 +1,14 @@
 package org.fourdnest.androidclient.ui;
 
-import android.R;
+import org.fourdnest.androidclient.ui.AwesomePagerActivity.FragAdapter;
+
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
-public class CreateView extends Fragment{
+public class CreateView extends Fragment {
 
+	FragAdapter adapter = new FragAdapter(getSupportFragmentManager());
+	
 	public CreateView() {
 		super();
 	}

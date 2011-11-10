@@ -1,13 +1,8 @@
 package org.fourdnest.androidclient.ui;
 
 import android.content.Context;
-import android.view.View;
+import android.support.v4.app.FragmentActivity;
 
-public class ReadView extends View{
-
-	public ReadView(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
-	}
+public class ReadView extends Fragment {
 
 }
