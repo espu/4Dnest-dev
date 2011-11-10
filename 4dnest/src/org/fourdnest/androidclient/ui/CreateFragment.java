@@ -2,13 +2,25 @@ package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class CreateFragment extends Fragment {
+	
+	//YOU CAN EDIT THIS TO WHATEVER YOU WANT
+    private static final int SELECT_PICTURE = 1;
+
+    private String selectedImagePath;
+    //ADDED
+    private String filemanagerstring;
+	
+	
 	
 	public CreateFragment() {
 		super();
@@ -26,6 +38,21 @@ public class CreateFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (View)inflater.inflate(R.layout.create_view, container, false);
+		View view = (View)inflater.inflate(R.layout.create_view, container, false);
+        ((Button) view.findViewById(R.id.openGalleryButton))
+        .setOnClickListener(new OnClickListener() {
+
+            public void onClick(View arg0) {
+
+                // in onCreate or any event where your want the user to
+                // select a file
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), SELECT_PICTURE);
+            }
+        });
+		return view;
 	}
 }
