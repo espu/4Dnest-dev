@@ -27,6 +27,6 @@ public class CreateView extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (LinearLayout)inflater.inflate(R.layout.create_view, container, false);
+		return (View)inflater.inflate(R.layout.create_view, container, false);
 	}
 }
