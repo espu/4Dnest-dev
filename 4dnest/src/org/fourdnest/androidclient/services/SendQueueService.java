@@ -24,6 +24,12 @@ public class SendQueueService extends Service {
 		this.workQueue = new ConcurrentLinkedQueue<Work>();
 		this.waitingForConfirmation = new ConcurrentLinkedQueue<Egg>();
 		this.thread = new SendQueueWorkerThread(this.workQueue);
+	}	
+	
+	/**
+	 * Starts the service.
+	 */
+	public void start() {
 		this.thread.start();
 	}
 
