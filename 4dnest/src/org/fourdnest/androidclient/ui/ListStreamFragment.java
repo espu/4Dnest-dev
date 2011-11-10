@@ -7,10 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class StoredEggsFragment extends Fragment {
-
-	public StoredEggsFragment() {
+public class ListStreamFragment extends Fragment {
+	
+	public ListStreamFragment() {
 		super();
 	}
 	
@@ -26,7 +27,13 @@ public class StoredEggsFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (View)inflater.inflate(R.layout.stored_eggs_view, container, false);
+		View view = (View)inflater.inflate(R.layout.read_view, container, false);
+		TextView txt = (TextView) view.findViewById(R.id.massiveText);
+		String lol = "Read View\n";
+		for(int i = 0; i<1000; i++){
+			lol = lol.concat("OL");
+		}
+		txt.setText(lol);
+		return view;
 	}
-
 }

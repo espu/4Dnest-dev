@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class CreateFragment extends Fragment {
+public class MainScreenFragment extends Fragment {
 	
 	//YOU CAN EDIT THIS TO WHATEVER YOU WANT
     private static final int SELECT_PICTURE = 1;
@@ -22,7 +22,7 @@ public class CreateFragment extends Fragment {
 	
 	
 	
-	public CreateFragment() {
+	public MainScreenFragment() {
 		super();
 	}
 	
