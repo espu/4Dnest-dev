@@ -1,52 +1,101 @@
 package org.fourdnest.androidclient.comm;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Tag;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.HttpResponse;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.DateUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.NameValuePair;
+import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.Nest;
+import org.fourdnest.androidclient.Tag;
 
-import android.util.Log;
+import java.io.*;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class FourDNestProtocol implements Protocol {
+    private static final String TAG = "FourDNestProtocol";
+    private static final String EGG_UPLOAD_PATH = "v1/egg/upload/";
 
-	public String sendEgg(Egg egg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**Parses egg's content and sends it in multipart mime format with HTTP post.
+     * @return HTTP status code and egg URI on server if creation successful */
+    public String sendEgg(Egg egg, Nest nest) {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(nest.getBaseURL()
+                + EGG_UPLOAD_PATH);
+        
+        //Create list of NameValuePairs
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
+        //FIXME: Check for null file path.
+        pairs.add(new BasicNameValuePair("file", egg.getMediaFileURI()));
+        // FIXME: Add tags later
+        int status = 0;
+        try {
+            post.setEntity(this.createEntity(pairs));
+            Date date = new Date();
+            date.setDate(8);
+            post.setHeader("Date", DateUtils.formatDate(date));
+            Log.d("firstDate", post.getHeaders("Date")[0].getValue());
+            HttpResponse response = client.execute(post);
+            Log.d("secondDate", post.getHeaders("Date")[0].getValue());
+            status = response.getStatusLine().getStatusCode();
+            if (status == 201) {
+                return status + " "
+                        + response.getHeaders("Location")[0].getValue();
+            }
+        } catch (ClientProtocolException e) {
+            Log.e(TAG, "ClientProtocolException, egg not sent " + e.getMessage());
+            return "0";
+        } catch (IOException e) {
+            Log.e(TAG, "IOException, egg not sent " + e.getMessage());
+            return "0";
+        }
+        return String.valueOf(status);
+    }
+    
+    /** Creates the MultipartEntity from name-value -pair list 
+     * @throws UnsupportedEncodingException */
+    private MultipartEntity createEntity(List<NameValuePair> pairs) throws UnsupportedEncodingException {
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT);
 
-	public ArrayList<Tag> topTags(int count) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public String getTest() throws Exception {
-		HttpClient client = new DefaultHttpClient();
-		HttpGet request = new HttpGet();
-		request.setURI(new URI("http://hs.fi/index.html"));
-		HttpResponse response = client.execute(request);
-		BufferedReader in = new BufferedReader
-        (new InputStreamReader(response.getEntity().getContent()));
+        for (int i = 0; i < pairs.size(); i++) {
+            if (pairs.get(i).getName().equalsIgnoreCase("file")) {
+                entity.addPart(pairs.get(i).getName(), new FileBody(new File(
+                        pairs.get(i).getValue())));
+            } else {
+                entity.addPart(pairs.get(i).getName(), new StringBody(pairs
+                        .get(i).getValue()));
+            }
+        }
+
+        return entity;
+    }
+
+    public ArrayList<Tag> topTags(int count) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getTest() throws Exception {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet();
+        request.setURI(new URI("http://hs.fi/index.html"));
+        HttpResponse response = client.execute(request);
+        BufferedReader in = new BufferedReader(new InputStreamReader(response
+                .getEntity().getContent()));
         StringBuffer sb = new StringBuffer("");
         String line = "";
         String NL = System.getProperty("line.separator");
@@ -56,31 +105,6 @@ public class FourDNestProtocol implements Protocol {
         in.close();
         String page = sb.toString();
 
-		return page;
-	}
-	
-	public String postTest() throws Exception {
-		HttpClient client = new DefaultHttpClient();
-		//HttpContext context = new BasicHttpContext();
-		HttpPost post = new HttpPost("http://test42.4dnest.org/fourdnest/api/v1/egg/upload/");
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("name", "comma"));
-		pairs.add(new BasicNameValuePair("title", "Post_test"));
-		pairs.add(new BasicNameValuePair("caption", "Just testing with this funny picture"));
-		pairs.add(new BasicNameValuePair("file", "/sdcard/kuva.jpg"));
-		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT);
-		for (int i = 0; i < pairs.size(); i ++) {
-			if (pairs.get(i).getName().equalsIgnoreCase("file")) {
-				entity.addPart(pairs.get(i).getName(), new FileBody(new File(pairs.get(i).getValue())));
-			}else {
-				entity.addPart(pairs.get(i).getName(), new StringBody(pairs.get(i).getValue()));
-			}
-		}
-		post.setEntity(entity);
-		HttpResponse response = client.execute(post);
-		int code = response.getStatusLine().getStatusCode();
-		String location = response.getHeaders("Location")[0].getValue();
-		String resp = code + " " + location;
-		return resp;
-	}
+        return page;
+    }
 }
