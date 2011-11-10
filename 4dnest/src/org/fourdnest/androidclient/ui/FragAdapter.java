@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class FragAdapter extends FragmentPagerAdapter {
-	private final int NUM_VIEWS = 3;
 	private ArrayList<Fragment> fragments;
 	
 	public FragAdapter(FragmentManager fm) {
