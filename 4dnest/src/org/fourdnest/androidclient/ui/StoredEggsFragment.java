@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class StoredEggsView extends Fragment {
+public class StoredEggsFragment extends Fragment {
 
-	public StoredEggsView() {
+	public StoredEggsFragment() {
 		super();
 	}
 	

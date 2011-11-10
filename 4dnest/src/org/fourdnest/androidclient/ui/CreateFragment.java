@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class CreateView extends Fragment {
+public class CreateFragment extends Fragment {
 	
-	public CreateView() {
+	public CreateFragment() {
 		super();
 	}
 	

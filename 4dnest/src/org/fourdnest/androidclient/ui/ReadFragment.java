@@ -8,8 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ReadView extends Fragment {
-	public ReadView() {
+public class ReadFragment extends Fragment {
+	
+	public ReadFragment() {
 		super();
 	}
 	

@@ -12,9 +12,9 @@ public class FragAdapter extends FragmentPagerAdapter {
 	public FragAdapter(FragmentManager fm) {
 		super(fm);
 		this.fragments = new ArrayList<Fragment>();
-		this.fragments.add(new ReadView());
-		this.fragments.add(new CreateView());
-		this.fragments.add(new StoredEggsView());
+		this.fragments.add(new ReadFragment());
+		this.fragments.add(new CreateFragment());
+		this.fragments.add(new StoredEggsFragment());
 	}
 
 	@Override
