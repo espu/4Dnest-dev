@@ -5,8 +5,9 @@
 
 	<!-- Dependencies -->
 
-	<fileset dir="lib" id="main.jars">
+	<fileset dir="libs" id="main.jars">
 		<include name="/home/autobuild/antlib/android-sdk-linux/android.jar"/>
+		<include name="android-support-v4.jar"/>
 	</fileset>
 	<fileset dir="/usr/share/java/" id="test.jars">
 		<include name="ant-junit.jar"/>
