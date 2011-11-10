@@ -1,22 +1,22 @@
 package org.fourdnest.androidclient.ui;
 
-import org.fourdnest.androidclient.ui.AwesomePagerActivity.FragAdapter;
-
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 public class CreateView extends Fragment {
-
-	FragAdapter adapter = new FragAdapter(getSupportFragmentManager());
 	
 	public CreateView() {
 		super();
 	}
 	
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return container;
+		
+	}
 
 
 }

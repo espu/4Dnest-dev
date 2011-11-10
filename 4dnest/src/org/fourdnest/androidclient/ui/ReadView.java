@@ -1,7 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 
 public class ReadView extends Fragment {
 
