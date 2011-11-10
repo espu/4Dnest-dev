@@ -7,9 +7,14 @@
     <TextView
         android:id="@+id/text_field"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:textSize="15dp"
         android:text="This is the Create View!"
         />
-
+	<Button 
+	    android:id="@+id/openGalleryButton"
+	    android:layout_width="80pt"
+	    android:layout_height="40pt"
+	     android:text="Open Gallery"
+	    />
 </LinearLayout>
