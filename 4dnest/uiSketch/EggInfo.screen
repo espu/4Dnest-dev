@@ -13,13 +13,13 @@
   <widgets xsi:type="model:Icon" id="11" x="58" y="351" measuredWidth="48" measuredHeight="48" icon="word (xlarge)"/>
   <widgets xsi:type="model:Window" id="14" x="48" y="410" width="320" height="33" text="Videos" measuredWidth="320" measuredHeight="33" closeButton="false"/>
   <widgets xsi:type="model:Window" id="15" x="48" y="442" width="320" height="33" text="Sound" measuredWidth="320" measuredHeight="33" closeButton="false"/>
-  <widgets xsi:type="model:Button" id="17" x="48" y="560" width="320" height="75" text="Send Egg to Server" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
+  <widgets xsi:type="model:Button" id="17" x="48" y="560" width="320" height="75" text="Send Egg to Server" measuredWidth="320" measuredHeight="75" link="Create.screen">
     <font size="20" bold="true"/>
   </widgets>
   <widgets xsi:type="model:TextArea" id="20" x="496" y="169" width="225" height="59" text="Press to see your collection of eggs" measuredWidth="225" measuredHeight="59">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="21" x="48" y="163" width="320" height="72" text="Current Egg" measuredWidth="320" measuredHeight="72" icon="pie-chart (medium)" link="Eggs.screen">
+  <widgets xsi:type="model:Button" id="21" x="48" y="163" width="320" height="72" text="Current Egg" measuredWidth="320" measuredHeight="72" icon="pie-chart (medium)" link="StoredEggs.screen">
     <font size="16" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="19" x="328" y="184" width="153" height="17" measuredWidth="153" measuredHeight="17" annotation="true" foreground="#3d85c6"/>

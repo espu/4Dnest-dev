@@ -12,7 +12,7 @@
   <widgets xsi:type="model:Button" id="6" x="68" y="512" width="280" height="28" text="Tag1, tag2, tag3" measuredWidth="280" measuredHeight="28" textAlignment="Left">
     <font bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="9" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
+  <widgets xsi:type="model:Button" id="9" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="Create.screen">
     <font size="14" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Label" id="13" x="128" y="368" width="161" text="Preview" measuredWidth="161" measuredHeight="23" textAlignment="Center">
@@ -36,7 +36,7 @@
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Image" id="28" x="472" y="600" width="25" height="25" measuredWidth="25" measuredHeight="25" src="../assets/android_back.jpg"/>
-  <widgets xsi:type="model:Rectangle" id="29" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="29" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>
