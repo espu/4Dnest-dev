@@ -20,6 +20,9 @@ public class SendQueueService extends Service {
 	private ConcurrentLinkedQueue<Work> workQueue;
 	private ConcurrentLinkedQueue<Egg> waitingForConfirmation;
 
+	/**
+	 * Creates the service, but does not start it.
+	 */
 	public SendQueueService() {
 		this.workQueue = new ConcurrentLinkedQueue<Work>();
 		this.waitingForConfirmation = new ConcurrentLinkedQueue<Egg>();
@@ -108,6 +111,9 @@ public class SendQueueService extends Service {
 
 	}
 
+	/**
+	 * Null implementation.
+	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
