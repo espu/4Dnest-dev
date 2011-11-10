@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class ReadFragment extends Fragment {
 	
@@ -26,6 +27,13 @@ public class ReadFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (View)inflater.inflate(R.layout.read_view, container, false);
+		View view = (View)inflater.inflate(R.layout.read_view, container, false);
+		TextView txt = (TextView) view.findViewById(R.id.massiveText);
+		String lol = "";
+		for(int i = 0; i<1000; i++){
+			lol = lol.concat("lol");
+		}
+		txt.setText(lol);
+		return view;
 	}
 }

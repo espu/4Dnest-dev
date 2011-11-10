@@ -11,5 +11,11 @@
         android:textSize="15dp"
         android:text="This is the Read View!"
         />
+    <TextView
+        android:id="@+id/massiveText"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="15dp"
+    />
 
 </ScrollView>
