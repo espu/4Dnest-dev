@@ -17,7 +17,6 @@ public class AwesomePagerActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		cxt = this;
 
 		awesomePager = (ViewPager) findViewById(R.id.awesomepager);
 		fragadapter = new FragAdapter(getSupportFragmentManager());
