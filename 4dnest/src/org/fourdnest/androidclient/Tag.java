@@ -24,4 +24,13 @@ public class Tag {
 	public String getName(){
 		return this.name;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof Tag)) return false;
+		
+		Tag other = (Tag)o;
+		
+		return Util.ObjectsEqual(this.name, other.name);
+	}
 }

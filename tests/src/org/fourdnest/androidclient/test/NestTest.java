@@ -23,9 +23,9 @@ public class NestTest extends AndroidTestCase {
 	@Test
 	public void testEqualsNest() {
 		
-		Nest nest1 = new Nest(1, "Home Nest", "Nest hosted in my home server", "127.0.0.1", "MestaDB");
-		Nest nest2 = new Nest(1, "Home Nest", "Nest hosted in my home server", "127.0.0.1", "MestaDB");
-		Nest nest3 = new Nest(2, "Another nest", "Some random nest", "10.0.0.1", "Facebook");
+		Nest nest1 = new Nest(1, "Home Nest", "Nest hosted in my home server", "127.0.0.1", 1);
+		Nest nest2 = new Nest(1, "Home Nest", "Nest hosted in my home server", "127.0.0.1", 1);
+		Nest nest3 = new Nest(2, "Another nest", "Some random nest", "10.0.0.1", 2);
 		
 		assertTrue(nest1.equals(nest2));
 		assertFalse(nest1.equals(nest3));

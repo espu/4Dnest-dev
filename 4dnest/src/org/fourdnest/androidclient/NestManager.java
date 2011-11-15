@@ -70,7 +70,7 @@ public class NestManager {
 						result.getString(1),
 						result.getString(2),
 						result.getString(3),
-						result.getString(4)
+						result.getInt(4)
 						);
 				
 				nests.add(nest);
@@ -110,7 +110,7 @@ public class NestManager {
 					result.getString(1),
 					result.getString(2),
 					result.getString(3),
-					result.getString(4)
+					result.getInt(4)
 					);
 			
 		} else {
@@ -152,7 +152,7 @@ public class NestManager {
 		values.put(C_NAME, nest.name);
 		values.put(C_DESCRIPTION, nest.description);
 		values.put(C_ADDRESS, nest.baseURL);
-		values.put(C_PROTOCOL, nest.protocolName);
+		values.put(C_PROTOCOL, nest.protocolId);
 		
 		long rowid;
 		if(result.getCount() > 0) {
