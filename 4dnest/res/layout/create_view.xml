@@ -15,48 +15,47 @@
     
     
     
-    <LinearLayout
+    <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:gravity="center_horizontal"
     android:background="#ffffff"
     >
          <ImageButton
             android:id="@+id/create_firstButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-			android:src="@drawable/icon"
-            android_gravity="left"
-            android:padding="5dip" />
+			android:src="@drawable/icon" 
+			android:layout_marginRight="10px"/>
+         
         <ImageButton
+            android:id="@+id/create_secondButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/create_secondButton"
+            android:layout_toRightOf="@+id/create_firstButton"
 			android:src="@drawable/icon"
-            android_gravity="right"
-            android:padding="5dip" />       
-     </LinearLayout> 
-    <LinearLayout
+			android:layout_marginLeft="10px"/>       
+     </RelativeLayout> 
+ <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:gravity="center_horizontal"
     android:background="#ffffff"
     >
         <ImageButton
             android:id="@+id/create_thirdButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-			android:src="@drawable/icon"
-            android_gravity="clip_horizontal"
-            android:padding="5dip" />
+			android:src="@drawable/icon" 
+			android:layout_marginRight="10px"/>
         <ImageButton
+            android:id="@+id/create_fourthButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/create_fourthButton"
-			android:src="@drawable/icon"
-            android_gravity="right"
-            android:padding="5dip" />
-    </LinearLayout>
+            android:layout_toRightOf="@+id/create_thirdButton"
+			android:src="@drawable/icon" 
+			android:layout_marginLeft="10px"/>
+    </RelativeLayout>
     <Button
         android:id="@+id/openGalleryButton"
         android:layout_width="fill_parent"
