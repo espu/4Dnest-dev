@@ -36,7 +36,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="38" y="491" width="320" height="70" text="Pick from Media Library" icon="open (large)">
+        <object xsi:type="model:Button" x="38" y="491" width="320" height="70" text="Use Existing Media" icon="open (large)">
           <font size="14" bold="true"/>
         </object>
       </widgetChanges>

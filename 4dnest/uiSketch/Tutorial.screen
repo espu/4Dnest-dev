@@ -59,7 +59,7 @@
       <widgets xsi:type="model:Icon" id="82" x="233" y="6" measuredWidth="16" measuredHeight="16" foreground="#00ff00" icon="signal (small)"/>
       <widgets xsi:type="model:Icon" id="83" x="257" y="6" measuredWidth="16" measuredHeight="16" foreground="#00ff00" icon="battery (small)"/>
     </widgets>
-    <widgets xsi:type="model:Button" id="84" x="68" y="219" width="113" height="113" measuredWidth="113" measuredHeight="113" background="#cfe2f3" icon="snapshot (xlarge)" link="PhotoEdit.screen">
+    <widgets xsi:type="model:Button" id="84" x="68" y="219" width="113" height="113" measuredWidth="113" measuredHeight="113" background="#cfe2f3" icon="snapshot (xlarge)">
       <font size="20" bold="true"/>
     </widgets>
     <widgets xsi:type="model:Button" id="85" x="212" y="219" width="113" height="113" measuredWidth="113" measuredHeight="113" background="#cfe2f3" icon="video (xlarge)">
@@ -77,7 +77,7 @@
     <widgets xsi:type="model:Rectangle" id="89" x="38" y="116" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
       <font size="14" bold="true"/>
     </widgets>
-    <widgets xsi:type="model:Button" id="90" x="38" y="491" width="320" height="70" text="Pick from Media Library" measuredWidth="320" measuredHeight="70" icon="open (large)">
+    <widgets xsi:type="model:Button" id="90" x="38" y="491" width="320" height="70" text="Use Existing Media" measuredWidth="320" measuredHeight="70" icon="open (large)">
       <font size="14" bold="true"/>
     </widgets>
     <widgets xsi:type="model:ButtonBar" id="91" x="38" y="560" width="320" height="65" text="Track\nRoute, \nBiketrip" measuredWidth="320" measuredHeight="65" selection="0">
