@@ -11,20 +11,34 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * ensure that only work that is understood by the Service can be scheduled.
  */
 public abstract class WorkerThread<W extends Work> extends Thread {
+	/** A thread-safe queue for storing the Work objects */
 	protected ConcurrentLinkedQueue<W> queue;
+	/** Set this to false to cause the thread to exit */
 	protected boolean running;
-	protected long delay = 1000; //FIXME
+	/** The time in milliseconds to sleep between polls of the queue */ 
+	protected long delay = 1000;
 	
+	/**
+	 * @param threadName A name passed on to Thread
+	 * @param queue The queue used to schedule work to this WorkerThread.
+	 * Adding a Work object into the queue schedules it for execution.
+	 * The caller should therefore keep a reference to the queue in order to
+	 * communicate with the WorkerThread.
+	 */
 	public WorkerThread(String threadName, ConcurrentLinkedQueue<W> queue) {
 		super(threadName);
 		this.queue = queue;
 		this.running = true;
 	}
 	
+	/**
+	 * @param delay The time in milliseconds to sleep between polls of the queue
+	 */
 	public void setDelay(long delay) {
 		this.delay = delay;
 	}
 	
+	@Override
 	public void run() {
 		W work;
 		while(running) {
