@@ -36,7 +36,7 @@
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Image" id="28" x="472" y="600" width="25" height="25" measuredWidth="25" measuredHeight="25" src="../assets/android_back.jpg"/>
-  <widgets xsi:type="model:Rectangle" id="29" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="29" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>

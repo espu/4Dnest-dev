@@ -58,7 +58,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="38" text="NestServer" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="38" text="Fishing Club" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
           <font size="14" bold="true"/>
         </object>
       </widgetChanges>
