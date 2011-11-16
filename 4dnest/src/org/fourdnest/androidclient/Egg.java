@@ -2,7 +2,6 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public class Egg {
 	private List<Tag> tags;
 	
 	/** When Egg was last uploaded to associated Nest */
-	private Date lastUpload;
+	private long lastUpload;
 	
 	// FIXME: automatic metadata.
 	
@@ -55,7 +54,7 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(int id, int nestId, URI localFileURI, URI remoteFileURI, String caption, List<Tag> tags, Date lastUpload) {
+	public Egg(int id, int nestId, URI localFileURI, URI remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
 		this.nestId = nestId;
 		this.localFileURI = localFileURI;
@@ -179,7 +178,7 @@ public class Egg {
 	 * Set last upload date
 	 * @param lastUpload Last upload date
 	 */
-	public void setLastUpload(Date lastUpload) {
+	public void setLastUpload(long lastUpload) {
 		this.lastUpload = lastUpload;
 	}
 	
@@ -187,7 +186,7 @@ public class Egg {
 	 * Returns last upload date
 	 * @return Last upload date
 	 */
-	public Date getLastUpload() {
+	public long getLastUpload() {
 		return this.lastUpload;
 	}
 	

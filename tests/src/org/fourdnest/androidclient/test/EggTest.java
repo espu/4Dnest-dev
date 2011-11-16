@@ -28,7 +28,7 @@ public class EggTest extends AndroidTestCase {
 	@Test
 	public void testEggEquals() {
 		
-		Date now = new Date();
+		long now = System.currentTimeMillis();
 		
 		Egg e1 = new Egg();
 		Egg e2 = new Egg();

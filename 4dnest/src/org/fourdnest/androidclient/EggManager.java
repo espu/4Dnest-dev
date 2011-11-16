@@ -2,11 +2,7 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -58,13 +54,13 @@ public class EggManager {
 		
 		Cursor result = db.query(TABLE,
 				new String[]{
-				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION
+				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
 				}, // Columns
 				null, // No WHERE
 				null, // No arguments in selection
 				null, // No GROUP BY
 				null, // No HAVING
-				C_ID, // Order by name
+				C_ID, // Order by id
 				"100"); // Limit 100
 		
 		ArrayList<Egg> eggs = new ArrayList<Egg>();
@@ -121,30 +117,26 @@ public class EggManager {
 		int nestId = cursor.getInt(1);
 		
 		URI localURI = null;
-		try {
-		localURI = new URI(cursor.getString(2));
-		} catch(URISyntaxException e) {
-			Log.d(TAG, "Error parsing local URI: " + cursor.getString(2));
+		if (cursor.getString(2) != null) {
+			try {
+			localURI = new URI(cursor.getString(2));
+			} catch(URISyntaxException e) {
+				Log.d(TAG, "Error parsing local URI: " + cursor.getString(2));
+			}
 		}
 		
-		
 		URI remoteURI = null;
-		try {
-			remoteURI = new URI(cursor.getString(3));
-		} catch(URISyntaxException e) {
-			Log.d(TAG, "Error parsing remote URI" + cursor.getString(3));
+		if (cursor.getString(3) != null) {			
+			try {
+				remoteURI = new URI(cursor.getString(3));
+			} catch(URISyntaxException e) {
+				Log.d(TAG, "Error parsing remote URI" + cursor.getString(3));
+			}
 		}
 		
 		String caption = cursor.getString(4);
-		
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		
-		Date lastUpload = null;
-		try {
-			lastUpload = DateFormat.getDateInstance(DateFormat.LONG, Locale.ENGLISH).parse(cursor.getString(5));
-		} catch(ParseException e) {
-			
-		}
+		long lastUpload = cursor.getLong(5);
 		
 		Egg egg = new Egg(id, nestId, localURI, remoteURI, caption, tags, lastUpload);
 		
@@ -185,11 +177,7 @@ public class EggManager {
 		values.put(C_REMOTEFILEURI, egg.getRemoteFileURI() != null ? egg.getRemoteFileURI().toString() : null);
 		
 		values.put(C_CAPTION, egg.getCaption());
-		if(egg.getLastUpload() != null) {
-			values.put(C_LASTUPLOAD, DateFormat.getDateInstance(DateFormat.LONG, Locale.ENGLISH).format(egg.getLastUpload()));
-		} else {
-			values.put(C_LASTUPLOAD, "");
-		}
+		values.put(C_LASTUPLOAD, egg.getLastUpload());
 		
 		long rowid;
 		if(result.getCount() > 0) {
@@ -249,13 +237,15 @@ public class EggManager {
 						"%s int DEFAULT NULL, " + 
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
-						"%s text DEFAULT NULL)",
+						"%s text DEFAULT NULL," +
+						"%s long DEFAULT NULL)",
 						TABLE,
 						C_ID,
 						C_NESTID,
 						C_LOCALFILEURI,
 						C_REMOTEFILEURI,
-						C_CAPTION
+						C_CAPTION,
+						C_LASTUPLOAD
 			);
 			
 			db.execSQL(tableCreateQuery);
