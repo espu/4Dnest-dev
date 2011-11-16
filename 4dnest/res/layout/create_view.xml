@@ -1,21 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
+    
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ffffff"
     android:orientation="vertical" >
-
     <TextView
         android:id="@+id/text_field"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="This is the Create View!"
         android:textSize="15dp" />
-
+    
+    
+    
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    >
+         <ImageButton
+            android:id="@+id/create_firstButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:src="@drawable/icon"
+            android_gravity="left"
+            android:padding="5dip" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_secondButton"
+			android:src="@drawable/icon"
+            android_gravity="right"
+            android:padding="5dip" />       
+     </LinearLayout> 
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    >
+        <ImageButton
+            android:id="@+id/create_thirdButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:src="@drawable/icon"
+            android_gravity="clip_horizontal"
+            android:padding="5dip" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_fourthButton"
+			android:src="@drawable/icon"
+            android_gravity="right"
+            android:padding="5dip" />
+    </LinearLayout>
     <Button
         android:id="@+id/openGalleryButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Open Gallery" />
-
 </LinearLayout>
