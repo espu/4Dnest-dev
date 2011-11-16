@@ -18,7 +18,7 @@
     <widgets xsi:type="model:TextArea" id="15" y="53" width="305" height="49" text="*Biketrip*&#xD;&#xA;Tripping with my bike" measuredWidth="305" measuredHeight="49">
       <font/>
     </widgets>
-    <widgets xsi:type="model:TextArea" id="16" y="101" width="305" height="57" text="*Neighbourhood Patrol*&#xD;&#xA;Not pothole goes unnoticed!" measuredWidth="305" measuredHeight="57">
+    <widgets xsi:type="model:TextArea" id="16" y="101" width="305" height="57" text="*Neighbourhood Patrol*&#xD;&#xA;No pothole goes unnoticed!" measuredWidth="305" measuredHeight="57">
       <font/>
     </widgets>
     <widgets xsi:type="model:Icon" id="5" x="264" y="13" measuredWidth="32" measuredHeight="32" icon="wrench (large)"/>
