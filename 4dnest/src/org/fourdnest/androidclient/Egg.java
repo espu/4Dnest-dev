@@ -1,8 +1,10 @@
 package org.fourdnest.androidclient;
 
-import java.net.URI;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import android.net.Uri;
 
 /**
  * Represents one Egg, which is the unit of content in the system.
@@ -21,11 +23,11 @@ public class Egg {
 	private int nestId;
 	
 	/** URI to local media file. Is null for status updates (text only Eggs). */
-	private URI localFileURI;
+	private Uri localFileURI;
 	
 	/** URI to remote media file (uploaded to a nest). Is null for text only Eggs
 	 * and Eggs that have not been successfully uploaded yet*/
-	private URI remoteFileURI;
+	private Uri remoteFileURI;
 		
 	/** Caption text. */
 	private String caption;
@@ -54,7 +56,7 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(int id, int nestId, URI localFileURI, URI remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
+	public Egg(int id, int nestId, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
 		this.nestId = nestId;
 		this.localFileURI = localFileURI;
@@ -117,14 +119,14 @@ public class Egg {
 	 * Sets local file URI
 	 * @param mediaFileURI The localFileURI to set
 	 */
-	public void setLocalFileURI(URI mediaFileURI) {
+	public void setLocalFileURI(Uri mediaFileURI) {
 		this.localFileURI = mediaFileURI;
 	}
 	/**
 	 * Returns local file URI
 	 * @return The localFileURI
 	 */
-	public URI getLocalFileURI() {
+	public Uri getLocalFileURI() {
 		return this.localFileURI;
 	}
 	
@@ -132,7 +134,7 @@ public class Egg {
 	 * Sets remote file URI
 	 * @param remoteFileURI The remoteFileURI to set
 	 */
-	public void setRemoteFileURI(URI remoteFileURI) {
+	public void setRemoteFileURI(Uri remoteFileURI) {
 		this.remoteFileURI = remoteFileURI;
 	}
 	
@@ -140,7 +142,7 @@ public class Egg {
 	 * Returns egg remote file URI
 	 * @return Remote file URI
 	 */
-	public URI getRemoteFileURI() {
+	public Uri getRemoteFileURI() {
 		return this.remoteFileURI;
 	}	
 

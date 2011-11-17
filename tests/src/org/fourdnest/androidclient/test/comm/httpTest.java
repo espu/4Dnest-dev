@@ -1,6 +1,12 @@
 package org.fourdnest.androidclient.test.comm;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -12,6 +18,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import android.R;
+import android.app.Application;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Environment;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -40,7 +51,20 @@ public class httpTest extends AndroidTestCase {
 	public void testHttpPost() throws Exception {
 		FourDNestProtocol protocol = new FourDNestProtocol();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		Egg egg = new Egg(5, 10, new URI("/sdcard/kuva.jpg"), null, "Trolol", tags, 100);
+		InputStream is = this.getContext().getAssets().open("kuva.jpg");
+		BufferedInputStream bufin = new BufferedInputStream(is);
+		File root = Environment.getExternalStorageDirectory();
+		FileOutputStream os = new FileOutputStream(new File(root, "kuva.jpg"));
+		BufferedOutputStream bufout = new BufferedOutputStream(os);
+		int c;
+		while ((c = bufin.read()) != -1) {
+		    bufout.write(c);
+		}
+		bufout.close();
+		bufin.close();
+		Uri uri = Uri.parse("/sdcard/kuva.jpg");
+		Log.v("Path", uri.getPath());
+		Egg egg = new Egg(5, 10, uri, null, "Now it should finally work from assets.", tags, 100);
 		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", 007);
 		protocol.setNest(nest);
 		String post = protocol.sendEgg(egg);

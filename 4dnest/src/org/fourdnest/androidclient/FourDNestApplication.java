@@ -29,7 +29,6 @@ public class FourDNestApplication extends Application
 	public synchronized void onSharedPreferenceChanged(
 			SharedPreferences sharedPreferences, String key) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**
