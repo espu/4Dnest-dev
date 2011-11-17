@@ -19,7 +19,7 @@
   <widgets xsi:type="model:Button" id="13" x="68" y="354" width="265" height="127" text="Description" measuredWidth="265" measuredHeight="127">
     <font bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="14" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
+  <widgets xsi:type="model:Rectangle" id="14" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>

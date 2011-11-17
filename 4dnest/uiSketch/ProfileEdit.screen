@@ -21,7 +21,7 @@
   <widgets xsi:type="model:TextArea" id="21" x="640" y="475" width="225" height="73" text="All values will be initially blank if this activity was accessed from Create New Profile" measuredWidth="225" measuredHeight="73">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="22" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
+  <widgets xsi:type="model:Rectangle" id="22" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>
