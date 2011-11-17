@@ -20,9 +20,11 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		awesomePager = (ViewPager) findViewById(R.id.awesomepager);
-		fragadapter = new FragAdapter(getSupportFragmentManager());
+		fragadapter = new FragAdapter(getSupportFragmentManager(), this.getApplicationContext());
 		awesomePager.setAdapter(fragadapter);
 		awesomePager.setCurrentItem(1);
+		this.getApplicationContext();
+
 
 	}
 }
