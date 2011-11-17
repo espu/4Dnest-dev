@@ -9,7 +9,7 @@
   <widgets xsi:type="model:Button" id="5" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="7" x="68" y="264" width="280" height="233" text="Add Caption here..." measuredWidth="280" measuredHeight="233">
+  <widgets xsi:type="model:TextArea" id="7" x="68" y="264" width="280" height="233" text="Add Message here..." measuredWidth="280" measuredHeight="233">
     <font/>
   </widgets>
   <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">

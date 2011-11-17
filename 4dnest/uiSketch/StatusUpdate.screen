@@ -6,7 +6,7 @@
   <widgets xsi:type="model:Rectangle" id="2" x="128" y="168" width="145" height="169" measuredWidth="145" measuredHeight="169">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="3" x="136" y="176" width="129" height="153" text="Add\nMedia" measuredWidth="129" measuredHeight="153" icon="image (xlarge)">
+  <widgets xsi:type="model:Rectangle" id="3" x="136" y="176" width="129" height="153" text="Press\nto Add\nMedia" measuredWidth="129" measuredHeight="153" icon="image (xlarge)">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Button" id="4" x="68" y="512" width="280" height="28" text="Tag1, tag2, tag3" measuredWidth="280" measuredHeight="28" textAlignment="Left">
@@ -15,7 +15,7 @@
   <widgets xsi:type="model:Button" id="5" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="7" x="68" y="344" width="280" height="161" text="Status update caption here." measuredWidth="280" measuredHeight="161">
+  <widgets xsi:type="model:TextArea" id="7" x="68" y="344" width="280" height="161" text="Add Message here..." measuredWidth="280" measuredHeight="161">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
