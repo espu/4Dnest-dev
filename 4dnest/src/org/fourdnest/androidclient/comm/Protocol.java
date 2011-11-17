@@ -9,7 +9,7 @@ import org.fourdnest.androidclient.Tag;
 
 public interface Protocol {
 	
-	public String sendEgg(Egg egg, Nest nest);
+	public String sendEgg(Egg egg);
 	public ArrayList<Tag> topTags(int count);
-	//public String getTagSuggestion(String prefix);
+	void setNest(Nest nest);
 }

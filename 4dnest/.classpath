@@ -2,6 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/m/home/home03/ttmaki1/unix/android-sdk-linux_x86"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="/m/home/home03/ttmaki1/unix/git/4Dnest-dev/4dnest/lib/httpmime-4.1.2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

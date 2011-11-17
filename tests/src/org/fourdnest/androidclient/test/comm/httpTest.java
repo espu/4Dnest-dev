@@ -41,7 +41,8 @@ public class httpTest extends AndroidTestCase {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		Egg egg = new Egg("/sdcard/kuva.jpg", "Trolol", tags);
 		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", "protocol");
-		String post = protocol.sendEgg(egg, nest);
+		protocol.setNest(nest);
+		String post = protocol.sendEgg(egg);
 		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
 		Log.v("httppost", post);
 	}

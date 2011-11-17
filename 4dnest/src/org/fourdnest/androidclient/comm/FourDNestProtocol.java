@@ -28,12 +28,16 @@ import java.util.List;
 public class FourDNestProtocol implements Protocol {
     private static final String TAG = "FourDNestProtocol";
     private static final String EGG_UPLOAD_PATH = "v1/egg/upload/";
+    private Nest nest;
 
-    /**Parses egg's content and sends it in multipart mime format with HTTP post.
-     * @return HTTP status code and egg URI on server if creation successful */
-    public String sendEgg(Egg egg, Nest nest) {
+    /**
+     * Parses egg's content and sends it in multipart mime format with HTTP post.
+     * 
+     * @return HTTP status code and egg URI on server if creation successful
+     **/
+    public String sendEgg(Egg egg) {
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(nest.getBaseURL()
+        HttpPost post = new HttpPost(this.nest.getBaseURL()
                 + EGG_UPLOAD_PATH);
         
         //Create list of NameValuePairs
@@ -72,9 +76,9 @@ public class FourDNestProtocol implements Protocol {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT);
 
         for (int i = 0; i < pairs.size(); i++) {
+            File file = new File(pairs.get(i).getValue());
             if (pairs.get(i).getName().equalsIgnoreCase("file")) {
-                entity.addPart(pairs.get(i).getName(), new FileBody(new File(
-                        pairs.get(i).getValue())));
+                entity.addPart(pairs.get(i).getName(), new FileBody(file));
             } else {
                 entity.addPart(pairs.get(i).getName(), new StringBody(pairs
                         .get(i).getValue()));
@@ -106,5 +110,10 @@ public class FourDNestProtocol implements Protocol {
         String page = sb.toString();
 
         return page;
+    }
+
+    public void setNest(Nest nest) {
+        this.nest = nest;
+        
     }
 }
