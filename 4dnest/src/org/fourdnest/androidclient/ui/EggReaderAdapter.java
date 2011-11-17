@@ -1,40 +1,23 @@
 package org.fourdnest.androidclient.ui;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class EggListAdapter extends BaseAdapter {
-	protected ArrayList<Egg> eggs;
-	protected ViewGroup parent;
+public class EggReaderAdapter extends EggListAdapter {
 
-	public EggListAdapter(ViewGroup parent) {
-		this.eggs = new ArrayList<Egg>();
-		this.parent = parent;
+	public EggReaderAdapter(ViewGroup parent) {
+		super(parent);
+		// TODO Auto-generated constructor stub
 	}
-
-	public int getCount() {
-		return this.eggs.size();
-	}
-
-	public Object getItem(int arg0) {
-		return this.eggs.get(arg0);
-	}
-
-	public long getItemId(int arg0) {
-		return arg0;
-	}
-
+	
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 
 		if (arg1 == null) {
@@ -43,7 +26,6 @@ public class EggListAdapter extends BaseAdapter {
 		}
 
 		Egg egg = (Egg) this.getItem(arg0);
-		Date a = new Date(egg.getLastUpload());
 
 		ImageView thumbnail = (ImageView) arg1.findViewById(R.id.thumbnail);
 		TextView message = (TextView) arg1.findViewById(R.id.message);
