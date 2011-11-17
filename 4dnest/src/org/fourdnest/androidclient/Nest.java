@@ -10,19 +10,19 @@ public class Nest {
 	String name;
 	String description;	
 	String baseURL;
-	String protocolName;
+	int protocolId;
 	
 	public Nest(int id,
 				String name,
 				String description,
 				String address,
-				String protocolName) {
+				int protocolName) {
 		
 		this.id = id;
 		this.name = name;
 		this.description = description;		
 		this.baseURL = address;		
-		this.protocolName = protocolName;
+		this.protocolId = protocolName;
 	}
 	
 	public boolean equals(Nest nest) {
@@ -30,10 +30,10 @@ public class Nest {
 		if(nest == null) return false;
 		
 		boolean eq = (this.id == nest.id &&
-				this.name.equals(nest.name) &&
-				this.description.equals(nest.description) &&
-				this.baseURL.equals(nest.baseURL) &&
-				this.protocolName.equals(nest.protocolName)
+				Util.ObjectsEqual(this.name, nest.name) &&
+				Util.ObjectsEqual(this.description, nest.description) &&
+				Util.ObjectsEqual(this.baseURL, nest.baseURL) &&
+				this.protocolId == nest.protocolId
 		);
 		
 		return eq;
@@ -42,7 +42,7 @@ public class Nest {
 	
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
@@ -50,7 +50,7 @@ public class Nest {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -58,7 +58,7 @@ public class Nest {
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -73,12 +73,12 @@ public class Nest {
 		this.baseURL = address;
 	}
 
-	public String getProtocolName() {
-		return protocolName;
+	public int getProtocolName() {
+		return this.protocolId;
 	}
 
-	public void setProtocolName(String protocolName) {
-		this.protocolName = protocolName;
+	public void setProtocolName(int protocolName) {
+		this.protocolId = protocolName;
 	}
 
 
