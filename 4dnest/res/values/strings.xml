@@ -7,4 +7,6 @@
     <string name="create_screen_stored_eggs_tag">Stored Eggs&gt;&gt;</string>
     <string name="create_screen_open_gallery_tag">Pick from Media Library</string>
     <string name="create_screen_track_route_tag">Track Route</string>
+    <string name="stored_eggs_screen_unsent_title">Unsent Eggs:</string>
+    <string name="stored_eggs_screen_sent_title">Sent Eggs:</string>
 </resources>

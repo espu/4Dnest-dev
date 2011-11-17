@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.R;
 
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 public class ListStoredEggsFragment extends Fragment {
 
@@ -26,7 +28,23 @@ public class ListStoredEggsFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (View)inflater.inflate(R.layout.stored_eggs_view, container, false);
+		View view = (View)inflater.inflate(R.layout.stored_eggs_view, container, false);
+		ListView unsentList = (ListView) view.findViewById(R.id.unsent_eggs);
+		ListView sentList = (ListView) view.findViewById(R.id.sent_eggs);
+		
+		EggListAdapter unsentListAdapter = new EggListAdapter(unsentList);
+		EggListAdapter sentListAdapter = new EggListAdapter(sentList);
+		
+		//TODO: proper population of egg lists
+		unsentListAdapter.setEggs(null);
+		sentListAdapter.setEggs(null);
+		
+		unsentList.setAdapter(unsentListAdapter);
+		sentList.setAdapter(sentListAdapter);
+		 //TODO: get context 
+		//EggManager m = new EggManager(null);
+		
+		return view;
 	}
 
 }
