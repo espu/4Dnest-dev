@@ -44,7 +44,7 @@ public class FourDNestProtocol implements Protocol {
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
         //FIXME: Check for null file path.
-        pairs.add(new BasicNameValuePair("file", egg.getMediaFileURI()));
+        pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI().getPath()));
         // FIXME: Add tags later
         int status = 0;
         try {

@@ -1,5 +1,7 @@
 package org.fourdnest.androidclient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
@@ -13,73 +15,69 @@ import android.util.Log;
 
 
 
-public class NestManager {
+public class EggManager {
 	
-	private static final String TAG = NestDatabase.class.getSimpleName();
+	private static final String TAG = EggManager.class.getSimpleName();
 	
-	static final String DB_NAME = "4dnest.nests.db";
+	static final String DB_NAME = "4dnest.eggs.db";
 	static final int DB_VERSION = 1;
 	
 	// Table columns
-	static final String TABLE = "nest";
+	static final String TABLE = "egg";
 	static final String C_ID = BaseColumns._ID;
-	static final String C_NAME = "name";
-	static final String C_DESCRIPTION = "description";
-	static final String C_ADDRESS = "address";
-	static final String C_PROTOCOL = "protocol";
-	
-	private final NestDatabase nestDb;
+	static final String C_NESTID = "nest_id";
+	static final String C_LOCALFILEURI = "local_file_uri";
+	static final String C_REMOTEFILEURI = "remote_file_uri";
+	static final String C_CAPTION = "caption";
+	static final String C_LASTUPLOAD = "last_upload";
+	// TODO: Add tag relation table when we have tag manager
+		
+	private final EggDatabase eggDb;
 	
 	/**
 	 * Creates new NestManager with specified context
 	 * @param context
 	 */
-	public NestManager(Context context) {
-		this.nestDb = new NestDatabase(context);
+	public EggManager(Context context) {
+		this.eggDb = new EggDatabase(context);
 		
-		Log.d(TAG, "NestManager created");
+		Log.d(TAG, "EggManager created");
 	}
 	
 	/**
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public ArrayList<Nest> listNests() {
+	public ArrayList<Egg> listEggs() {
 		
-		SQLiteDatabase db = this.nestDb.getReadableDatabase();
+		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		
 		Cursor result = db.query(TABLE,
 				new String[]{
-				C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS, C_PROTOCOL
+				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
 				}, // Columns
 				null, // No WHERE
 				null, // No arguments in selection
 				null, // No GROUP BY
 				null, // No HAVING
-				C_NAME, // Order by name
+				C_ID, // Order by id
 				"100"); // Limit 100
 		
-		ArrayList<Nest> nests = new ArrayList<Nest>();
+		ArrayList<Egg> eggs = new ArrayList<Egg>();
 		
 		if(result.getCount() > 0) {
 			result.moveToFirst();
 			
 			while(!result.isAfterLast()) {
-				Nest nest = new Nest(
-						result.getInt(0),
-						result.getString(1),
-						result.getString(2),
-						result.getString(3),
-						result.getInt(4)
-						);
+				Egg egg = this.extractEggFromCursor(result);
 				
-				nests.add(nest);
+				eggs.add(egg);
 				
 				result.moveToNext();
 			} 
 		}
 		
-		return nests;
+		return eggs;
 	}
 	
 	/**
@@ -87,12 +85,12 @@ public class NestManager {
 	 * @param id of nest
 	 * @return Nest with specified id or null
 	 */
-	public Nest getNest(int id) {
+	public Egg getEgg(int id) {
 
-		SQLiteDatabase db = this.nestDb.getReadableDatabase();
+		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
 				new String[]{
-				C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS, C_PROTOCOL
+				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
 				}, // Columns
 				C_ID + "==" + id, // Where
 				null, // No arguments in selection
@@ -102,24 +100,48 @@ public class NestManager {
 				"1"); // Limit 1
 		
 		
-		Nest nest = null;
+		Egg egg = null;
 		if(result.getCount() > 0) {
 			result.moveToFirst();
-			nest = new Nest(
-					result.getInt(0),
-					result.getString(1),
-					result.getString(2),
-					result.getString(3),
-					result.getInt(4)
-					);
-			
+			egg = this.extractEggFromCursor(result);			
 		} else {
-			Log.d(TAG, "Nest with id " + id + " not found");
+			Log.d(TAG, "Egg with id " + id + " not found");
 		}
 		
+		return egg;
 		
-		return nest;
+	}
+	
+	private Egg extractEggFromCursor(Cursor cursor) {					
+		int id = cursor.getInt(0);
+		int nestId = cursor.getInt(1);
 		
+		URI localURI = null;
+		if (cursor.getString(2) != null) {
+			try {
+			localURI = new URI(cursor.getString(2));
+			} catch(URISyntaxException e) {
+				Log.d(TAG, "Error parsing local URI: " + cursor.getString(2));
+			}
+		}
+		
+		URI remoteURI = null;
+		if (cursor.getString(3) != null) {			
+			try {
+				remoteURI = new URI(cursor.getString(3));
+			} catch(URISyntaxException e) {
+				Log.d(TAG, "Error parsing remote URI" + cursor.getString(3));
+			}
+		}
+		
+		String caption = cursor.getString(4);
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		long lastUpload = cursor.getLong(5);
+		
+		Egg egg = new Egg(id, nestId, localURI, remoteURI, caption, tags, lastUpload);
+		
+		
+		return egg;
 	}
 	
 	/**
@@ -128,10 +150,10 @@ public class NestManager {
 	 * @param nest object to save
 	 * @return long row id or -1 on failure
 	 */
-	public long saveNest(Nest nest) {
+	public long saveEgg(Egg egg) {
 		
 		
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();
+		SQLiteDatabase db = this.eggDb.getWritableDatabase();
 		
 		// API level 8 would have insertWithOnConflict, have to work around it
 		// and check for conflict and then either insert or update
@@ -139,7 +161,7 @@ public class NestManager {
 		// Check if nest with id exists
 		Cursor result = db.query(TABLE,
 				new String[] {C_ID},
-				C_ID + "==" + nest.id,
+				C_ID + "==" + egg.getId(),
 				null, // No selection args
 				null, // No GROUP BY
 				null, // No HAVING
@@ -148,11 +170,14 @@ public class NestManager {
 		
 		// Create ContentValues object for Nest
 		ContentValues values = new ContentValues();
-		values.put(C_ID, nest.id);
-		values.put(C_NAME, nest.name);
-		values.put(C_DESCRIPTION, nest.description);
-		values.put(C_ADDRESS, nest.baseURL);
-		values.put(C_PROTOCOL, nest.protocolId);
+		values.put(C_ID, egg.getId());
+		values.put(C_NESTID, egg.getNestId());
+		
+		values.put(C_LOCALFILEURI, egg.getLocalFileURI() != null ? egg.getLocalFileURI().toString() : null);
+		values.put(C_REMOTEFILEURI, egg.getRemoteFileURI() != null ? egg.getRemoteFileURI().toString() : null);
+		
+		values.put(C_CAPTION, egg.getCaption());
+		values.put(C_LASTUPLOAD, egg.getLastUpload());
 		
 		long rowid;
 		if(result.getCount() > 0) {
@@ -160,20 +185,20 @@ public class NestManager {
 			rowid = db.replace(TABLE, null, values);
 			
 			if(rowid < 0) {
-				throw new SQLiteException("Error replacing existing nest with id + "
-						+ nest.id + " in database");
+				throw new SQLiteException("Error replacing existing Egg with id + "
+						+ egg.getId() + " in database");
 			}
 			
-			Log.d(TAG, "Updated Nest in db");
+			Log.d(TAG, "Updated Egg in db");
 			
 		} else {
 			// Insert new row			
 			rowid = db.insert(TABLE, null, values);
 			if(rowid < 0) {
-				throw new SQLiteException("Error inserting new nest to database");
+				throw new SQLiteException("Error inserting new Egg to database");
 			}
 			
-			Log.d(TAG, "Inserted new Nest to db");
+			Log.d(TAG, "Inserted new Egg to db");
 		}
 		
 		return rowid;
@@ -184,21 +209,21 @@ public class NestManager {
 	 */
 	public void close() {
 		Log.d(TAG, "db closed");
-		this.nestDb.close();
+		this.eggDb.close();
 	}
 	
 	
 	
 	// Actual database handler inside NestManager
-	class NestDatabase extends SQLiteOpenHelper {
+	class EggDatabase extends SQLiteOpenHelper {
 		
 		Context context;
 		
-		public NestDatabase(Context context) {
+		public EggDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);			
 			this.context = context;
 			
-			Log.d(TAG, "NestDatabase created");
+			Log.d(TAG, "EggDatabase created");
 		}
 
 		// Called when DB is created for the first time (does not exist)
@@ -209,16 +234,18 @@ public class NestManager {
 			String tableCreateQuery = String.format(
 						"CREATE TABLE %s(" +
 						"%s int PRIMARY KEY," +
-						"%s text," +
-						"%s text," +
-						"%s text," +
-						"%s text)",
+						"%s int DEFAULT NULL, " + 
+						"%s text DEFAULT NULL," +
+						"%s text DEFAULT NULL," +
+						"%s text DEFAULT NULL," +
+						"%s long DEFAULT NULL)",
 						TABLE,
 						C_ID,
-						C_NAME,
-						C_DESCRIPTION,
-						C_ADDRESS,
-						C_PROTOCOL				
+						C_NESTID,
+						C_LOCALFILEURI,
+						C_REMOTEFILEURI,
+						C_CAPTION,
+						C_LASTUPLOAD
 			);
 			
 			db.execSQL(tableCreateQuery);

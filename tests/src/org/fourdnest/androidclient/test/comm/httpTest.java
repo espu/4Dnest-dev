@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test.comm;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 
 import org.fourdnest.androidclient.Egg;
@@ -39,8 +40,8 @@ public class httpTest extends AndroidTestCase {
 	public void testHttpPost() throws Exception {
 		FourDNestProtocol protocol = new FourDNestProtocol();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		Egg egg = new Egg("/sdcard/kuva.jpg", "Trolol", tags);
-		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", "protocol");
+		Egg egg = new Egg(5, 10, new URI("/sdcard/kuva.jpg"), null, "Trolol", tags, 100);
+		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", 007);
 		protocol.setNest(nest);
 		String post = protocol.sendEgg(egg);
 		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
