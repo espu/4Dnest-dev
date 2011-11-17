@@ -10,14 +10,11 @@
             android:id="@+id/new_photo_egg_thumbnail_view"
          	android:layout_width="200pt"
          	android:layout_height="400pt"
-        </ImageView>
-    </LinearLayout>
-    <EditText 
-        android:layout_width="fill_parent"
-        android:layout_height="300" 
-        android:id="@+id/new_photo_egg_caption_view" />
-            
-
-    
-
+        />
+    	<EditText 
+        	android:layout_width="fill_parent"
+        	android:layout_height="300pt" 
+        	android:id="@+id/new_photo_egg_caption_view" />
+     </LinearLayout>
+     
 </ScrollView>
