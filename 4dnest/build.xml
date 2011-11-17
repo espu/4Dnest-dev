@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="4Dnest" default="autobuild" xmlns:android="antlib:com.googlecode.autoandroid.ant">
         <taskdef uri="antlib:com.googlecode.autoandroid.ant" classpath="/home/autobuild/antlib/android-ant-1.0-rc5.jar"/>
+
         <android:home location="/home/autobuild/antlib/android-sdk-linux"/>
 
     <!-- The local.properties file is created and updated by the 'android' tool.
@@ -211,6 +212,30 @@
         </target>
         <target name="autobuild" depends="clean, git-pull, package-apk, javadoc" description="Autobuild"/>
 
+
+
+	<property name="sonar.host.url" value="http://78.47.223.228:9000" />
+	<property name="sonar.jdbc.url" 
+		value="jdbc:postgresql://localhost/sonar" />
+	<property name="sonar.jdbc.driverClassName" value="org.postgresql.Driver" />
+	<property name="sonar.jdbc.username" value="sonaruser" />
+	<property name="sonar.jdbc.password" value="aweLKAISodkei38j8af" />
+
+
+	<target name="sonar" description="Sonar analysis">
+		<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+			<classpath path="/home/autobuild/antlib/sonar-ant-task-1.2.jar" />
+		</taskdef>
+
+		<property name="sonar.sources"
+			value="/home/autobuild/git/4Dnest-dev/4dnest/src/"
+		/>
+
+		<property name="sonar.binaries"
+			value="/home/autobuild/git/4Dnest-dev/target/main-classes/" />
+
+		<sonar:sonar key="org.example:example" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant"/>
+	</target>
 
     <!-- Required pre-setup import -->
     <!-- <import file="${sdk.dir}/tools/ant/pre_setup.xml" /> -->
