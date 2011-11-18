@@ -83,7 +83,7 @@ public class EggManagerTest extends AndroidTestCase {
 		this.eggManager.saveEgg(e3);
 		
 		
-		ArrayList<Egg> eggs = this.eggManager.listEggs();
+		java.util.List<Egg> eggs = this.eggManager.listEggs();
 		
 		assertTrue(eggs.get(0).equals(e1));
 		assertTrue(eggs.get(1).equals(e2));

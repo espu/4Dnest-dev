@@ -1,9 +1,8 @@
 package org.fourdnest.androidclient.test;
 
-import java.util.ArrayList;
-
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
+
 import android.test.AndroidTestCase;
 
 public class NestManagerTest extends AndroidTestCase {
@@ -30,7 +29,7 @@ public class NestManagerTest extends AndroidTestCase {
 		this.nestManager.saveNest(nest1);
 		this.nestManager.saveNest(nest2);
 		
-		ArrayList<Nest> nests = this.nestManager.listNests();
+		java.util.List<Nest> nests = this.nestManager.listNests();
 		
 		// 2 nests should be saves
 		assertEquals(2, nests.size());
