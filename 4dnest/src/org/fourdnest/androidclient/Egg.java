@@ -74,11 +74,11 @@ public class Egg {
 		
 		boolean equal = (this.id == other.id &&
 				this.nestId == other.nestId && 
-				Util.ObjectsEqual(this.localFileURI, other.localFileURI) &&
-				Util.ObjectsEqual(this.remoteFileURI, other.remoteFileURI) &&
-				Util.ObjectsEqual(this.caption, other.caption) &&
-				Util.ObjectsEqual(this.tags, other.tags) &&
-				Util.ObjectsEqual(this.lastUpload, other.lastUpload)
+				Util.objectsEqual(this.localFileURI, other.localFileURI) &&
+				Util.objectsEqual(this.remoteFileURI, other.remoteFileURI) &&
+				Util.objectsEqual(this.caption, other.caption) &&
+				Util.objectsEqual(this.tags, other.tags) &&
+				Util.objectsEqual(this.lastUpload, other.lastUpload)
 				);
 		
 		return equal;

@@ -31,6 +31,6 @@ public class Tag {
 		
 		Tag other = (Tag)o;
 		
-		return Util.ObjectsEqual(this.name, other.name);
+		return Util.objectsEqual(this.name, other.name);
 	}
 }

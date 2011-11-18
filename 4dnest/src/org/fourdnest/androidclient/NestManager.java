@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,6 +29,9 @@ public class NestManager {
 	static final String C_ADDRESS = "address";
 	static final String C_PROTOCOL = "protocol";
 	
+	/** Limit of number of Nests to return */
+	static final String LIMIT = "100";
+	
 	private final NestDatabase nestDb;
 	
 	/**
@@ -44,7 +48,7 @@ public class NestManager {
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public ArrayList<Nest> listNests() {
+	public java.util.List<Nest> listNests() {
 		
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		
@@ -57,14 +61,15 @@ public class NestManager {
 				null, // No GROUP BY
 				null, // No HAVING
 				C_NAME, // Order by name
-				"100"); // Limit 100
+				LIMIT);
 		
-		ArrayList<Nest> nests = new ArrayList<Nest>();
+		java.util.List<Nest> nests = new ArrayList<Nest>();
 		
 		if(result.getCount() > 0) {
 			result.moveToFirst();
 			
 			while(!result.isAfterLast()) {
+				// Populate nest with cursor columns in the order specified above
 				Nest nest = new Nest(
 						result.getInt(0),
 						result.getString(1),
@@ -105,6 +110,7 @@ public class NestManager {
 		Nest nest = null;
 		if(result.getCount() > 0) {
 			result.moveToFirst();
+			// Populate nest with cursor columns in the order specified above
 			nest = new Nest(
 					result.getInt(0),
 					result.getString(1),
@@ -139,7 +145,7 @@ public class NestManager {
 		// Check if nest with id exists
 		Cursor result = db.query(TABLE,
 				new String[] {C_ID},
-				C_ID + "==" + nest.id,
+				C_ID + "==" + nest.getId(),
 				null, // No selection args
 				null, // No GROUP BY
 				null, // No HAVING
@@ -148,11 +154,11 @@ public class NestManager {
 		
 		// Create ContentValues object for Nest
 		ContentValues values = new ContentValues();
-		values.put(C_ID, nest.id);
-		values.put(C_NAME, nest.name);
-		values.put(C_DESCRIPTION, nest.description);
-		values.put(C_ADDRESS, nest.baseURL);
-		values.put(C_PROTOCOL, nest.protocolId);
+		values.put(C_ID, nest.getId());
+		values.put(C_NAME, nest.getName());
+		values.put(C_DESCRIPTION, nest.getDescription());
+		values.put(C_ADDRESS, nest.getBaseURL());
+		values.put(C_PROTOCOL, nest.getProtocolId());
 		
 		long rowid;
 		if(result.getCount() > 0) {
@@ -161,7 +167,7 @@ public class NestManager {
 			
 			if(rowid < 0) {
 				throw new SQLiteException("Error replacing existing nest with id + "
-						+ nest.id + " in database");
+						+ nest.getId() + " in database");
 			}
 			
 			Log.d(TAG, "Updated Nest in db");
@@ -189,10 +195,12 @@ public class NestManager {
 	
 	
 	
-	// Actual database handler inside NestManager
-	class NestDatabase extends SQLiteOpenHelper {
+	/**
+	 *  Actual database handler inside NestManager
+	 */
+	private class NestDatabase extends SQLiteOpenHelper {
 		
-		Context context;
+		private Context context;
 		
 		public NestDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);			

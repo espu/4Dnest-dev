@@ -11,12 +11,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * ensure that only work that is understood by the Service can be scheduled.
  */
 public abstract class WorkerThread<W extends Work> extends Thread {
+	/** Default delay in milliseconds */
+	public static final long DEFAULT_DELAY = 1000;
+	
 	/** A thread-safe queue for storing the Work objects */
 	protected ConcurrentLinkedQueue<W> queue;
 	/** Set this to false to cause the thread to exit */
 	protected boolean running;
 	/** The time in milliseconds to sleep between polls of the queue */ 
-	protected long delay = 1000;
+	protected long delay = DEFAULT_DELAY;
 	
 	/**
 	 * @param threadName A name passed on to Thread
@@ -57,7 +60,7 @@ public abstract class WorkerThread<W extends Work> extends Thread {
 	 */
 	public synchronized void dispose() {
 		running = false;
-        notify();
+        notifyAll();
     }
 	
 	/**

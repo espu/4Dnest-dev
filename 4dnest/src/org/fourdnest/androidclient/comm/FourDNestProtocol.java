@@ -88,7 +88,7 @@ public class FourDNestProtocol implements Protocol {
         return entity;
     }
 
-    public ArrayList<Tag> topTags(int count) {
+    public List<Tag> topTags(int count) {
         // TODO Auto-generated method stub
         return null;
     }
