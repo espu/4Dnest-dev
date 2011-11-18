@@ -1,8 +1,7 @@
 package org.fourdnest.androidclient;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,7 +48,7 @@ public class EggManager {
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public ArrayList<Egg> listEggs() {
+	public List<Egg> listEggs() {
 		
 		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		
@@ -64,7 +63,7 @@ public class EggManager {
 				C_ID, // Order by id
 				"100"); // Limit 100
 		
-		ArrayList<Egg> eggs = new ArrayList<Egg>();
+		List<Egg> eggs = new ArrayList<Egg>();
 		
 		if(result.getCount() > 0) {
 			result.moveToFirst();
@@ -131,7 +130,7 @@ public class EggManager {
 		}
 		
 		String caption = cursor.getString(4);
-		ArrayList<Tag> tags = new ArrayList<Tag>();
+		List<Tag> tags = new ArrayList<Tag>();
 		long lastUpload = cursor.getLong(5);
 		
 		Egg egg = new Egg(id, nestId, localURI, remoteURI, caption, tags, lastUpload);
@@ -210,15 +209,15 @@ public class EggManager {
 	
 	
 	
-	// Actual database handler inside NestManager
-	class EggDatabase extends SQLiteOpenHelper {
-		
-		Context context;
+	/**
+	 *  Actual database handler inside NestManager
+	 */
+	static class EggDatabase extends SQLiteOpenHelper {
+		private Context context;
 		
 		public EggDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);			
-			this.context = context;
-			
+			this.context = context;			
 			Log.d(TAG, "EggDatabase created");
 		}
 

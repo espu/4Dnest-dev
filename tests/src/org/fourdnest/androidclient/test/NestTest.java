@@ -27,8 +27,8 @@ public class NestTest extends AndroidTestCase {
 		Nest nest2 = new Nest(1, "Home Nest", "Nest hosted in my home server", "127.0.0.1", 1);
 		Nest nest3 = new Nest(2, "Another nest", "Some random nest", "10.0.0.1", 2);
 		
-		assertTrue(nest1.equals(nest2));
-		assertFalse(nest1.equals(nest3));
+		assertTrue(nest1.isEqual(nest2));
+		assertFalse(nest1.isEqual(nest3));
 		
 	}
 
