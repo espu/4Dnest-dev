@@ -1,6 +1,6 @@
 package org.fourdnest.androidclient.test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
@@ -30,14 +30,14 @@ public class NestManagerTest extends AndroidTestCase {
 		this.nestManager.saveNest(nest1);
 		this.nestManager.saveNest(nest2);
 		
-		ArrayList<Nest> nests = this.nestManager.listNests();
+		List<Nest> nests = this.nestManager.listNests();
 		
 		// 2 nests should be saves
 		assertEquals(2, nests.size());
 				
 		// Nest1 should be returned as #2, result set is  ordered by name
-		assertTrue(nest1.equals(nests.get(1)));
-		assertTrue(nest2.equals(nests.get(0)));
+		assertTrue(nest1.isEqual(nests.get(1)));
+		assertTrue(nest2.isEqual(nests.get(0)));
 		
 	}
 
@@ -49,10 +49,10 @@ public class NestManagerTest extends AndroidTestCase {
 		
 		Nest resultNest = this.nestManager.getNest(1);
 		// Check that same Nest is returned
-		assertTrue(nest.equals(resultNest));
+		assertTrue(nest.isEqual(resultNest));
 		
 		// Check that some other id does not return equal nest
-		assertFalse(nest.equals(this.nestManager.getNest(2)));
+		assertFalse(nest.isEqual(this.nestManager.getNest(2)));
 	}
 	
 	

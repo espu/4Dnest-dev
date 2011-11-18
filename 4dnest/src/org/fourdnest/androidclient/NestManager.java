@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,7 +45,7 @@ public class NestManager {
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public ArrayList<Nest> listNests() {
+	public List<Nest> listNests() {
 		
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		
@@ -59,7 +60,7 @@ public class NestManager {
 				C_NAME, // Order by name
 				"100"); // Limit 100
 		
-		ArrayList<Nest> nests = new ArrayList<Nest>();
+		List<Nest> nests = new ArrayList<Nest>();
 		
 		if(result.getCount() > 0) {
 			result.moveToFirst();

@@ -24,22 +24,22 @@ public class Nest {
 		this.baseURL = address;		
 		this.protocolId = protocolName;
 	}
-	
-	public boolean equals(Nest nest) {
+
+	public boolean isEqual(Nest nest) {
 		
-		if(nest == null) return false;
+		if(nest == null) {
+			return false;
+		}
 		
 		boolean eq = (this.id == nest.id &&
-				Util.ObjectsEqual(this.name, nest.name) &&
-				Util.ObjectsEqual(this.description, nest.description) &&
-				Util.ObjectsEqual(this.baseURL, nest.baseURL) &&
+				Util.objectsEqual(this.name, nest.name) &&
+				Util.objectsEqual(this.description, nest.description) &&
+				Util.objectsEqual(this.baseURL, nest.baseURL) &&
 				this.protocolId == nest.protocolId
 		);
 		
 		return eq;
-	}
-	
-	
+	}	
 
 	public int getId() {
 		return this.id;
