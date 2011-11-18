@@ -30,7 +30,6 @@ public class FourDNestApplication extends Application
 			SharedPreferences sharedPreferences, String key) {
 		this.getApplicationContext();
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**

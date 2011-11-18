@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -116,22 +117,17 @@ public class EggManager {
 		int id = cursor.getInt(0);
 		int nestId = cursor.getInt(1);
 		
-		URI localURI = null;
+		Uri localURI = null;
 		if (cursor.getString(2) != null) {
-			try {
-			localURI = new URI(cursor.getString(2));
-			} catch(URISyntaxException e) {
-				Log.d(TAG, "Error parsing local URI: " + cursor.getString(2));
-			}
+		    
+		    localURI = Uri.parse(cursor.getString(2));
+			
 		}
 		
-		URI remoteURI = null;
+		Uri remoteURI = null;
 		if (cursor.getString(3) != null) {			
-			try {
-				remoteURI = new URI(cursor.getString(3));
-			} catch(URISyntaxException e) {
-				Log.d(TAG, "Error parsing remote URI" + cursor.getString(3));
-			}
+		    
+			remoteURI =  Uri.parse(cursor.getString(3));
 		}
 		
 		String caption = cursor.getString(4);

@@ -12,4 +12,5 @@ public interface Protocol {
     public String sendEgg(Egg egg);
     public ArrayList<Tag> topTags(int count);
     public void setNest(Nest nest);
+
 }
