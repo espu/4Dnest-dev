@@ -27,10 +27,17 @@ public class Tag {
 	
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof Tag)) return false;
+		if(!(o instanceof Tag)) {
+			return false;
+		}
 		
 		Tag other = (Tag)o;
 		
 		return Util.objectsEqual(this.name, other.name);
+	}
+	@Override
+	public int hashCode() {
+		assert false;
+		return 0; //FIXME: Will this ever be used in a HashMap?
 	}
 }

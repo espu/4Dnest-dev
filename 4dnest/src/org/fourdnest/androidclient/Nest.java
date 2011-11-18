@@ -22,10 +22,12 @@ public class Nest {
 		this.baseURL = address;		
 		this.setProtocolId(protocolName);
 	}
-	
-	public boolean equals(Nest nest) {
+
+	public boolean isEqual(Nest nest) {
 		
-		if(nest == null) return false;
+		if(nest == null) {
+			return false;
+		}
 		
 		boolean eq = (this.id == nest.id &&
 				Util.objectsEqual(this.name, nest.name) &&
@@ -35,9 +37,7 @@ public class Nest {
 		);
 		
 		return eq;
-	}
-	
-	
+	}	
 
 	public int getId() {
 		return this.id;

@@ -98,7 +98,7 @@ public class SendQueueService extends Service {
 		}
 	}
 	
-	private class SendQueueWorkerThread extends WorkerThread<Work> {
+	private static class SendQueueWorkerThread extends WorkerThread<Work> {
 		public SendQueueWorkerThread(
 				ConcurrentLinkedQueue<Work> queue
 		) {

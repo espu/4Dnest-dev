@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
@@ -83,7 +84,7 @@ public class EggManagerTest extends AndroidTestCase {
 		this.eggManager.saveEgg(e3);
 		
 		
-		java.util.List<Egg> eggs = this.eggManager.listEggs();
+		List<Egg> eggs = this.eggManager.listEggs();
 		
 		assertTrue(eggs.get(0).equals(e1));
 		assertTrue(eggs.get(1).equals(e2));

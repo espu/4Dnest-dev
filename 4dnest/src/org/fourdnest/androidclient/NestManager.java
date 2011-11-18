@@ -48,7 +48,7 @@ public class NestManager {
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public java.util.List<Nest> listNests() {
+	public List<Nest> listNests() {
 		
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		
@@ -63,7 +63,7 @@ public class NestManager {
 				C_NAME, // Order by name
 				LIMIT);
 		
-		java.util.List<Nest> nests = new ArrayList<Nest>();
+		List<Nest> nests = new ArrayList<Nest>();
 		
 		if(result.getCount() > 0) {
 			result.moveToFirst();

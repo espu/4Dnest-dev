@@ -17,10 +17,10 @@ public final class Util {
 		if(o1 != null) {
 			return o1.equals(o2);
 		} else if(o2 == null) {
-			// both are null
 			return true;
-		} // implicit else
-		return false; // One null, other not -> fail
+		} else {
+			return false; // One null, other not -> fail
+		}
 	}
 	
 }

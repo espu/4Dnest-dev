@@ -212,14 +212,12 @@ public class EggManager {
 	/**
 	 *  Actual database handler inside NestManager
 	 */
-	private class EggDatabase extends SQLiteOpenHelper {
-		
+	static class EggDatabase extends SQLiteOpenHelper {
 		private Context context;
 		
 		public EggDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);			
-			this.context = context;
-			
+			this.context = context;			
 			Log.d(TAG, "EggDatabase created");
 		}
 

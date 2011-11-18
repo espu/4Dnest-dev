@@ -68,7 +68,9 @@ public class Egg {
 	
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof Egg)) return false;
+		if(!(o instanceof Egg)) {
+			return false;
+		}
 		
 		Egg other = (Egg)o;
 		
@@ -82,6 +84,11 @@ public class Egg {
 				);
 		
 		return equal;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0; //FIXME will this ever be inserted into a HashMap?
 	}
 	
 	/**
