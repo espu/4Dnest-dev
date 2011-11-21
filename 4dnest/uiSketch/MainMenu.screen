@@ -75,13 +75,7 @@
   <widgets xsi:type="model:Label" id="5" x="96" y="312" width="81" text="Take Photo" measuredWidth="81" measuredHeight="25" textAlignment="Center">
     <font size="10" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Label" id="6" x="240" y="312" width="81" text="Record Video" measuredWidth="81" measuredHeight="25" textAlignment="Center">
-    <font size="10" bold="true"/>
-  </widgets>
   <widgets xsi:type="model:Label" id="7" x="88" y="456" width="97" text="Record Sound" measuredWidth="97" measuredHeight="25" textAlignment="Center">
-    <font size="10" bold="true"/>
-  </widgets>
-  <widgets xsi:type="model:Label" id="8" x="224" y="456" width="113" text="Write Message" measuredWidth="113" measuredHeight="25" textAlignment="Center">
     <font size="10" bold="true"/>
   </widgets>
   <hRuler/>

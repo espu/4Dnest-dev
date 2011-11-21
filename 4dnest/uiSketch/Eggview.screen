@@ -11,11 +11,11 @@
       <font size="12"/>
     </widgets>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="4" x="304" y="227" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
-  <widgets xsi:type="model:TextArea" id="5" x="472" y="168" width="169" height="97" text="Media Preview enlarged to maximum constraints of the screen (width).&#xD;&#xA;" measuredWidth="169" measuredHeight="97">
+  <widgets xsi:type="model:Arrow" id="4" x="456" y="227" width="161" height="19" measuredWidth="161" measuredHeight="19" annotation="true" foreground="#3d85c6"/>
+  <widgets xsi:type="model:TextArea" id="5" x="624" y="168" width="169" height="97" text="Media Preview enlarged to maximum constraints of the screen (width).&#xD;&#xA;" measuredWidth="169" measuredHeight="97">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="6" x="464" y="86" width="217" height="54" text="Egg Viewing screen will be fairly similar for all data types." measuredWidth="217" measuredHeight="54">
+  <widgets xsi:type="model:TextArea" id="6" x="616" y="86" width="217" height="54" text="Egg Viewing screen will be fairly similar for all data types." measuredWidth="217" measuredHeight="54">
     <font size="12"/>
   </widgets>
   <widgets xsi:type="model:TextArea" id="7" x="58" y="540" width="300" height="95" text="Egg Message here..." measuredWidth="300" measuredHeight="95">
@@ -27,11 +27,11 @@
   <widgets xsi:type="model:Label" id="9" x="48" y="176" width="320" text="Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
     <font size="12" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="10" x="272" y="568" width="185" height="17" measuredWidth="185" measuredHeight="17" annotation="true" foreground="#674ea7"/>
-  <widgets xsi:type="model:TextArea" id="11" x="472" y="540" width="169" height="73" text="Caption section height scales to accomodate for the entire caption." measuredWidth="169" measuredHeight="73">
+  <widgets xsi:type="model:Arrow" id="10" x="424" y="568" width="185" height="17" measuredWidth="185" measuredHeight="17" annotation="true" foreground="#674ea7"/>
+  <widgets xsi:type="model:TextArea" id="11" x="624" y="540" width="169" height="73" text="Caption section height scales to accomodate for the entire caption." measuredWidth="169" measuredHeight="73">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="12" x="456" y="696" width="249" height="73" text="Swipe Down" measuredWidth="249" measuredHeight="73" link="EggView2.screen">
+  <widgets xsi:type="model:Button" id="12" x="608" y="696" width="249" height="73" text="Swipe Down" measuredWidth="249" measuredHeight="73" link="EggView2.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>
