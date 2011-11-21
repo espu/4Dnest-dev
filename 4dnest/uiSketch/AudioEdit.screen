@@ -9,15 +9,17 @@
   <widgets xsi:type="model:Button" id="5" x="48" y="560" width="320" height="75" text="Send Egg to Nest!" measuredWidth="320" measuredHeight="75" link="MainMenu.screen">
     <font size="14" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:TextArea" id="7" x="68" y="264" width="280" height="233" text="Add Message here..." measuredWidth="280" measuredHeight="233">
+  <widgets xsi:type="model:TextArea" id="7" x="68" y="288" width="280" height="209" text="Add Message here..." measuredWidth="280" measuredHeight="209">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="38" text="Fishing Club" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
-    <font size="14" bold="true"/>
+  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+    <font size="18" bold="true"/>
   </widgets>
-  <widgets xsi:type="model:VideoPlayer" id="11" x="68" y="187" width="280" height="57" measuredWidth="280" measuredHeight="57"/>
-  <widgets xsi:type="model:Label" id="12" x="128" y="187" width="153" text="Audio Preview" measuredWidth="153" measuredHeight="23" textAlignment="Center">
-    <font bold="true"/>
+  <widgets xsi:type="model:WidgetGroup" id="13" x="68" y="208" measuredWidth="280" measuredHeight="57">
+    <widgets xsi:type="model:VideoPlayer" id="11" width="280" height="57" measuredWidth="280" measuredHeight="57"/>
+    <widgets xsi:type="model:Label" id="12" x="60" width="153" text="Audio Preview" measuredWidth="153" measuredHeight="23" textAlignment="Center">
+      <font bold="true"/>
+    </widgets>
   </widgets>
   <hRuler/>
   <vRuler/>

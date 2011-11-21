@@ -9,7 +9,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Label" x="212" y="443" width="113" text="Write Message" textAlignment="Center">
+        <object xsi:type="model:Label" x="212" y="299" width="113" text="Write Message" textAlignment="Center">
           <font size="10" bold="true"/>
         </object>
       </widgetChanges>
@@ -19,7 +19,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Label" x="212" y="299" width="113" text="Record Video" textAlignment="Center">
+        <object xsi:type="model:Label" x="212" y="443" width="113" text="Record Video" textAlignment="Center">
           <font size="10" bold="true"/>
         </object>
       </widgetChanges>
@@ -41,17 +41,17 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="38" text="Fishing Club" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
-          <font size="14" bold="true"/>
+        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="51" text="Fishing Club" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+          <font size="18" bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:TextField" x="38" y="155" width="320" text="&lt;&lt;Read                             Create                     Stored Eggs>>">
+        <object xsi:type="model:TextField" x="38" y="166" width="320" text="&lt;&lt;Read                             Create                     Stored Eggs>>">
           <font bold="true"/>
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="212" y="363" width="113" height="113" background="#cfe2f3" icon="edit (xlarge)">
+        <object xsi:type="model:Button" x="212" y="219" width="113" height="113" background="#cfe2f3" icon="edit (xlarge)">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>
@@ -61,7 +61,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Button" x="212" y="219" width="113" height="113" background="#cfe2f3" icon="video (xlarge)">
+        <object xsi:type="model:Button" x="212" y="363" width="113" height="113" background="#cfe2f3" icon="video2 (xlarge)">
           <font size="20" bold="true"/>
         </object>
       </widgetChanges>

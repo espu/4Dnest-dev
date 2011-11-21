@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Master" id="4" x="10" y="8" measuredWidth="790" measuredHeight="396">
+    <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Phone Landscape"/>
+  </widgets>
+  <widgets xsi:type="model:Master" id="5" x="99" y="72" width="174" height="294" measuredWidth="174" measuredHeight="294">
+    <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Modal Screen"/>
+    <overrides>
+      <widgets ref="/@widgets.0" width="174" height="294"/>
+    </overrides>
+  </widgets>
+  <widgets xsi:type="model:Master" id="6" x="461" y="72" measuredWidth="174" measuredHeight="294">
+    <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Modal Screen"/>
+    <overrides>
+      <widgets ref="/@widgets.0" width="174" height="294"/>
+    </overrides>
+  </widgets>
+  <widgets xsi:type="model:Image" id="9" x="272" y="72" width="190" height="294" measuredWidth="190" measuredHeight="294" src="assets/Potholes_near_ITPL_small_portrait.JPG"/>
+  <widgets xsi:type="model:VSlider" id="11" x="600" y="200" height="49" measuredWidth="17" measuredHeight="49" value="100"/>
+  <widgets xsi:type="model:Icon" id="12" x="591" y="256" measuredWidth="32" measuredHeight="32" icon="snapshot (large)"/>
+  <widgets xsi:type="model:Icon" id="14" x="591" y="160" measuredWidth="32" measuredHeight="32" icon="video2 (large)"/>
+  <widgets xsi:type="model:WidgetGroup" id="17" x="571" y="302" measuredWidth="54" measuredHeight="54">
+    <widgets xsi:type="model:Circle" id="15" width="54" height="54" measuredWidth="54" measuredHeight="54">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="16" x="12" y="11" measuredWidth="32" measuredHeight="32" icon="unselected (large)"/>
+  </widgets>
+  <widgets xsi:type="model:Icon" id="18" x="545" y="82" width="80" height="80" measuredWidth="80" measuredHeight="80" icon="image (custom)"/>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

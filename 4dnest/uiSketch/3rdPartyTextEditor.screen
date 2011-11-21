@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Master" id="1" x="10" y="10" measuredWidth="396" measuredHeight="790">
+    <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Phone"/>
+  </widgets>
+  <widgets xsi:type="model:Master" id="2" x="48" y="431" measuredWidth="320" measuredHeight="204">
+    <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Keyboard"/>
+  </widgets>
+  <widgets xsi:type="model:TextArea" id="3" x="48" y="126" width="320" height="306" text="Type your Message here." measuredWidth="320" measuredHeight="306">
+    <font size="12"/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>
