@@ -95,13 +95,15 @@ public class FourDNestProtocol implements Protocol {
 	}
 
 	public String getTest() {
+		BufferedReader in = null;
+		InputStreamReader inputStreamReader = null;
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpGet request = new HttpGet();
 			request.setURI(new URI("http://hs.fi/index.html"));
 			HttpResponse response = client.execute(request);
-			InputStreamReader inputStreamReader = new InputStreamReader(response.getEntity().getContent());
-			BufferedReader in = new BufferedReader(inputStreamReader);
+			inputStreamReader = new InputStreamReader(response.getEntity().getContent());
+			in = new BufferedReader(inputStreamReader);
 			StringBuffer sb = new StringBuffer("");
 			String line = "";
 			String newLine = System.getProperty("line.separator");
@@ -110,14 +112,26 @@ public class FourDNestProtocol implements Protocol {
 				sb.append(newLine);
 			}
 			in.close();
-			String page = sb.toString();
-			return page;
+			return sb.toString();
 		} catch(URISyntaxException e) {
 			Log.e(TAG, e.getMessage());
 		} catch(IOException e) {
 			Log.e(TAG, e.getMessage());
 		} finally {
-			//FIXME: Closing of the readers.
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getMessage());
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getMessage());
+				}
+			}
 		}
 		return null;
 
