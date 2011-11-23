@@ -26,7 +26,7 @@ public class MainScreenFragment extends Fragment {
 	
 	//YOU CAN EDIT THIS TO WHATEVER YOU WANT
     private static final int SELECT_PICTURE = 1;
-    private static final int RESULT_OK = 1;
+    private static final int RESULT_OK = -1; //apparently its -1... dunno
 
 
     private String selectedImagePath;
@@ -65,6 +65,7 @@ public class MainScreenFragment extends Fragment {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), SELECT_PICTURE);
+                
             }
         });
 		return view;
@@ -83,18 +84,27 @@ public class MainScreenFragment extends Fragment {
                 selectedImagePath = getPath(selectedImageUri);
 
                 //DEBUG PURPOSE - you can delete this if you want
-                if(selectedImagePath!=null)
+                if(selectedImagePath!=null){
                     System.out.println(selectedImagePath);
-                else System.out.println("selectedImagePath is null");
-                if(filemanagerstring!=null)
+                }
+                else {
+                	System.out.println("selectedImagePath is null");
+                }
+                if(filemanagerstring!=null){
                     System.out.println(filemanagerstring);
-                else System.out.println("filemanagerstring is null");
-
+                }
+                else {
+                	System.out.println("filemanagerstring is null");
+                }
                 //NOW WE HAVE OUR WANTED STRING
-                if(selectedImagePath!=null)
+                if(selectedImagePath!=null){
                     System.out.println("selectedImagePath is the right one for you!");
-                else
+                }
+                else{
                     System.out.println("filemanagerstring is the right one for you!");
+                }
+                Intent myIntent = new Intent(this.currentContext, NewPhotoEggActivity.class);
+                startActivityForResult(myIntent, 0);
             }
         }
     }
@@ -104,7 +114,7 @@ public class MainScreenFragment extends Fragment {
         String[] projection = { MediaStore.Images.Media.DATA };
 
         CursorLoader loader = new CursorLoader(this.currentContext, uri, projection, null, null, null);
-        Cursor cursor = null;
+        Cursor cursor = loader.loadInBackground();
         if(cursor!=null)
         {
             //HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
