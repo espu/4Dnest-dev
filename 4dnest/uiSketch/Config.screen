@@ -3,6 +3,44 @@
   <widgets xsi:type="model:Master" id="1" x="10" y="10" measuredWidth="396" measuredHeight="790">
     <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Phone"/>
   </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="4" x="48" y="148" measuredWidth="320" measuredHeight="67">
+    <widgets xsi:type="model:TextArea" id="2" width="320" height="67" text="*Autosend Eggs*&#xD;&#xA;Automatically send stored eggs to nest" measuredWidth="320" measuredHeight="67">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:Checkbox" id="3" x="289" y="18" measuredWidth="21" measuredHeight="23">
+      <font size="9"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="5" x="48" y="126" width="320" text="Eggs:" measuredWidth="320" measuredHeight="23" background="#cccccc">
+    <font bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="6" x="48" y="214" measuredWidth="320" measuredHeight="67">
+    <widgets xsi:type="model:TextArea" id="7" width="320" height="67" text="*Track Eggs*&#xD;&#xA;Attach location data to eggs" measuredWidth="320" measuredHeight="67">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:Checkbox" id="8" x="289" y="18" measuredWidth="21" measuredHeight="23" selected="true">
+      <font size="9"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="9" x="48" y="280" width="320" text="Route Tracking:" measuredWidth="320" measuredHeight="23" background="#cccccc">
+    <font bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="10" x="48" y="302" measuredWidth="320" measuredHeight="67">
+    <widgets xsi:type="model:TextArea" id="11" width="320" height="67" text="*Automatic Timeout*&#xD;&#xA;Turn off tracking after certain time" measuredWidth="320" measuredHeight="67">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="14" x="248" y="22" width="65" text="30min" measuredWidth="65" measuredHeight="28">
+      <font size="11" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="18" x="48" y="366" measuredWidth="320" measuredHeight="78">
+    <widgets xsi:type="model:TextArea" id="19" width="320" height="78" text="*Alert on low battery*&#xD;&#xA;Notify if tracking is on while&#xD;&#xA;battery is low" measuredWidth="320" measuredHeight="78">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:Checkbox" id="20" x="289" y="18" measuredWidth="21" measuredHeight="23" selected="true">
+      <font size="9"/>
+    </widgets>
+  </widgets>
   <hRuler/>
   <vRuler/>
   <font/>
