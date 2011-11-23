@@ -39,7 +39,7 @@
   <widgets xsi:type="model:Button" id="18" x="10" y="816" width="396" height="73" text="Swipe Left" measuredWidth="396" measuredHeight="73" link="MainMenu.screen">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="20" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="20" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="18" bold="true"/>
   </widgets>
   <hRuler/>

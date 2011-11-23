@@ -12,13 +12,26 @@
   <widgets xsi:type="model:TextArea" id="7" x="68" y="288" width="280" height="209" text="Add Message here..." measuredWidth="280" measuredHeight="209">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="18" bold="true"/>
   </widgets>
   <widgets xsi:type="model:WidgetGroup" id="13" x="68" y="208" measuredWidth="280" measuredHeight="57">
     <widgets xsi:type="model:VideoPlayer" id="11" width="280" height="57" measuredWidth="280" measuredHeight="57"/>
     <widgets xsi:type="model:Label" id="12" x="60" width="153" text="Audio Preview" measuredWidth="153" measuredHeight="23" textAlignment="Center">
       <font bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="19" x="520" y="280" measuredWidth="301" measuredHeight="201">
+    <widgets xsi:type="model:Panel" id="14" width="300" height="201" measuredWidth="300" measuredHeight="201"/>
+    <widgets xsi:type="model:Button" id="15" y="120" width="151" height="81" text="Save Draft" measuredWidth="151" measuredHeight="81">
+      <font size="12" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="16" x="150" y="120" width="151" height="81" text="Discard" measuredWidth="151" measuredHeight="81">
+      <font size="12" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="17" x="10" y="24" width="71" height="71" measuredWidth="71" measuredHeight="71" icon="warning (custom)"/>
+    <widgets xsi:type="model:TextArea" id="18" x="96" y="10" width="194" height="103" text="Save Draft for later editing or Discard changes?" measuredWidth="194" measuredHeight="103">
+      <font size="12"/>
     </widgets>
   </widgets>
   <hRuler/>

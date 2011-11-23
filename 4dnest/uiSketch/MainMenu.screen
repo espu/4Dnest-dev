@@ -4,7 +4,7 @@
     <screen xsi:type="model:WidgetGroup" href="assets/NexusOne.screen#Phone"/>
     <overrides>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Label" x="180" y="563" width="178" text="Current Profile" textAlignment="Center" foreground="#999999">
+        <object xsi:type="model:Label" x="180" y="563" width="178" text="Tag Profile" textAlignment="Center" foreground="#999999">
           <font size="11" underline="true"/>
         </object>
       </widgetChanges>
@@ -41,7 +41,7 @@
         </object>
       </widgetChanges>
       <widgetChanges xsi:type="o:Insert" newIndex="3">
-        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="51" text="Fishing Club" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+        <object xsi:type="model:Rectangle" x="38" y="116" width="320" height="51" text="Fishing Club" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
           <font size="18" bold="true"/>
         </object>
       </widgetChanges>

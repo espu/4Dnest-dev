@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Button" id="1" x="24" y="32" width="143" height="62" text="Track\nRoute" measuredWidth="143" measuredHeight="62">
+    <font size="14" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Button" id="2" x="24" y="112" width="143" height="62" text="Track\nRoute" measuredWidth="143" measuredHeight="62" background="#f1c232">
+    <font size="14" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="3" x="24" y="192" width="153" text="For people who like orange." measuredWidth="153" measuredHeight="23">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

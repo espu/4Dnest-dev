@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="2" x="16" y="24" measuredWidth="301" measuredHeight="201">
+    <widgets xsi:type="model:Panel" id="3" width="300" height="201" measuredWidth="300" measuredHeight="201"/>
+    <widgets xsi:type="model:Button" id="4" y="120" width="151" height="81" text="Save Draft" measuredWidth="151" measuredHeight="81">
+      <font size="12" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="5" x="150" y="120" width="151" height="81" text="Discard" measuredWidth="151" measuredHeight="81">
+      <font size="12" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="6" x="10" y="24" width="71" height="71" measuredWidth="71" measuredHeight="71" icon="warning (custom)"/>
+    <widgets xsi:type="model:TextArea" id="7" x="96" y="10" width="194" height="103" text="Save Egg as Draft?" measuredWidth="194" measuredHeight="103">
+      <font size="14"/>
+    </widgets>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

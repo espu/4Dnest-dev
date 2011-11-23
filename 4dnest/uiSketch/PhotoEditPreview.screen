@@ -6,7 +6,7 @@
   <widgets xsi:type="model:Rectangle" id="2" x="48" y="163" width="320" height="472" measuredWidth="320" measuredHeight="472">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="18" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Image" id="10" x="48" y="176" width="320" height="382" measuredWidth="320" measuredHeight="382" src="assets/Potholes_near_ITPL_small_portrait.JPG"/>

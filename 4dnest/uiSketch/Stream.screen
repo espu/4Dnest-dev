@@ -16,7 +16,7 @@
   <widgets xsi:type="model:Label" id="12" x="472" y="224" width="273" text="Access search function" measuredWidth="273" measuredHeight="29">
     <font size="12"/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="13" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="13" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="18" bold="true"/>
   </widgets>
   <widgets xsi:type="model:WidgetGroup" id="36" x="48" y="200" height="435" measuredWidth="320" measuredHeight="435">

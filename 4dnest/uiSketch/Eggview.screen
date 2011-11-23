@@ -21,7 +21,7 @@
   <widgets xsi:type="model:TextArea" id="7" x="58" y="540" width="300" height="95" text="Egg Message here..." measuredWidth="300" measuredHeight="95">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="8" x="48" y="126" width="320" height="51" text="Fishing Club" measuredWidth="320" measuredHeight="51" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="18" bold="true"/>
   </widgets>
   <widgets xsi:type="model:Label" id="9" x="48" y="176" width="320" text="Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
