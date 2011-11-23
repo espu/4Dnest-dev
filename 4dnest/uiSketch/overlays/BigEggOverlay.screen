@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="1" x="24" y="16" measuredWidth="305" measuredHeight="193">
+    <widgets xsi:type="model:Panel" id="2" width="305" height="193" measuredWidth="305" measuredHeight="193"/>
+    <widgets xsi:type="model:Icon" id="3" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
+    <widgets xsi:type="model:Panel" id="4" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
+    <widgets xsi:type="model:TextField" id="5" y="102" width="81" text="Gandalf_41" measuredWidth="81" measuredHeight="23">
+      <font bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="6" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
+    <widgets xsi:type="model:TextArea" id="7" x="216" y="9" width="79" height="153" text="uistelu&#xD;&#xA;saalis" measuredWidth="79" measuredHeight="153">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextArea" id="18" y="168" width="305" height="25" text="Tällainen vonkale tarttui eilen koukkuun." measuredWidth="305" measuredHeight="25">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Image" id="8" x="112" y="58" width="113" height="89" measuredWidth="113" measuredHeight="89" src="../assets/5593256672_8f6e43def5_z.jpg"/>
+  <widgets xsi:type="model:WidgetGroup" id="9" x="24" y="256" measuredWidth="305" measuredHeight="191">
+    <widgets xsi:type="model:Panel" id="10" width="305" height="191" measuredWidth="305" measuredHeight="191"/>
+    <widgets xsi:type="model:Icon" id="11" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
+    <widgets xsi:type="model:Panel" id="12" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
+    <widgets xsi:type="model:TextField" id="13" y="102" width="81" text="Gandalf_41" measuredWidth="81" measuredHeight="23">
+      <font bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="14" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
+    <widgets xsi:type="model:TextArea" id="15" x="216" y="9" width="79" height="153" text="ruoka" measuredWidth="79" measuredHeight="153">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextArea" id="17" y="167" width="305" height="24" text="Tällaisen annoksen tein siitä kalasta." measuredWidth="305" measuredHeight="24">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Image" id="16" x="112" y="296" width="113" height="89" measuredWidth="113" measuredHeight="89" src="../assets/IMGP0273.JPG"/>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

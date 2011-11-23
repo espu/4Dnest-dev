@@ -4,8 +4,8 @@
     <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Phone"/>
   </widgets>
   <widgets xsi:type="model:Image" id="2" x="58" y="136" width="95" height="113" measuredWidth="95" measuredHeight="113" src="assets/Potholes_near_ITPL_small_portrait.JPG"/>
-  <widgets xsi:type="model:Image" id="4" x="160" y="136" width="89" height="113" measuredWidth="89" measuredHeight="113" src="assets/Potholes_near_ITPL_small_portrait.JPG"/>
-  <widgets xsi:type="model:Image" id="5" x="260" y="136" width="93" height="113" measuredWidth="93" measuredHeight="113" src="assets/Potholes_near_ITPL_small_portrait.JPG"/>
+  <widgets xsi:type="model:Image" id="6" x="160" y="153" width="97" height="79" measuredWidth="97" measuredHeight="79" src="assets/5593256672_8f6e43def5_z.jpg"/>
+  <widgets xsi:type="model:Image" id="7" x="264" y="153" width="94" height="79" measuredWidth="94" measuredHeight="79" src="assets/IMGP0273.JPG"/>
   <hRuler/>
   <vRuler/>
   <font/>
