@@ -10,6 +10,8 @@
             android:id="@+id/new_photo_egg_thumbnail_view"
          	android:layout_width="200pt"
          	android:layout_height="400pt"
+         	android:maxWidth="200pt"
+         	android:maxHeight="400pt"
         />
     	<EditText 
         	android:layout_width="fill_parent"

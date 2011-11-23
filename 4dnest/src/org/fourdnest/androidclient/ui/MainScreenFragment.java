@@ -97,13 +97,17 @@ public class MainScreenFragment extends Fragment {
                 	System.out.println("filemanagerstring is null");
                 }
                 //NOW WE HAVE OUR WANTED STRING
+                String imagePath = "";
                 if(selectedImagePath!=null){
-                    System.out.println("selectedImagePath is the right one for you!");
+                	imagePath=selectedImagePath;
+                	System.out.println("selectedImagePath is the right one for you!");
                 }
                 else{
+                	imagePath=filemanagerstring;
                     System.out.println("filemanagerstring is the right one for you!");
                 }
                 Intent myIntent = new Intent(this.currentContext, NewPhotoEggActivity.class);
+                myIntent.putExtra("pictureURL", imagePath);
                 startActivityForResult(myIntent, 0);
             }
         }
