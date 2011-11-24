@@ -1,5 +1,12 @@
 package org.fourdnest.androidclient.test.comm;
 
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import android.net.Uri;
 import android.os.Environment;
 import android.test.AndroidTestCase;
@@ -12,13 +19,6 @@ import org.fourdnest.androidclient.comm.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 
 public class httpTest extends AndroidTestCase {
