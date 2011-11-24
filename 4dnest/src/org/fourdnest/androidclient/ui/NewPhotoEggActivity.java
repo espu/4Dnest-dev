@@ -49,7 +49,8 @@ public class NewPhotoEggActivity extends Activity{
             	System.out.println("picture url is:" +pictureURL);
             	Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setType("image/*");
-            	i.setDataAndType(Uri.parse(pictureURL), "image/*");
+                System.out.println(Uri.parse(pictureURL));
+            	//i.setData(Uri.parse(pictureURL));
             	startActivity(i);
             }
         });
