@@ -9,8 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+/**
+ * This class defines the Fragment that displays the Read tab. Layout is
+ * defined in stream_reader_view.
+ */
 public class ListStreamFragment extends Fragment {
 	
+	/**
+	 * Creates a new ListStreamFragment.
+	 */
 	public ListStreamFragment() {
 		super();
 	}

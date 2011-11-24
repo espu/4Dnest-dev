@@ -33,6 +33,8 @@ public class FragAdapter extends FragmentPagerAdapter {
 	public FragAdapter(FragmentManager fm, Context currentContext) {
 		super(fm);
 		this.fragments = new ArrayList<Fragment>();
+		
+		//Add specified tabs(Fragments) to ArrayList.
 		this.fragments.add(new ListStreamFragment());
 		this.fragments.add(new MainScreenFragment(currentContext));
 		this.fragments.add(new ListStoredEggsFragment());
