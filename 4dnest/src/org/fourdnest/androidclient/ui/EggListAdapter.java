@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * An adapter for serving compact Egg views to Egg lists in ListStoredEggsFragment
- * The compact Egg view layouts are defined in layout file egg_element_small
- *
+ * An adapter for serving a list of Egg views to Egg lists in
+ * ListStoredEggsFragment. The listed Egg view layouts are defined in layout
+ * file egg_element_small
  */
 public class EggListAdapter extends BaseAdapter {
 	
