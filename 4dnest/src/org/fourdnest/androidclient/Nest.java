@@ -1,16 +1,14 @@
-
-
 package org.fourdnest.androidclient;
 
 public class Nest {
 	
 	private static final String TAG = Nest.class.getSimpleName();
 	
-	int id;
-	String name;
-	String description;	
-	String baseURL;
-	int protocolId;
+	private int id;
+	private String name;
+	private String description;	
+	private String baseURL;
+	private int protocolId;
 	
 	public Nest(int id,
 				String name,
@@ -22,24 +20,24 @@ public class Nest {
 		this.name = name;
 		this.description = description;		
 		this.baseURL = address;		
-		this.protocolId = protocolName;
+		this.setProtocolId(protocolName);
 	}
-	
-	public boolean equals(Nest nest) {
+
+	public boolean isEqual(Nest nest) {
 		
-		if(nest == null) return false;
+		if(nest == null) {
+			return false;
+		}
 		
 		boolean eq = (this.id == nest.id &&
-				Util.ObjectsEqual(this.name, nest.name) &&
-				Util.ObjectsEqual(this.description, nest.description) &&
-				Util.ObjectsEqual(this.baseURL, nest.baseURL) &&
-				this.protocolId == nest.protocolId
+				Util.objectsEqual(this.name, nest.name) &&
+				Util.objectsEqual(this.description, nest.description) &&
+				Util.objectsEqual(this.baseURL, nest.baseURL) &&
+				this.getProtocolId() == nest.getProtocolId()
 		);
 		
 		return eq;
-	}
-	
-	
+	}	
 
 	public int getId() {
 		return this.id;
@@ -74,11 +72,25 @@ public class Nest {
 	}
 
 	public int getProtocolName() {
-		return this.protocolId;
+		return this.getProtocolId();
 	}
 
 	public void setProtocolName(int protocolName) {
-		this.protocolId = protocolName;
+		this.setProtocolId(protocolName);
+	}
+
+	/**
+	 * @param protocolId the protocolId to set
+	 */
+	public void setProtocolId(int protocolId) {
+		this.protocolId = protocolId;
+	}
+
+	/**
+	 * @return the protocolId
+	 */
+	public int getProtocolId() {
+		return protocolId;
 	}
 
 

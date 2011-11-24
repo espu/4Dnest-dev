@@ -19,7 +19,7 @@
   <widgets xsi:type="model:Icon" id="8" x="312" y="328" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="9" x="312" y="378" measuredWidth="32" measuredHeight="32" icon="user (large)"/>
   <widgets xsi:type="model:Icon" id="11" x="312" y="424" measuredWidth="32" measuredHeight="32" icon="circled-plus (large)"/>
-  <widgets xsi:type="model:Rectangle" id="12" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Servers.screen">
+  <widgets xsi:type="model:Rectangle" id="12" x="48" y="126" width="320" height="38" text="NestServer" measuredWidth="320" measuredHeight="38" background="#f1c232" border="none" icon="computer (medium)" link="Nests.screen">
     <font size="14" bold="true"/>
   </widgets>
   <hRuler/>

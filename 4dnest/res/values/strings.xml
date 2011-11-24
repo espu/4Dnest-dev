@@ -2,4 +2,9 @@
 <resources>
     <string name="hello">Hello World, mainActivity!</string>
     <string name="app_name">4dnest</string>
+    <string name="create_screen_read_tag">&lt;&lt;Read</string>
+    <string name="create_screen_create_tag">Create</string>
+    <string name="create_screen_stored_eggs_tag">Stored Eggs&gt;&gt;</string>
+    <string name="create_screen_open_gallery_tag">Pick from Media Library</string>
+    <string name="create_screen_track_route_tag">Track Route</string>
 </resources>

@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import android.net.Uri;
+import android.os.Environment;
+import android.test.AndroidTestCase;
+import android.util.Log;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
@@ -16,10 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import android.net.Uri;
-import android.os.Environment;
-import android.test.AndroidTestCase;
-import android.util.Log;
 
 public class httpTest extends AndroidTestCase {
 

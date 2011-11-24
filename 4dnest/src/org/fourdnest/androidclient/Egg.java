@@ -68,20 +68,27 @@ public class Egg {
 	
 	@Override
 	public boolean equals(Object o) {
-		if(!(o instanceof Egg)) return false;
+		if(!(o instanceof Egg)) {
+			return false;
+		}
 		
 		Egg other = (Egg)o;
 		
 		boolean equal = (this.id == other.id &&
 				this.nestId == other.nestId && 
-				Util.ObjectsEqual(this.localFileURI, other.localFileURI) &&
-				Util.ObjectsEqual(this.remoteFileURI, other.remoteFileURI) &&
-				Util.ObjectsEqual(this.caption, other.caption) &&
-				Util.ObjectsEqual(this.tags, other.tags) &&
-				Util.ObjectsEqual(this.lastUpload, other.lastUpload)
+				Util.objectsEqual(this.localFileURI, other.localFileURI) &&
+				Util.objectsEqual(this.remoteFileURI, other.remoteFileURI) &&
+				Util.objectsEqual(this.caption, other.caption) &&
+				Util.objectsEqual(this.tags, other.tags) &&
+				Util.objectsEqual(this.lastUpload, other.lastUpload)
 				);
 		
 		return equal;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0; //FIXME will this ever be inserted into a HashMap?
 	}
 	
 	/**
