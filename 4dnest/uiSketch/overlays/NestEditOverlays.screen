@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="1" x="16" y="24" measuredWidth="320" measuredHeight="86">
+    <widgets xsi:type="model:Button" id="2" width="320" height="86" text="\ntestihenkilö" measuredWidth="320" measuredHeight="86">
+      <font size="14" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="3" y="8" width="320" text="Username:" measuredWidth="320" measuredHeight="29" textAlignment="Center" foreground="#999999">
+      <font size="12" underline="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Button" id="4" x="16" y="136" width="320" height="77" text="Password set!" measuredWidth="320" measuredHeight="77">
+    <font size="14" bold="true"/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

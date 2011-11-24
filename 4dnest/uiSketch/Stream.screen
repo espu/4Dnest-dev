@@ -25,29 +25,41 @@
       <font/>
       <items x="0" y="2" width="303" height="50"/>
     </widgets>
-    <widgets xsi:type="model:WidgetGroup" id="28" y="18" height="173" measuredWidth="305" measuredHeight="173">
-      <widgets xsi:type="model:Panel" id="16" width="305" height="173" measuredWidth="305" measuredHeight="173"/>
-      <widgets xsi:type="model:Icon" id="18" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
-      <widgets xsi:type="model:Panel" id="21" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
-      <widgets xsi:type="model:TextField" id="24" x="10" y="102" width="63" text="Gandalf_1" measuredWidth="63" measuredHeight="23">
-        <font bold="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="53" y="19" measuredWidth="305" measuredHeight="193">
+      <widgets xsi:type="model:WidgetGroup" id="54" measuredWidth="305" measuredHeight="193">
+        <widgets xsi:type="model:Panel" id="55" width="305" height="193" measuredWidth="305" measuredHeight="193"/>
+        <widgets xsi:type="model:Icon" id="56" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
+        <widgets xsi:type="model:Panel" id="57" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
+        <widgets xsi:type="model:TextField" id="58" y="102" width="81" text="Gandalf_41" measuredWidth="81" measuredHeight="23">
+          <font bold="true"/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="59" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
+        <widgets xsi:type="model:TextArea" id="60" x="216" y="9" width="79" height="153" text="uistelu&#xD;&#xA;saalis" measuredWidth="79" measuredHeight="153">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:TextArea" id="61" y="168" width="305" height="25" text="Tällainen vonkale tarttui eilen koukkuun." measuredWidth="305" measuredHeight="25">
+          <font/>
+        </widgets>
       </widgets>
-      <widgets xsi:type="model:Icon" id="25" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
-      <widgets xsi:type="model:TextArea" id="27" x="216" y="9" width="79" height="153" text="Tag1&#xD;&#xA;Tag2&#xD;&#xA;Tag3" measuredWidth="79" measuredHeight="153">
-        <font/>
-      </widgets>
+      <widgets xsi:type="model:Image" id="62" x="88" y="42" width="113" height="89" measuredWidth="113" measuredHeight="89" src="assets/5593256672_8f6e43def5_z.jpg"/>
     </widgets>
-    <widgets xsi:type="model:WidgetGroup" id="29" y="191" height="173" measuredWidth="305" measuredHeight="173">
-      <widgets xsi:type="model:Panel" id="30" width="305" height="173" measuredWidth="305" measuredHeight="173"/>
-      <widgets xsi:type="model:Icon" id="31" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
-      <widgets xsi:type="model:Panel" id="32" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
-      <widgets xsi:type="model:TextField" id="33" x="10" y="102" width="63" text="1337H@X" measuredWidth="63" measuredHeight="23">
-        <font bold="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="63" y="211" measuredWidth="305" measuredHeight="191">
+      <widgets xsi:type="model:WidgetGroup" id="64" measuredWidth="305" measuredHeight="191">
+        <widgets xsi:type="model:Panel" id="65" width="305" height="191" measuredWidth="305" measuredHeight="191"/>
+        <widgets xsi:type="model:Icon" id="66" x="10" y="44" width="57" height="58" measuredWidth="57" measuredHeight="58" icon="user (xlarge)"/>
+        <widgets xsi:type="model:Panel" id="67" x="80" y="9" width="129" height="153" measuredWidth="129" measuredHeight="153"/>
+        <widgets xsi:type="model:TextField" id="68" y="102" width="81" text="Gandalf_41" measuredWidth="81" measuredHeight="23">
+          <font bold="true"/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="69" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
+        <widgets xsi:type="model:TextArea" id="70" x="216" y="9" width="79" height="153" text="ruoka" measuredWidth="79" measuredHeight="153">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:TextArea" id="71" y="167" width="305" height="24" text="Tällaisen annoksen tein siitä kalasta." measuredWidth="305" measuredHeight="24">
+          <font/>
+        </widgets>
       </widgets>
-      <widgets xsi:type="model:Icon" id="34" x="104" y="48" width="81" height="76" measuredWidth="81" measuredHeight="76" icon="image (custom)"/>
-      <widgets xsi:type="model:TextArea" id="35" x="216" y="9" width="79" height="153" text="Tag1&#xD;&#xA;Tag2&#xD;&#xA;Tag3" measuredWidth="79" measuredHeight="153">
-        <font/>
-      </widgets>
+      <widgets xsi:type="model:Image" id="72" x="88" y="40" width="113" height="89" measuredWidth="113" measuredHeight="89" src="assets/IMGP0273.JPG"/>
     </widgets>
   </widgets>
   <hRuler/>

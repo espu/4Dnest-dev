@@ -4,7 +4,7 @@
     <screen xsi:type="model:WidgetGroup" href="../assets/NexusOne.screen#Phone"/>
   </widgets>
   <widgets xsi:type="model:WidgetGroup" id="4" x="48" y="148" measuredWidth="320" measuredHeight="67">
-    <widgets xsi:type="model:TextArea" id="2" width="320" height="67" text="*Autosend Eggs*&#xD;&#xA;Automatically send stored eggs to nest" measuredWidth="320" measuredHeight="67">
+    <widgets xsi:type="model:TextArea" id="2" width="320" height="67" text="*Autosend Eggs*&#xD;&#xA;Automatically send created eggs to nest" measuredWidth="320" measuredHeight="67">
       <font size="12"/>
     </widgets>
     <widgets xsi:type="model:Checkbox" id="3" x="289" y="18" measuredWidth="21" measuredHeight="23">

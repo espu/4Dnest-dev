@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="2" x="24" y="14" measuredWidth="320" measuredHeight="315">
+    <widgets xsi:type="model:TextArea" id="3" x="10" y="282" width="300" height="33" text="Tällainen vonkale tarttui eilen koukkuun." measuredWidth="300" measuredHeight="33">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="4" width="320" text="Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
+      <font size="12" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Image" id="5" x="24" y="40" width="320" height="246" measuredWidth="320" measuredHeight="246" src="../assets/5593256672_8f6e43def5_z.jpg"/>
+  <widgets xsi:type="model:WidgetGroup" id="6" x="34" y="336" measuredWidth="300" measuredHeight="200">
+    <widgets xsi:type="model:Map" id="7" measuredWidth="300" measuredHeight="200"/>
+    <widgets xsi:type="model:Icon" id="8" x="161" y="49" measuredWidth="32" measuredHeight="32" foreground="#ffd966" icon="location (large)"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="10" x="368" y="16" measuredWidth="320" measuredHeight="313">
+    <widgets xsi:type="model:TextArea" id="11" x="8" y="280" width="300" height="33" text="Tällaisen annoksen tein siitä kalasta." measuredWidth="300" measuredHeight="33">
+      <font size="12"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="12" width="320" text="Time Taken: 17.10.2011 - 20:24" measuredWidth="320" measuredHeight="29">
+      <font size="12" bold="true"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="14" x="378" y="336" measuredWidth="300" measuredHeight="200">
+    <widgets xsi:type="model:Map" id="15" measuredWidth="300" measuredHeight="200"/>
+    <widgets xsi:type="model:Icon" id="16" x="198" y="96" measuredWidth="32" measuredHeight="32" foreground="#bf9000" icon="location (large)"/>
+  </widgets>
+  <widgets xsi:type="model:Image" id="18" x="368" y="40" width="320" height="246" measuredWidth="320" measuredHeight="246" src="../assets/IMGP0273.JPG"/>
+  <widgets xsi:type="model:HLine" id="20" x="8" y="528" width="816" measuredWidth="816" measuredHeight="6"/>
+  <widgets xsi:type="model:Label" id="21" x="694" y="511" width="130" text="Cut here" measuredWidth="130" measuredHeight="23">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="22" x="34" y="864" measuredWidth="300" measuredHeight="33">
+    <widgets xsi:type="model:TextArea" id="23" width="300" height="33" text="Tällainen vonkale tarttui eilen koukkuun." measuredWidth="300" measuredHeight="33">
+      <font size="12"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Image" id="25" x="24" y="608" width="320" height="246" measuredWidth="320" measuredHeight="246" src="../assets/5593256672_8f6e43def5_z.jpg"/>
+  <widgets xsi:type="model:WidgetGroup" id="26" x="34" y="904" measuredWidth="300" measuredHeight="200">
+    <widgets xsi:type="model:Map" id="27" measuredWidth="300" measuredHeight="200"/>
+    <widgets xsi:type="model:Icon" id="28" x="161" y="49" measuredWidth="32" measuredHeight="32" foreground="#ffd966" icon="location (large)"/>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="29" x="34" y="1112" width="300" text="uistelu, saalis" measuredWidth="300" measuredHeight="29">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="30" x="376" y="864" measuredWidth="300" measuredHeight="33">
+    <widgets xsi:type="model:TextArea" id="31" width="300" height="33" text="Tällaisen annoksen tein siitä kalasta." measuredWidth="300" measuredHeight="33">
+      <font size="12"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="33" x="378" y="904" measuredWidth="300" measuredHeight="200">
+    <widgets xsi:type="model:Map" id="34" measuredWidth="300" measuredHeight="200"/>
+    <widgets xsi:type="model:Icon" id="35" x="198" y="96" measuredWidth="32" measuredHeight="32" foreground="#bf9000" icon="location (large)"/>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="36" x="378" y="1112" width="300" text="ruoka" measuredWidth="300" measuredHeight="29">
+    <font size="12"/>
+  </widgets>
+  <widgets xsi:type="model:Image" id="37" x="368" y="608" width="320" height="246" measuredWidth="320" measuredHeight="246" src="../assets/IMGP0273.JPG"/>
+  <widgets xsi:type="model:HLine" id="38" x="8" y="641" width="816" measuredWidth="816" measuredHeight="6"/>
+  <widgets xsi:type="model:Label" id="39" x="694" y="646" width="130" text="Cut here" measuredWidth="130" measuredHeight="23">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Rectangle" id="43" x="8" y="528" width="816" height="119" measuredWidth="816" measuredHeight="119" background="#999999" alpha="192">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>
