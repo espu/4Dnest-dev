@@ -9,4 +9,9 @@
     <string name="create_screen_track_route_tag">Track Route</string>
     <string name="stored_eggs_screen_unsent_title">Unsent Eggs:</string>
     <string name="stored_eggs_screen_sent_title">Sent Eggs:</string>
+    <string name="stream_reader_title">Eggs in Nest:</string>
+    <string name="stream_reader_stream_tag">Read</string>
+    <string name="stream_reader_create_tag">Create&gt;&gt;</string>
+    <string name="stored_eggs_screen_create_tag">&lt;&lt;Create</string>
+    <string name="stored_eggs_screen_stored_eggs_tag">Stored Eggs</string>
 </resources>

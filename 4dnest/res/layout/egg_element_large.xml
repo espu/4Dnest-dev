@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:adjustViewBounds="true"
-            android:maxHeight="50pt"
+            android:maxHeight="80pt"
             android:src="@drawable/icon" />
         
         <TextView
