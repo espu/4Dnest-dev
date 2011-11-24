@@ -14,4 +14,6 @@
     <string name="stream_reader_create_tag">Create&gt;&gt;</string>
     <string name="stored_eggs_screen_create_tag">&lt;&lt;Create</string>
     <string name="stored_eggs_screen_stored_eggs_tag">Stored Eggs</string>
+    <string name="send_egg_to_nest">Send Egg To Nest!</string>
+    <string name="preview">preview</string>
 </resources>
