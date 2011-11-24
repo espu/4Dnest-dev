@@ -11,18 +11,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * An adapter for serving a list of Egg views to Egg lists in
+ * ListStoredEggsFragment. The listed Egg view layouts are defined in layout
+ * file egg_element_large.
+ * 
+ * @see EggListAdapter.
+ */
 public class EggReaderAdapter extends EggListAdapter {
 
 	public EggReaderAdapter(ViewGroup parent) {
 		super(parent);
-		// TODO Auto-generated constructor stub
 	}
-	
+
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 
 		if (arg1 == null) {
 			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-			arg1 = inflater.inflate(R.layout.egg_element_small, parent, false);
+			arg1 = inflater.inflate(R.layout.egg_element_large, parent, false);
 		}
 
 		Egg egg = (Egg) this.getItem(arg0);
@@ -34,6 +40,13 @@ public class EggReaderAdapter extends EggListAdapter {
 		return arg1;
 	}
 
+	/**
+	 * Sets this adapter to serve the given ArrayList of eggs
+	 * 
+	 * @param eggs
+	 *            An ArrayList that contains the eggs that the parent view
+	 *            should display.
+	 */
 	public void setEggs(ArrayList<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();

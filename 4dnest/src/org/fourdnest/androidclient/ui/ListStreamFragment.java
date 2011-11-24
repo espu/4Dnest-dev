@@ -7,10 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
+/**
+ * This class defines the Fragment that displays the Read tab. Layout is
+ * defined in stream_reader_view.
+ */
 public class ListStreamFragment extends Fragment {
 	
+	/**
+	 * Creates a new ListStreamFragment.
+	 */
 	public ListStreamFragment() {
 		super();
 	}
@@ -27,13 +34,11 @@ public class ListStreamFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		View view = (View)inflater.inflate(R.layout.read_view, container, false);
-		TextView txt = (TextView) view.findViewById(R.id.massiveText);
-		String lol = "Read View\n";
-		for(int i = 0; i<1000; i++){
-			lol = lol.concat("OL");
-		}
-		txt.setText(lol);
+		View view = (View)inflater.inflate(R.layout.stream_reader_view, container, false);
+		ListView streamList = (ListView) view.findViewById(R.id.egg_list);
+		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
+		adapter.setEggs(null);
+		streamList.setAdapter(adapter);
 		return view;
 	}
 }
