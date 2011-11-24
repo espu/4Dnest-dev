@@ -4,10 +4,8 @@ package org.fourdnest.androidclient.test.comm;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 
 import org.fourdnest.androidclient.Egg;
@@ -18,9 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import android.R;
-import android.app.Application;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Environment;
 import android.test.AndroidTestCase;

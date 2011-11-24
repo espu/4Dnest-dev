@@ -2,6 +2,8 @@ package org.fourdnest.androidclient.comm;
 
 import android.util.Log;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -21,9 +23,14 @@ import org.fourdnest.androidclient.Tag;
 
 import java.io.*;
 import java.net.URI;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class FourDNestProtocol implements Protocol {
     private static final String TAG = "FourDNestProtocol";
@@ -31,37 +38,68 @@ public class FourDNestProtocol implements Protocol {
     private Nest nest;
 
     /**
-     * Parses egg's content and sends it in multipart mime format with HTTP post.
+     * Parses egg's content and sends it in multipart mime format with HTTP
+     * post.
      * 
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public String sendEgg(Egg egg) {
+        String concatedMd5 = "";
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(this.nest.getBaseURL()
-                + EGG_UPLOAD_PATH);
-        
-        //Create list of NameValuePairs
+        HttpPost post = new HttpPost(this.nest.getBaseURL() + EGG_UPLOAD_PATH);
+
+        // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
-        //FIXME: Check for null file path.
-        pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI().getPath()));
+        concatedMd5 += md5FromString(egg.getCaption());
+        // FIXME: Check for null file path.
+        pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
+                .getPath()));
+        concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
+        
         // FIXME: Add tags later
+        String multipartMd5String = md5FromString(concatedMd5);
+        
         int status = 0;
         try {
             post.setEntity(this.createEntity(pairs));
             Date date = new Date();
-            date.setDate(8);
+            
+            /*
+             * StringToSign = HTTP-Verb + ‘\n’ +
+             * base64(Content-MD5) + ‘\n’ +
+             * base64(x-4dnest-multipartMD5) + ‘\n’ +
+             * Content-Type + ‘\n’ +
+             * Date + ‘\n’ +
+             * RequestURI
+             * 
+             * Should be in utf-8 automatically.
+             */
+            String stringToSign = post.getMethod() + "\n" +
+            "" + "\n" +                                     //Content-MD5 empty for now
+            multipartMd5String + "\n" +
+            ""  + "\n" +                                       //Content-type empty for now
+            DateUtils.formatDate(date) + "\n" +
+            post.getURI().getPath() + "\n";
+            
+            String secretKey = "asdf1234";
+            String userName = "testuser";
+            
+            String signature = computeSignature(stringToSign, secretKey);
+            String authHeader = userName + ":" + signature;
+            post.setHeader("Authorization", authHeader);
+            Log.d("sign", authHeader);
+            
             post.setHeader("Date", DateUtils.formatDate(date));
-            Log.d("firstDate", post.getHeaders("Date")[0].getValue());
             HttpResponse response = client.execute(post);
-            Log.d("secondDate", post.getHeaders("Date")[0].getValue());
             status = response.getStatusLine().getStatusCode();
             if (status == 201) {
                 return status + " "
                         + response.getHeaders("Location")[0].getValue();
             }
         } catch (ClientProtocolException e) {
-            Log.e(TAG, "ClientProtocolException, egg not sent " + e.getMessage());
+            Log.e(TAG, "ClientProtocolException, egg not sent "
+                    + e.getMessage());
             return "0";
         } catch (IOException e) {
             Log.e(TAG, "IOException, egg not sent " + e.getMessage());
@@ -69,10 +107,14 @@ public class FourDNestProtocol implements Protocol {
         }
         return String.valueOf(status);
     }
-    
-    /** Creates the MultipartEntity from name-value -pair list 
-     * @throws UnsupportedEncodingException */
-    private MultipartEntity createEntity(List<NameValuePair> pairs) throws UnsupportedEncodingException {
+
+    /**
+     * Creates the MultipartEntity from name-value -pair list
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    private MultipartEntity createEntity(List<NameValuePair> pairs)
+            throws UnsupportedEncodingException {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT);
 
         for (int i = 0; i < pairs.size(); i++) {
@@ -114,6 +156,74 @@ public class FourDNestProtocol implements Protocol {
 
     public void setNest(Nest nest) {
         this.nest = nest;
+
+    }
+    /**
+     * Hashes the string in MD5 and returns a base64 encoded string
+     * of the hash
+     * 
+     * @param String to be hashed
+     * 
+     * @return Base64 encoded md5 hash
+     **/
+    private String md5FromString(String s) {
+        String result = "";
+        try {
+            byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
+            result = Base64.encodeBase64String(bytes);
+
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * Hashes the file with the given path in MD5 and returns a base64 encoded string
+     * of the hash
+     * 
+     * @param Path of the file
+     * 
+     * @return Base64 encoded md5 hash
+     **/
+    private String md5FromFile(String path) {
+        String result = "";
+        try {
+            FileInputStream fis = new FileInputStream( new File(path));
+            byte[] bytes = DigestUtils.md5(fis);
+            result = Base64.encodeBase64String(bytes);
+            
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
         
     }
+    
+    private String computeSignature(String stringToSign, String secretKey) {
+        String result = "";
+        byte[] keyBytes = secretKey.getBytes();
+        SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
+        
+        Mac mac;
+        try {
+            mac = Mac.getInstance("HmacSHA1");
+            mac.init(signingKey);
+            byte[] bytes = mac.doFinal(stringToSign.getBytes());
+            result = Base64.encodeBase64String(bytes);
+            
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
 }
