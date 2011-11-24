@@ -6,9 +6,11 @@ import java.util.Date;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,12 +21,12 @@ import android.widget.TextView;
  * file egg_element_small
  */
 public class EggListAdapter extends BaseAdapter {
-	
+
 	/**
 	 * Contains the list of Eggs that are served to the list
 	 */
 	protected ArrayList<Egg> eggs;
-	
+
 	/**
 	 * The ViewGroup(e.g. Listview) that uses this adapter.
 	 */
@@ -33,7 +35,9 @@ public class EggListAdapter extends BaseAdapter {
 	/**
 	 * Instantiates a new EggListAdapter.
 	 * 
-	 * @param parent The ViewGroup(e.g. Listview) that uses this adapter to populate its view.
+	 * @param parent
+	 *            The ViewGroup(e.g. Listview) that uses this adapter to
+	 *            populate its view.
 	 */
 	public EggListAdapter(ViewGroup parent) {
 		this.eggs = new ArrayList<Egg>();
@@ -66,12 +70,27 @@ public class EggListAdapter extends BaseAdapter {
 		TextView message = (TextView) arg1.findViewById(R.id.message);
 		TextView date = (TextView) arg1.findViewById(R.id.date);
 
+		//There might be listeners for ListViews which don't require setting
+		//individual onClickListeners for each egg preview.
+		arg1.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(),
+						ViewEggActivity.class);
+				parent.getContext().startActivity(intent);
+
+			}
+		});
+
 		return arg1;
 	}
 
 	/**
 	 * Sets this adapter to serve the given ArrayList of eggs
-	 * @param eggs An ArrayList that contains the eggs that the parent view should display.
+	 * 
+	 * @param eggs
+	 *            An ArrayList that contains the eggs that the parent view
+	 *            should display.
 	 */
 	public void setEggs(ArrayList<Egg> eggs) {
 		// TODO: Get a real implementation for this
