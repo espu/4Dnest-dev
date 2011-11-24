@@ -8,10 +8,11 @@
         android:layout_height="fill_parent" >
         <ImageView
             android:id="@+id/new_photo_egg_thumbnail_view"
-         	android:layout_width="200px"
+         	android:layout_width="fill_parent"
          	android:layout_height="400px"
-         	android:maxWidth="200px"
-         	android:maxHeight="400px"
+         	android:paddingLeft="20px"
+         	android:paddingRight="20px"
+         	android:cropToPadding="true"
         />
     	<EditText 
         	android:layout_width="fill_parent"
