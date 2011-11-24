@@ -20,7 +20,7 @@ public class Nest {
 		this.name = name;
 		this.description = description;		
 		this.baseURL = address;		
-		this.setProtocolId(protocolName);
+		this.protocolId = protocolName;
 	}
 
 	public boolean isEqual(Nest nest) {

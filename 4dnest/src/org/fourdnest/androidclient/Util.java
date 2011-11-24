@@ -16,11 +16,8 @@ public final class Util {
 	public static boolean objectsEqual(Object o1, Object o2) {
 		if(o1 != null) {
 			return o1.equals(o2);
-		} else if(o2 == null) {
-			return true;
 		} else {
-			return false; // One null, other not -> fail
+			return o2 == null; // One null, other not -> fail
 		}
-	}
-	
+	}	
 }
