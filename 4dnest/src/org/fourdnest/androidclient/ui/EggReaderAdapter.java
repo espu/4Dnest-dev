@@ -41,15 +41,15 @@ public class EggReaderAdapter extends EggListAdapter {
 
 		// There might be listeners for ListViews which don't require setting
 		// individual onClickListeners for each egg preview.
-		arg1.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(),
-						ViewEggActivity.class);
-				parent.getContext().startActivity(intent);
-
-			}
-		});
+//		arg1.setOnClickListener(new OnClickListener() {
+//
+//			public void onClick(View v) {
+//				Intent intent = new Intent(v.getContext(),
+//						ViewEggActivity.class);
+//				parent.getContext().startActivity(intent);
+//
+//			}
+//		});
 
 		return arg1;
 	}

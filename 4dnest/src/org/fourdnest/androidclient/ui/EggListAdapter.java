@@ -70,18 +70,6 @@ public class EggListAdapter extends BaseAdapter {
 		TextView message = (TextView) arg1.findViewById(R.id.message);
 		TextView date = (TextView) arg1.findViewById(R.id.date);
 
-		//There might be listeners for ListViews which don't require setting
-		//individual onClickListeners for each egg preview.
-		arg1.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(),
-						ViewEggActivity.class);
-				parent.getContext().startActivity(intent);
-
-			}
-		});
-
 		return arg1;
 	}
 

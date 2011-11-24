@@ -49,6 +49,10 @@ public class ListStoredEggsFragment extends Fragment {
 
 		unsentList.setAdapter(unsentListAdapter);
 		sentList.setAdapter(sentListAdapter);
+		
+		unsentList.setOnItemClickListener(new EggElementOnClickListener());
+		sentList.setOnItemClickListener(new EggElementOnClickListener());
+		
 		// TODO: get context
 		// EggManager m = new EggManager(null);
 
