@@ -30,7 +30,6 @@ public class NewPhotoEggActivity extends Activity{
 		if(imgFile.exists()){
 
 		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-		    
 		    thumbNailView.setImageBitmap(myBitmap);
 
 		}

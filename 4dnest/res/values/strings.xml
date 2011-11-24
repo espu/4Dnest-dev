@@ -9,4 +9,6 @@
     <string name="create_screen_track_route_tag">Track Route</string>
     <string name="stored_eggs_screen_unsent_title">Unsent Eggs:</string>
     <string name="stored_eggs_screen_sent_title">Sent Eggs:</string>
+    <string name="send_egg_to_nest">Send Egg To Nest!</string>
+    <string name="preview">Preview</string>
 </resources>
