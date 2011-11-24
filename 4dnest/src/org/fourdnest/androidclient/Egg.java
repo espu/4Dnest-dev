@@ -22,6 +22,9 @@ public class Egg {
 	/** Id of the Nest that this Egg was or will be sent to */
 	private int nestId;
 	
+	/** Author name (for list views etc.) */
+	private String author;
+	
 	/** URI to local media file. Is null for status updates (text only Eggs). */
 	private Uri localFileURI;
 	
@@ -56,9 +59,10 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(int id, int nestId, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
+	public Egg(int id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
 		this.nestId = nestId;
+		this.author = author;
 		this.localFileURI = localFileURI;
 		this.remoteFileURI = remoteFileURI;
 		this.caption = caption;
@@ -75,7 +79,8 @@ public class Egg {
 		Egg other = (Egg)o;
 		
 		boolean equal = (this.id == other.id &&
-				this.nestId == other.nestId && 
+				this.nestId == other.nestId &&
+				Util.objectsEqual(this.author, other.author) && 
 				Util.objectsEqual(this.localFileURI, other.localFileURI) &&
 				Util.objectsEqual(this.remoteFileURI, other.remoteFileURI) &&
 				Util.objectsEqual(this.caption, other.caption) &&
@@ -88,7 +93,18 @@ public class Egg {
 	
 	@Override
 	public int hashCode() {
-		return 0; //FIXME will this ever be inserted into a HashMap?
+		long hash = this.id;
+        hash = hash * 3 + this.nestId;
+        hash = hash * 7 + (this.author == null ? 0 : this.author.hashCode());
+        hash = hash * 11 + (this.localFileURI == null ? 0 : this.localFileURI.hashCode());
+        hash = hash * 13 + (this.remoteFileURI == null ? 0 : this.remoteFileURI.hashCode());
+        hash = hash * 17 + (this.caption == null ? 0 : this.caption.hashCode());
+        hash = hash * 19 + (this.tags == null ? 0 : this.tags.hashCode());
+        hash = hash * 23 + this.lastUpload;
+        
+        int intHash = (int) (hash % Integer.MAX_VALUE);
+        
+		return intHash;
 	}
 	
 	/**
@@ -120,6 +136,20 @@ public class Egg {
 	 */
 	public int getNestId() {
 		return this.nestId;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	/**

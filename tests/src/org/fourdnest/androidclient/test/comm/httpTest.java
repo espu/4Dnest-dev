@@ -59,7 +59,7 @@ public class httpTest extends AndroidTestCase {
 		bufin.close();
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
-		Egg egg = new Egg(5, 10, uri, null, "Now it should finally work from assets.", tags, 100);
+		Egg egg = new Egg(5, 10, null, uri, null, "Now it should finally work from assets.", tags, 100);
 		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", 007);
 		protocol.setNest(nest);
 		String post = protocol.sendEgg(egg);

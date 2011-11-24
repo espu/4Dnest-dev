@@ -31,6 +31,7 @@ public class EggManagerTest extends AndroidTestCase {
 		Egg e = new Egg(
 			0,
 			1,
+			"Matti",
 			null,
 			null,
 			"TestCaption",
@@ -53,6 +54,7 @@ public class EggManagerTest extends AndroidTestCase {
 		Egg e1 = new Egg(
 			0,
 			1,
+			"Matti",
 			null,
 			null,
 			"CaptionForEgg",
@@ -64,6 +66,7 @@ public class EggManagerTest extends AndroidTestCase {
 		Egg e2 = new Egg(
 			1,
 			2,
+			"Matti",
 			null,
 			null,
 			"CaptionToo!",
@@ -75,6 +78,7 @@ public class EggManagerTest extends AndroidTestCase {
 		Egg e3 = new Egg(
 			1337,
 			10,
+			"Matti",
 			null,
 			null,
 			null,

@@ -26,6 +26,7 @@ public class EggManager {
 	static final String TABLE = "egg";
 	static final String C_ID = BaseColumns._ID;
 	static final String C_NESTID = "nest_id";
+	static final String C_AUTHOR = "author";
 	static final String C_LOCALFILEURI = "local_file_uri";
 	static final String C_REMOTEFILEURI = "remote_file_uri";
 	static final String C_CAPTION = "caption";
@@ -54,7 +55,7 @@ public class EggManager {
 		
 		Cursor result = db.query(TABLE,
 				new String[]{
-				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
+				C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
 				}, // Columns
 				null, // No WHERE
 				null, // No arguments in selection
@@ -90,7 +91,7 @@ public class EggManager {
 		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
 				new String[]{
-				C_ID, C_NESTID, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
+				C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
 				}, // Columns
 				C_ID + "==" + id, // Where
 				null, // No arguments in selection
@@ -115,25 +116,23 @@ public class EggManager {
 	private Egg extractEggFromCursor(Cursor cursor) {					
 		int id = cursor.getInt(0);
 		int nestId = cursor.getInt(1);
+		String author = cursor.getString(2);
 		
 		Uri localURI = null;
-		if (cursor.getString(2) != null) {
-		    
-		    localURI = Uri.parse(cursor.getString(2));
-			
+		if (cursor.getString(3) != null) {
+		    localURI = Uri.parse(cursor.getString(3));
 		}
 		
 		Uri remoteURI = null;
-		if (cursor.getString(3) != null) {			
-		    
-			remoteURI =  Uri.parse(cursor.getString(3));
+		if (cursor.getString(4) != null) {    
+			remoteURI =  Uri.parse(cursor.getString(4));
 		}
 		
-		String caption = cursor.getString(4);
+		String caption = cursor.getString(5);
 		List<Tag> tags = new ArrayList<Tag>();
-		long lastUpload = cursor.getLong(5);
+		long lastUpload = cursor.getLong(6);
 		
-		Egg egg = new Egg(id, nestId, localURI, remoteURI, caption, tags, lastUpload);
+		Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tags, lastUpload);
 		
 		
 		return egg;
@@ -167,6 +166,8 @@ public class EggManager {
 		ContentValues values = new ContentValues();
 		values.put(C_ID, egg.getId());
 		values.put(C_NESTID, egg.getNestId());
+		
+		values.put(C_AUTHOR, egg.getAuthor());
 		
 		values.put(C_LOCALFILEURI, egg.getLocalFileURI() != null ? egg.getLocalFileURI().toString() : null);
 		values.put(C_REMOTEFILEURI, egg.getRemoteFileURI() != null ? egg.getRemoteFileURI().toString() : null);
@@ -229,7 +230,8 @@ public class EggManager {
 			String tableCreateQuery = String.format(
 						"CREATE TABLE %s(" +
 						"%s int PRIMARY KEY," +
-						"%s int DEFAULT NULL, " + 
+						"%s int DEFAULT NULL, " +
+						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
@@ -237,6 +239,7 @@ public class EggManager {
 						TABLE,
 						C_ID,
 						C_NESTID,
+						C_AUTHOR,
 						C_LOCALFILEURI,
 						C_REMOTEFILEURI,
 						C_CAPTION,
