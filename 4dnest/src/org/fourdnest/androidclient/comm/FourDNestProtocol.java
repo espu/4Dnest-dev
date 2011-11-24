@@ -29,7 +29,12 @@ import java.util.List;
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
 	private static final String EGG_UPLOAD_PATH = "v1/egg/upload/";
+	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private Nest nest;
+	
+	public FourDNestProtocol() {
+	    this.nest = null;
+	}
 
 	/**
 	 * Parses egg's content and sends it in multipart mime format with HTTP post.
@@ -51,13 +56,12 @@ public class FourDNestProtocol implements Protocol {
 		try {
 			post.setEntity(this.createEntity(pairs));
 			Date date = new Date();
-			date.setDate(8);
 			post.setHeader("Date", DateUtils.formatDate(date));
 			Log.d("firstDate", post.getHeaders("Date")[0].getValue());
 			HttpResponse response = client.execute(post);
 			Log.d("secondDate", post.getHeaders("Date")[0].getValue());
 			status = response.getStatusLine().getStatusCode();
-			if (status == 201) {
+			if (status == HTTP_STATUSCODE_CREATED) {
 				return status + " "
 						+ response.getHeaders("Location")[0].getValue();
 			}
