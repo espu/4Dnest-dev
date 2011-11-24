@@ -38,7 +38,7 @@ public class FourDNestProtocol implements Protocol {
 	 **/
 	public String sendEgg(Egg egg) {
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost(this.nest.getBaseURL()
+		HttpPost post = new HttpPost(this.nest.getBaseURI().toString()
 				+ EGG_UPLOAD_PATH);
 
 		//Create list of NameValuePairs

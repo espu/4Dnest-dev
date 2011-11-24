@@ -1,5 +1,7 @@
 package org.fourdnest.androidclient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +21,26 @@ public class NestManager {
 	private static final String TAG = NestDatabase.class.getSimpleName();
 	
 	static final String DB_NAME = "4dnest.nests.db";
-	static final int DB_VERSION = 1;
+	static final int DB_VERSION = 2;
 	
 	// Table columns
-	static final String TABLE = "nest";
-	static final String C_ID = BaseColumns._ID;
-	static final String C_NAME = "name";
-	static final String C_DESCRIPTION = "description";
-	static final String C_ADDRESS = "address";
-	static final String C_PROTOCOL = "protocol";
+	private static final String TABLE = "nest";
+	private static final String C_ID = BaseColumns._ID;
+	private static final String C_NAME = "name";
+	private static final String C_DESCRIPTION = "description";
+	private static final String C_ADDRESS = "address";
+	private static final String C_PROTOCOL = "protocol";
+	private static final String C_USERNAME = "username";
+	private static final String C_SECRETKEY = "secretkey";
+	
+	private static final String[] ALL_COLUMNS = new String[]{
+		C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS,
+		C_PROTOCOL, C_USERNAME, C_SECRETKEY
+		
+	};
 	
 	/** Limit of number of Nests to return */
-	static final String LIMIT = "100";
+	private static final String LIMIT = "100";
 	
 	private final NestDatabase nestDb;
 	
@@ -53,9 +63,7 @@ public class NestManager {
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		
 		Cursor result = db.query(TABLE,
-				new String[]{
-				C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS, C_PROTOCOL
-				}, // Columns
+				ALL_COLUMNS, // Columns
 				null, // No WHERE
 				null, // No arguments in selection
 				null, // No GROUP BY
@@ -70,16 +78,10 @@ public class NestManager {
 			
 			while(!result.isAfterLast()) {
 				// Populate nest with cursor columns in the order specified above
-				Nest nest = new Nest(
-						result.getInt(0),
-						result.getString(1),
-						result.getString(2),
-						result.getString(3),
-						result.getInt(4)
-						);
-				
-				nests.add(nest);
-				
+				Nest nest = this.extractNestFromCursor(result);
+				if(nest != null) {
+					nests.add(nest);
+				}				
 				result.moveToNext();
 			} 
 		}
@@ -96,9 +98,7 @@ public class NestManager {
 
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
-				new String[]{
-				C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS, C_PROTOCOL
-				}, // Columns
+				ALL_COLUMNS, // Columns
 				C_ID + "==" + id, // Where
 				null, // No arguments in selection
 				null, // No GROUP BY
@@ -111,13 +111,7 @@ public class NestManager {
 		if(result.getCount() > 0) {
 			result.moveToFirst();
 			// Populate nest with cursor columns in the order specified above
-			nest = new Nest(
-					result.getInt(0),
-					result.getString(1),
-					result.getString(2),
-					result.getString(3),
-					result.getInt(4)
-					);
+			nest = this.extractNestFromCursor(result);
 			
 		} else {
 			Log.d(TAG, "Nest with id " + id + " not found");
@@ -126,6 +120,28 @@ public class NestManager {
 		
 		return nest;
 		
+	}
+	
+	private Nest extractNestFromCursor(Cursor cursor) {
+		if(cursor == null) return null;
+		
+		int id = cursor.getInt(0);
+		String name = cursor.getString(1);
+		String descr = cursor.getString(2);
+		
+		URI uri;
+		try {
+			uri = new URI(cursor.getString(3));
+		} catch(URISyntaxException exc) {
+			uri = null;
+		}
+		
+		int protocolId = cursor.getInt(4);
+		String userName = cursor.getString(5);
+		String secretKey = cursor.getString(6);
+		
+		Nest nest = new Nest(id, name, descr, uri, protocolId, userName, secretKey);		
+		return nest;
 	}
 	
 	/**
@@ -157,8 +173,10 @@ public class NestManager {
 		values.put(C_ID, nest.getId());
 		values.put(C_NAME, nest.getName());
 		values.put(C_DESCRIPTION, nest.getDescription());
-		values.put(C_ADDRESS, nest.getBaseURL());
+		values.put(C_ADDRESS, nest.getBaseURI() != null ? nest.getBaseURI().toString() : null);
 		values.put(C_PROTOCOL, nest.getProtocolId());
+		values.put(C_USERNAME, nest.getUserName());
+		values.put(C_SECRETKEY, nest.getSecretKey());
 		
 		long rowid;
 		if(result.getCount() > 0) {
@@ -220,13 +238,17 @@ public class NestManager {
 						"%s text," +
 						"%s text," +
 						"%s text," +
+						"%s text," +
+						"%s text," + 
 						"%s text)",
 						TABLE,
 						C_ID,
 						C_NAME,
 						C_DESCRIPTION,
 						C_ADDRESS,
-						C_PROTOCOL				
+						C_PROTOCOL,
+						C_USERNAME,
+						C_SECRETKEY
 			);
 			
 			db.execSQL(tableCreateQuery);

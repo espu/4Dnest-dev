@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test.comm;
 
 import android.net.Uri;
+import java.net.URI;
 import android.os.Environment;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -60,7 +61,7 @@ public class httpTest extends AndroidTestCase {
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
 		Egg egg = new Egg(5, 10, null, uri, null, "Now it should finally work from assets.", tags, 100);
-		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", 007);
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api/"), 007, "testuser", "secretkey");
 		protocol.setNest(nest);
 		String post = protocol.sendEgg(egg);
 		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
