@@ -34,7 +34,9 @@ public class Nest {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o == null || !(o instanceof Nest)) return false;
+		if(!(o instanceof Nest)) {
+			return false;
+		}
 		
 		Nest nest = (Nest)o;		
 		boolean eq = (this.id == nest.id &&

@@ -2,6 +2,7 @@ package org.fourdnest.androidclient.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
@@ -15,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class EggListAdapter extends BaseAdapter {
-	protected ArrayList<Egg> eggs;
+	protected List<Egg> eggs;
 	protected ViewGroup parent;
 
 	public EggListAdapter(ViewGroup parent) {
@@ -52,7 +53,7 @@ public class EggListAdapter extends BaseAdapter {
 		return arg1;
 	}
 
-	public void setEggs(ArrayList<Egg> eggs) {
+	public void setEggs(List<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();
 		for (int i = 0; i < 8; i++) {

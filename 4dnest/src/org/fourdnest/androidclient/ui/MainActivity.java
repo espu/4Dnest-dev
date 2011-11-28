@@ -8,20 +8,15 @@ import android.support.v4.view.ViewPager;
 
 public class MainActivity extends FragmentActivity {
 
-	private ViewPager awesomePager;
-	private FragAdapter fragadapter;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		awesomePager = (ViewPager) findViewById(R.id.awesomepager);
-		fragadapter = new FragAdapter(getSupportFragmentManager(), this.getApplicationContext());
+		ViewPager awesomePager = (ViewPager) findViewById(R.id.awesomepager);
+		FragAdapter fragadapter = new FragAdapter(getSupportFragmentManager(), this.getApplicationContext());
 		awesomePager.setAdapter(fragadapter);
 		awesomePager.setCurrentItem(1);
 		this.getApplicationContext();
-
-
 	}
 }

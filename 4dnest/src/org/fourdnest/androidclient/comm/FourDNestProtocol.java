@@ -31,6 +31,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_UPLOAD_PATH = "v1/egg/upload/";
 	private Nest nest;
 
+
 	/**
 	 * Parses egg's content and sends it in multipart mime format with HTTP post.
 	 * 
@@ -134,9 +135,6 @@ public class FourDNestProtocol implements Protocol {
 			}
 		}
 		return null;
-
-
-
 
 	}
 

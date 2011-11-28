@@ -142,7 +142,7 @@ public class Egg {
 	 * @return the author
 	 */
 	public String getAuthor() {
-		return author;
+		return this.author;
 	}
 
 	/**

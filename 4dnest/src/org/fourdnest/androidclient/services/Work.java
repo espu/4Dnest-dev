@@ -13,5 +13,5 @@ public interface Work {
 	 * Work to be performed next. The Work object will be discarded after this
 	 * method returns.
 	 */
-	public void doWork();
+	void doWork();
 }

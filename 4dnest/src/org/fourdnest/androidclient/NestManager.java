@@ -123,7 +123,9 @@ public class NestManager {
 	}
 	
 	private Nest extractNestFromCursor(Cursor cursor) {
-		if(cursor == null) return null;
+		if(cursor == null) {
+			return null;
+		}
 		
 		int id = cursor.getInt(0);
 		String name = cursor.getString(1);
@@ -139,9 +141,8 @@ public class NestManager {
 		int protocolId = cursor.getInt(4);
 		String userName = cursor.getString(5);
 		String secretKey = cursor.getString(6);
-		
-		Nest nest = new Nest(id, name, descr, uri, protocolId, userName, secretKey);		
-		return nest;
+	
+		return new Nest(id, name, descr, uri, protocolId, userName, secretKey);
 	}
 	
 	/**

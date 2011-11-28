@@ -15,11 +15,11 @@ public abstract class WorkerThread<W extends Work> extends Thread {
 	public static final long DEFAULT_DELAY = 1000;
 	
 	/** A thread-safe queue for storing the Work objects */
-	protected ConcurrentLinkedQueue<W> queue;
+	private ConcurrentLinkedQueue<W> queue;
 	/** Set this to false to cause the thread to exit */
-	protected boolean running;
+	private boolean running;
 	/** The time in milliseconds to sleep between polls of the queue */ 
-	protected long delay = DEFAULT_DELAY;
+	private long delay = DEFAULT_DELAY;
 	
 	/**
 	 * @param threadName A name passed on to Thread

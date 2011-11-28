@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
@@ -33,7 +34,7 @@ public class EggReaderAdapter extends EggListAdapter {
 		return arg1;
 	}
 
-	public void setEggs(ArrayList<Egg> eggs) {
+	public void setEggs(List<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();
 		for (int i = 0; i < 8; i++) {

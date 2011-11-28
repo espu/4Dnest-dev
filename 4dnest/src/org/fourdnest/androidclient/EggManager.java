@@ -20,7 +20,7 @@ public class EggManager {
 	private static final String TAG = EggManager.class.getSimpleName();
 	
 	static final String DB_NAME = "4dnest.eggs.db";
-	static final int DB_VERSION = 1;
+	static final int DB_VERSION = 2;
 	
 	// Table columns
 	static final String TABLE = "egg";
