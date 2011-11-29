@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 public class NewPhotoEggActivity extends Activity{
 	private String pictureURL = "";
+	private String realPictureURL = "";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,7 +34,8 @@ public class NewPhotoEggActivity extends Activity{
 		ImageView thumbNailView = (ImageView) this.findViewById(R.id.new_photo_egg_thumbnail_view);
 		File imgFile = new  File(pictureURL);
 		if(imgFile.exists()){
-		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+			realPictureURL = imgFile.getAbsolutePath();
+		    Bitmap myBitmap = BitmapFactory.decodeFile(realPictureURL);
 		    thumbNailView.setImageBitmap(myBitmap);
 
 		}
@@ -46,11 +48,12 @@ public class NewPhotoEggActivity extends Activity{
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
-            	System.out.println("picture url is:" +pictureURL);
+            	System.out.println("picture url is: xzy  " +realPictureURL);
             	Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setType("image/*");
-                System.out.println(Uri.parse(pictureURL));
-            	//i.setData(Uri.parse(pictureURL));
+            	/*
+            	 * LEET HACKS, needs file:// to the front or will crash !!!!!!!!!
+            	 */
+            	i.setDataAndType(Uri.parse("file://"+realPictureURL), "image/jpeg");
             	startActivity(i);
             }
         });
