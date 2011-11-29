@@ -34,13 +34,16 @@ public class EggManager {
 	// TODO: Add tag relation table when we have tag manager
 		
 	private final EggDatabase eggDb;
+
+	private NestManager nestManager;
 	
 	/**
 	 * Creates new NestManager with specified context
 	 * @param context
 	 */
-	public EggManager(Context context) {
+	public EggManager(Context context, NestManager nestManager) {
 		this.eggDb = new EggDatabase(context);
+		this.nestManager = nestManager;
 		
 		Log.d(TAG, "EggManager created");
 	}
@@ -132,7 +135,8 @@ public class EggManager {
 		List<Tag> tags = new ArrayList<Tag>();
 		long lastUpload = cursor.getLong(6);
 		
-		Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tags, lastUpload);
+		Nest nest = this.nestManager.getNest(nestId);
+		Egg egg = new Egg(id, nest, author, localURI, remoteURI, caption, tags, lastUpload);
 		
 		
 		return egg;
