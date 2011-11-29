@@ -19,6 +19,22 @@ public class Nest {
 	private String userName;
 	private String secretKey;
 	
+	/**
+	 * Empty constructor to allow subclassing
+	 */
+	protected Nest() { }
+	
+	/**
+	 * Construct a Nest using the given parameters.
+	 * @param id Nest id.
+	 * @param name User visible name of Nest.
+	 * @param description User visible description.
+	 * @param address Base URI for the Nest 
+	 * @param protocolId The id of the protocol to use when communicating with the Nest.
+	 * @param userName The username.
+	 * @param secretKey The password of the user. FIXME?
+	 * @throws UnknownProtocolException
+	 */
 	public Nest(int id,
 				String name,
 				String description,

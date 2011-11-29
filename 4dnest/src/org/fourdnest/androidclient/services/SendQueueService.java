@@ -29,12 +29,11 @@ public class SendQueueService extends Service {
 	/**
 	 * Creates the service, but does not start it.
 	 */
-	public SendQueueService() {
+	public SendQueueService(NestManager nestManager) {
 		this.workQueue = new ConcurrentLinkedQueue<Work>();
 		this.waitingForConfirmation = new ConcurrentLinkedQueue<Egg>();
 		this.thread = new SendQueueWorkerThread(this.workQueue);
-		FourDNestApplication app = (FourDNestApplication) this.getApplication();
-		this.nestManager = app.getNestManager();
+		this.nestManager = nestManager;
 	}	
 	
 	/**
@@ -43,7 +42,13 @@ public class SendQueueService extends Service {
 	public void start() {
 		this.thread.start();
 	}
-
+	/**
+	 * Stops the service
+	 */
+	public void stop() {
+		this.thread.dispose();
+	}
+	
 	/**
 	 * Queues an Egg for sending.
 	 * @param egg The Egg to be queued. May not be null.
