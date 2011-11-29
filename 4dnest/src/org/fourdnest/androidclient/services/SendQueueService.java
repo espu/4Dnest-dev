@@ -142,6 +142,10 @@ public class SendQueueService extends Service {
 
 	}
 
+	public void setDelay(long delay) {
+		this.thread.setDelay(delay);
+	}
+	
 	/**
 	 * Null implementation.
 	 */
@@ -149,4 +153,5 @@ public class SendQueueService extends Service {
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
+
 }
