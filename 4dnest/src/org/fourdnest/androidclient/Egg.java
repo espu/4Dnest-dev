@@ -19,8 +19,8 @@ public class Egg {
 	/** Egg id */
 	private int id;
 	
-	/** The Nest that this Egg was or will be sent to */
-	private Nest nest;
+	/** Id of the Nest that this Egg was or will be sent to */
+	private int nestId;
 	
 	/** Author name (for list views etc.) */
 	private String author;
@@ -59,9 +59,9 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(int id, Nest nest, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
+	public Egg(int id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
-		this.nest = nest;
+		this.nestId = nestId;
 		this.author = author;
 		this.localFileURI = localFileURI;
 		this.remoteFileURI = remoteFileURI;
@@ -79,7 +79,7 @@ public class Egg {
 		Egg other = (Egg)o;
 		
 		boolean equal = (this.id == other.id &&
-				Util.objectsEqual(this.nest, other.getNest()) &&
+				this.nestId == other.nestId &&
 				Util.objectsEqual(this.author, other.author) && 
 				Util.objectsEqual(this.localFileURI, other.localFileURI) &&
 				Util.objectsEqual(this.remoteFileURI, other.remoteFileURI) &&
@@ -94,7 +94,7 @@ public class Egg {
 	@Override
 	public int hashCode() {
 		long hash = this.id;
-        hash = hash * 3 + (this.nest == null? 0 : this.nest.getId());
+        hash = hash * 3 + this.nestId;
         hash = hash * 7 + (this.author == null ? 0 : this.author.hashCode());
         hash = hash * 11 + (this.localFileURI == null ? 0 : this.localFileURI.hashCode());
         hash = hash * 13 + (this.remoteFileURI == null ? 0 : this.remoteFileURI.hashCode());
@@ -124,23 +124,18 @@ public class Egg {
 	}
 	
 	/**
-	 * Sets the associated Nest
-	 * @param nest Nest that this Egg was or will be sent to.
+	 * Sets id of associated Nest
+	 * @param nestId Id of Nest that this Egg was or will be sent to.
 	 */
-	public void setNest(Nest nest) {
-		this.nest = nest;
-	}
-	public Nest getNest() {
-		return this.nest;
+	public void setNestId(int nestId) {
+		this.nestId = nestId;
 	}
 	/**
 	 * Returns id of associated Nest
-	 * @return Id of Nest that this Egg was or will be sent to,
-	 * or -1 if Nest is null. 
+	 * @return Id of Nest that this Egg was or will be sent to.
 	 */
 	public int getNestId() {
-		if(this.nest == null) return -1;
-		return this.nest.getId();
+		return this.nestId;
 	}
 
 	/**
