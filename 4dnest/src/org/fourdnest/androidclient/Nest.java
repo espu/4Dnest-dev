@@ -2,6 +2,10 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 
+import org.fourdnest.androidclient.comm.Protocol;
+import org.fourdnest.androidclient.comm.ProtocolFactory;
+import org.fourdnest.androidclient.comm.UnknownProtocolException;
+
 public class Nest {
 	
 	private static final String TAG = Nest.class.getSimpleName();
@@ -10,7 +14,7 @@ public class Nest {
 	private String name;
 	private String description;	
 	private URI baseURI;
-	private int protocolId;
+	private Protocol protocol;
 	
 	private String userName;
 	private String secretKey;
@@ -19,15 +23,16 @@ public class Nest {
 				String name,
 				String description,
 				URI address,
-				int protocolName,
+				int protocolId,
 				String userName,
-				String secretKey) {
+				String secretKey) throws UnknownProtocolException {
 		
 		this.id = id;
 		this.name = name;
 		this.description = description;		
 		this.baseURI = address;		
-		this.protocolId = protocolName;
+		this.protocol = ProtocolFactory.createProtocol(protocolId);
+		this.protocol.setNest(this);
 		this.userName = userName;
 		this.secretKey = secretKey;
 	}
@@ -43,7 +48,7 @@ public class Nest {
 				Util.objectsEqual(this.name, nest.name) &&
 				Util.objectsEqual(this.description, nest.description) &&
 				Util.objectsEqual(this.baseURI, nest.baseURI) &&
-				this.protocolId == nest.protocolId &&
+				this.protocol.getProtocolId() == nest.protocol.getProtocolId() &&
 				Util.objectsEqual(this.userName, nest.userName) &&
 				Util.objectsEqual(this.secretKey, nest.secretKey)
 		);
@@ -57,7 +62,7 @@ public class Nest {
         hash = hash * 3 + (this.name == null ? 0 : this.name.hashCode());
         hash = hash * 7 + (this.description == null ? 0 : this.description.hashCode());
         hash = hash * 11 + (this.baseURI == null ? 0 : this.baseURI.hashCode());
-        hash = hash * 13 + this.protocolId;
+        hash = hash * 13 + (this.protocol == null ? 0 : this.protocol.hashCode());
         hash = hash * 17 + (this.userName == null ? 0 : this.userName.hashCode());
         hash = hash * 19 + (this.secretKey == null ? 0 : this.secretKey.hashCode());
         
@@ -98,26 +103,15 @@ public class Nest {
 		this.baseURI = address;
 	}
 
-	public int getProtocolName() {
-		return this.getProtocolId();
-	}
-
-	public void setProtocolName(int protocolName) {
-		this.setProtocolId(protocolName);
-	}
-
-	/**
-	 * @param protocolId the protocolId to set
-	 */
-	public void setProtocolId(int protocolId) {
-		this.protocolId = protocolId;
+	public int getProtocolId() {
+		return this.protocol.getProtocolId();
 	}
 
 	/**
 	 * @return the protocolId
 	 */
-	public int getProtocolId() {
-		return protocolId;
+	public Protocol getProtocol() {
+		return protocol;
 	}
 	
 	/**

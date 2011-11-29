@@ -16,7 +16,9 @@ import android.util.Log;
 public class FourDNestApplication extends Application
 	implements OnSharedPreferenceChangeListener {
 	private static final String TAG = FourDNestApplication.class.getSimpleName();
+	
 	private SharedPreferences prefs;
+	private NestManager nestManager;
 	
 	@Override
 	public void onCreate() { //
@@ -24,6 +26,19 @@ public class FourDNestApplication extends Application
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
 	  Log.i(TAG, "onCreated");
+	}
+
+	/**
+	 * Gets the NestManager singleton.
+	 * The NestManager object synchronizes itself, so the caller is free to store
+	 * the object.  
+	 * @return
+	 */
+	public NestManager getNestManager() {
+		if(this.nestManager == null) {
+			this.nestManager = new NestManager(this);
+		}
+		return this.nestManager;
 	}
 
 	public synchronized void onSharedPreferenceChanged(

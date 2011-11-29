@@ -12,5 +12,6 @@ public interface Protocol {
     String sendEgg(Egg egg);
     List<Tag> topTags(int count);
     void setNest(Nest nest);
+	int getProtocolId();
 
 }

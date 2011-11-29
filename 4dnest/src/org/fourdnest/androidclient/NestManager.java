@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fourdnest.androidclient.comm.UnknownProtocolException;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -142,7 +144,12 @@ public class NestManager {
 		String userName = cursor.getString(5);
 		String secretKey = cursor.getString(6);
 	
-		return new Nest(id, name, descr, uri, protocolId, userName, secretKey);
+		try {
+			return new Nest(id, name, descr, uri, protocolId, userName, secretKey);
+		} catch(UnknownProtocolException upe) {
+			Log.d(TAG, "UnknownProtocolException in stored Nest. ProtocolId " + protocolId);
+		}
+		return null;
 	}
 	
 	/**

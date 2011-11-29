@@ -142,4 +142,8 @@ public class FourDNestProtocol implements Protocol {
 		this.nest = nest;
 
 	}
+
+	public int getProtocolId() {
+		return ProtocolFactory.PROTOCOL_4DNEST;
+	}
 }
