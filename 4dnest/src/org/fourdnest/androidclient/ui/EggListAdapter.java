@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 public class EggListAdapter extends BaseAdapter {
 	protected List<Egg> eggs;
-	protected ViewGroup parent;
+	private ViewGroup parent;
 
 	public EggListAdapter(ViewGroup parent) {
 		this.eggs = new ArrayList<Egg>();
-		this.parent = parent;
+		this.setParent(parent);
 	}
 
 	public int getCount() {
@@ -37,20 +37,20 @@ public class EggListAdapter extends BaseAdapter {
 	}
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
-
-		if (arg1 == null) {
-			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-			arg1 = inflater.inflate(R.layout.egg_element_small, parent, false);
+		View arg1t = arg1;
+		if (arg1t == null) {
+			LayoutInflater inflater = LayoutInflater.from(getParent().getContext());
+			arg1t = inflater.inflate(R.layout.egg_element_small, getParent(), false);
 		}
 
 		Egg egg = (Egg) this.getItem(arg0);
 		Date a = new Date(egg.getLastUpload());
 
-		ImageView thumbnail = (ImageView) arg1.findViewById(R.id.thumbnail);
-		TextView message = (TextView) arg1.findViewById(R.id.message);
-		TextView date = (TextView) arg1.findViewById(R.id.date);
+		ImageView thumbnail = (ImageView) arg1t.findViewById(R.id.thumbnail);
+		TextView message = (TextView) arg1t.findViewById(R.id.message);
+		TextView date = (TextView) arg1t.findViewById(R.id.date);
 
-		return arg1;
+		return arg1t;
 	}
 
 	public void setEggs(List<Egg> eggs) {
@@ -59,6 +59,14 @@ public class EggListAdapter extends BaseAdapter {
 		for (int i = 0; i < 8; i++) {
 			this.eggs.add(new Egg());
 		}
+	}
+
+	public ViewGroup getParent() {
+		return parent;
+	}
+
+	public void setParent(ViewGroup parent) {
+		this.parent = parent;
 	}
 
 }

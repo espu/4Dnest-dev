@@ -3,15 +3,18 @@ package org.fourdnest.androidclient.comm;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProtocolFactory {
+import android.util.Log;
+
+public final class ProtocolFactory {
 	/** The 4DNest protocol */
 	public static final int PROTOCOL_4DNEST = 0;
+	private static final String TAG = "ProtocolFactory";
 	
 	private static final Map<Integer, Class<? extends Protocol>> protocols =
 		new HashMap<Integer, Class<? extends Protocol>>();
 
 	static {
-		protocols.put(new Integer(PROTOCOL_4DNEST), FourDNestProtocol.class);
+		protocols.put(Integer.valueOf(PROTOCOL_4DNEST), FourDNestProtocol.class);
 	}
 	
 	/** Private constructor to to prevent instantiation */
@@ -29,16 +32,16 @@ public class ProtocolFactory {
 				return c.newInstance();
 			} catch (IllegalAccessException e) {
 				// This should never happen
-				throw new RuntimeException(e);
+				Log.e(TAG, e.getMessage());
 			} catch (InstantiationException e) {
 				// This should never happen
-				throw new RuntimeException(e);
+				Log.e(TAG, e.getMessage());
 			}
 		}
 		throw new UnknownProtocolException(protocolName);
 	}
 	
 	public static void registerProtocol(int protocolName, Class<? extends Protocol> c) {
-		protocols.put(new Integer(protocolName), c);
+		protocols.put(Integer.valueOf(protocolName), c);
 	}
 }

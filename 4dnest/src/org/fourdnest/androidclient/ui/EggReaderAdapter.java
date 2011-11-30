@@ -21,8 +21,8 @@ public class EggReaderAdapter extends EggListAdapter {
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 
 		if (arg1 == null) {
-			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-			arg1 = inflater.inflate(R.layout.egg_element_large, parent, false);
+			LayoutInflater inflater = LayoutInflater.from(getParent().getContext());
+			arg1 = inflater.inflate(R.layout.egg_element_large, getParent(), false);
 		}
 
 		Egg egg = (Egg) this.getItem(arg0);

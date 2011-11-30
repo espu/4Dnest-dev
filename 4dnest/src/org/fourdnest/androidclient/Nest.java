@@ -7,9 +7,7 @@ import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 
 public class Nest {
-	
-	private static final String TAG = Nest.class.getSimpleName();
-	
+		
 	private int id;
 	private String name;
 	private String description;	
