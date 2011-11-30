@@ -19,19 +19,19 @@ public class EggReaderAdapter extends EggListAdapter {
 	}
 	
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
-
-		if (arg1 == null) {
+		View arg1t = arg1;
+		if (arg1t == null) {
 			LayoutInflater inflater = LayoutInflater.from(getParent().getContext());
-			arg1 = inflater.inflate(R.layout.egg_element_large, getParent(), false);
+			arg1t = inflater.inflate(R.layout.egg_element_large, getParent(), false);
 		}
 
 		Egg egg = (Egg) this.getItem(arg0);
 
-		ImageView thumbnail = (ImageView) arg1.findViewById(R.id.thumbnail);
-		TextView message = (TextView) arg1.findViewById(R.id.message);
-		TextView date = (TextView) arg1.findViewById(R.id.date);
+		ImageView thumbnail = (ImageView) arg1t.findViewById(R.id.thumbnail);
+		TextView message = (TextView) arg1t.findViewById(R.id.message);
+		TextView date = (TextView) arg1t.findViewById(R.id.date);
 
-		return arg1;
+		return arg1t;
 	}
 
 	public void setEggs(List<Egg> eggs) {

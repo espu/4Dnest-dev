@@ -61,11 +61,11 @@ public class EggListAdapter extends BaseAdapter {
 		}
 	}
 
-	public ViewGroup getParent() {
+	public final ViewGroup getParent() {
 		return parent;
 	}
 
-	public void setParent(ViewGroup parent) {
+	public final void setParent(ViewGroup parent) {
 		this.parent = parent;
 	}
 

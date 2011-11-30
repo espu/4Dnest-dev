@@ -23,7 +23,7 @@ public class NestManager {
 	private static final String TAG = NestDatabase.class.getSimpleName();
 	
 	static final String DB_NAME = "4dnest.nests.db";
-	static final int DB_VERSION = 2;
+	static final int DB_VERSION = 3;
 	
 	// Table columns
 	private static final String TABLE = "nest";
