@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 import org.junit.After;
 import org.junit.Before;

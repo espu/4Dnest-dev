@@ -19,6 +19,9 @@ public class NestManagerTest extends AndroidTestCase {
 		super.setUp();
 		
 		this.nestManager = new NestManager(this.getContext());
+		
+		// Delete all saved nests
+		this.nestManager.deleteAllNests();
 	}
 
 	protected void tearDown() throws Exception {
@@ -26,7 +29,7 @@ public class NestManagerTest extends AndroidTestCase {
 		
 		this.nestManager.close();
 	}
-
+	
 	public void testListNests() {
 		try {
 			Nest nest1 = new Nest(1, "Home Nest", "Nest hosted in my home server", new URI("http://127.0.0.1"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
@@ -69,6 +72,49 @@ public class NestManagerTest extends AndroidTestCase {
 		} catch(UnknownProtocolException upe) {
 			fail("UnknownProtocolException");
 		}
+	}
+	
+	public void testDeleteNest() {
+		try {
+			Nest nest = new Nest(1, "Home Nest", "Nest hosted in my home server", new URI("http://127.0.0.1"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+			this.nestManager.saveNest(nest);
+			
+			// Check that 1 nest is deleted
+			int result = this.nestManager.deleteNest(1);
+			assertEquals(result, 1);
+			
+			// Check that nest with that id no longer exists
+			Nest n = this.nestManager.getNest(1);
+			assertNull(n);
+			
+		} catch(URISyntaxException e) {
+			fail("URISyntaxException");
+		} catch(UnknownProtocolException upe) {
+			fail("UnknownProtocolException");
+		}
+	}
+	
+	public void testDeleteAllNests() {
+		try {
+			Nest nest1 = new Nest(1, "Home Nest", "Nest hosted in my home server", new URI("http://127.0.0.1"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+			Nest nest2 = new Nest(2, "Another nest", "Some random nest", new URI("http://10.0.0.1"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+			
+			this.nestManager.saveNest(nest1);
+			this.nestManager.saveNest(nest2);
+			
+			this.nestManager.deleteAllNests();
+			
+			assertNull(this.nestManager.getNest(1));
+			assertNull(this.nestManager.getNest(2));
+			
+			assertEquals(this.nestManager.listNests().size(), 0);
+			
+		} catch(URISyntaxException e) {
+			fail("URISyntaxException");
+		} catch(UnknownProtocolException upe) {
+			fail("UnknownProtocolException");
+		}
+		
 	}
 
 }

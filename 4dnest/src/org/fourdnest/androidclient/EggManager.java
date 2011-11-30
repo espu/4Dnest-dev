@@ -31,6 +31,12 @@ public class EggManager {
 	static final String C_REMOTEFILEURI = "remote_file_uri";
 	static final String C_CAPTION = "caption";
 	static final String C_LASTUPLOAD = "last_upload";
+	
+	private static final String[] ALL_COLUMNS = new String[]{
+		C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI,
+		C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
+	};
+	
 	// TODO: Add tag relation table when we have tag manager
 		
 	private final EggDatabase eggDb;
@@ -54,9 +60,7 @@ public class EggManager {
 		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		
 		Cursor result = db.query(TABLE,
-				new String[]{
-				C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
-				}, // Columns
+				ALL_COLUMNS, // Columns
 				null, // No WHERE
 				null, // No arguments in selection
 				null, // No GROUP BY
@@ -90,9 +94,7 @@ public class EggManager {
 
 		SQLiteDatabase db = this.eggDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
-				new String[]{
-				C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
-				}, // Columns
+				ALL_COLUMNS, // Columns
 				C_ID + "==" + id, // Where
 				null, // No arguments in selection
 				null, // No GROUP BY
@@ -113,6 +115,34 @@ public class EggManager {
 		
 	}
 	
+	/**
+	 * Deletes Egg with given id from the database
+	 * @param id of egg to delete
+	 * @return 1 if deletion was successful, 0 if not
+	 */
+	public int deleteEgg(int id) {
+		SQLiteDatabase db = this.eggDb.getWritableDatabase();
+		
+		int result = db.delete(TABLE, C_ID + "==" + id, null);
+		return result;
+	}
+	
+	/**
+	 * Deletes all saved Eggs in the database
+	 * @return number of deleted Eggs
+	 */
+	public int deleteAllEggs() {
+		SQLiteDatabase db = this.eggDb.getWritableDatabase();
+		
+		int result = db.delete(TABLE, null, null);
+		return result;
+	}
+	
+	/**
+	 * Extracts Egg from given Cursor object. Cursor must contain columns specified in ALL_COLUMNS
+	 * @param cursor to be read. Will not be manipulated, only read.
+	 * @return Egg from cursor
+	 */
 	private Egg extractEggFromCursor(Cursor cursor) {					
 		int id = cursor.getInt(0);
 		int nestId = cursor.getInt(1);

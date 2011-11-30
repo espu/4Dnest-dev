@@ -37,8 +37,7 @@ public class NestManager {
 	
 	private static final String[] ALL_COLUMNS = new String[]{
 		C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS,
-		C_PROTOCOL, C_USERNAME, C_SECRETKEY
-		
+		C_PROTOCOL, C_USERNAME, C_SECRETKEY		
 	};
 	
 	/** Limit of number of Nests to return */
@@ -124,7 +123,35 @@ public class NestManager {
 		
 	}
 	
-	private Nest extractNestFromCursor(Cursor cursor) {
+	/**
+	 * Deletes Nest with given id from the database
+	 * @param id of nest to delete
+	 * @return 1 if deletion was successful, 0 if not
+	 */
+	public int deleteNest(int id) {
+		SQLiteDatabase db = this.nestDb.getWritableDatabase();
+		
+		int result = db.delete(TABLE, C_ID + "==" + id, null);
+		return result;
+	}
+	
+	/**
+	 * Deletes all saved Nests in the database
+	 * @return number of deleted Nests
+	 */
+	public int deleteAllNests() {
+		SQLiteDatabase db = this.nestDb.getWritableDatabase();
+		
+		int result = db.delete(TABLE, null, null);
+		return result;
+	}
+	
+	/**
+	 * Extracts Nest from given Cursor object. Cursor must contain columns specified in ALL_COLUMNS
+	 * @param cursor to be read. Will not be manipulated, only read.
+	 * @return Nest from cursor
+	 */
+	private Nest extractNestFromCursor(final Cursor cursor) {
 		if(cursor == null) {
 			return null;
 		}

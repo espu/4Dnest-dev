@@ -17,6 +17,8 @@ public class EggManagerTest extends AndroidTestCase {
 		super.setUp();
 		
 		this.eggManager = new EggManager(this.getContext());
+		
+		this.eggManager.deleteAllEggs();
 	}
 
 	protected void tearDown() throws Exception {
@@ -94,6 +96,67 @@ public class EggManagerTest extends AndroidTestCase {
 		assertTrue(eggs.get(1).equals(e2));
 		assertTrue(eggs.get(2).equals(e3));
 		
+	}
+	
+	public void testDeleteEgg() {
+		long now = System.currentTimeMillis();
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		
+		Egg e1 = new Egg(
+				0,
+				1,
+				"Matti",
+				null,
+				null,
+				"CaptionForEgg",
+				tags,
+				now
+		);
+		this.eggManager.saveEgg(e1);
+		
+		// Check that 1 nest is deleted
+		int result = this.eggManager.deleteEgg(0);
+		assertEquals(1, result);
+		
+		// Check that nest with that id no longer exists
+		Egg e = this.eggManager.getEgg(0);
+		assertNull(e);
+	}
+	
+	public void testDeleteAllNests() {			
+		long now = System.currentTimeMillis();
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		
+		Egg e1 = new Egg(
+				0,
+				1,
+				"Matti",
+				null,
+				null,
+				"CaptionForEgg",
+				tags,
+				now
+		);
+		this.eggManager.saveEgg(e1);
+			
+		Egg e2 = new Egg(
+				1,
+				2,
+				"Matti",
+				null,
+				null,
+				"CaptionToo!",
+				tags,
+				now
+		);
+		this.eggManager.saveEgg(e2);
+		
+		this.eggManager.deleteAllEggs();
+		
+		assertNull(this.eggManager.getEgg(1));
+		assertNull(this.eggManager.getEgg(2));
+		
+		assertEquals(this.eggManager.listEggs().size(), 0);		
 	}
 	
 
