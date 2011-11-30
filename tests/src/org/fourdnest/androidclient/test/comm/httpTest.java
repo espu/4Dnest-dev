@@ -1,24 +1,22 @@
 package org.fourdnest.androidclient.test.comm;
 
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import android.net.Uri;
-import android.os.Environment;
-import android.test.AndroidTestCase;
-import android.util.Log;
-
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.*;
+import org.fourdnest.androidclient.test.comm.MemoryCardInitializer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import android.net.Uri;
+import android.test.AndroidTestCase;
+import android.util.Log;
+
+import java.util.ArrayList;
+
+
+
 
 
 public class httpTest extends AndroidTestCase {
@@ -32,7 +30,7 @@ public class httpTest extends AndroidTestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-
+/*
 	@Test
 	public void testHttpGet() throws Exception {
 		
@@ -41,30 +39,27 @@ public class httpTest extends AndroidTestCase {
 		assertTrue(get.length() != 0);
 		Log.v("httpget", get);
 	}
-	
+*/	
 	@Test
 	public void testHttpPost() throws Exception {
 		FourDNestProtocol protocol = new FourDNestProtocol();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		InputStream is = this.getContext().getAssets().open("kuva.jpg");
-		BufferedInputStream bufin = new BufferedInputStream(is);
-		File root = Environment.getExternalStorageDirectory();
-		FileOutputStream os = new FileOutputStream(new File(root, "kuva.jpg"));
-		BufferedOutputStream bufout = new BufferedOutputStream(os);
-		int c;
-		while ((c = bufin.read()) != -1) {
-		    bufout.write(c);
-		}
-		bufout.close();
-		bufin.close();
+		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
-		Egg egg = new Egg(5, 10, uri, null, "Now it should finally work from assets.", tags, 100);
-		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/fourdnest/api/", 007);
+		Egg egg = new Egg(5, 10, uri, null, "quick test", tags, 100);
+		
+		
+		/* SELECT to use local or web server */
+		
+		Nest nest = new Nest(007, "testNest", "testNest", "http://test42.4dnest.org/", 007);
+		//Nest nest = new Nest(007, "testNest", "testNest", "http://10.0.2.2:8000/", 007);
+				
 		protocol.setNest(nest);
 		String post = protocol.sendEgg(egg);
+	    Log.v("httppost", post);
 		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
-		Log.v("httppost", post);
+
 	}
 
 }

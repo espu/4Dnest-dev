@@ -2,6 +2,7 @@ package org.fourdnest.androidclient.comm;
 
 import android.util.Log;
 
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -34,7 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
-	private static final String EGG_UPLOAD_PATH = "v1/egg/upload/";
+	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private Nest nest;
 	
@@ -58,9 +59,12 @@ public class FourDNestProtocol implements Protocol {
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
         concatedMd5 += md5FromString(egg.getCaption());
         // FIXME: Check for null file path.
-        pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
-                .getPath()));
-        concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
+        if (egg.getLocalFileURI() != null) {
+            pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
+                    .getPath()));
+            concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
+        }
+        
         
         // FIXME: Add tags later
         String multipartMd5String = md5FromString(concatedMd5);
@@ -87,7 +91,7 @@ public class FourDNestProtocol implements Protocol {
             DateUtils.formatDate(date) + "\n" +
             post.getURI().getPath() + "\n";
             
-            String secretKey = "asdf1234";
+            String secretKey = "secret";
             String userName = "testuser";
             
             String signature = computeSignature(stringToSign, secretKey);
@@ -174,13 +178,16 @@ public class FourDNestProtocol implements Protocol {
      **/
     private String md5FromString(String s) {
         String result = "";
-        try {
-            byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
-            result = Base64.encodeBase64String(bytes);
-
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (s != null) {
+            try {
+                byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
+                result = new String(Base64.encodeBase64(bytes));
+    
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
         }
         return result;
     }
@@ -197,7 +204,7 @@ public class FourDNestProtocol implements Protocol {
         try {
             FileInputStream fis = new FileInputStream( new File(path));
             byte[] bytes = DigestUtils.md5(fis);
-            result = Base64.encodeBase64String(bytes);
+            result = new String(Base64.encodeBase64(bytes));
             
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -220,7 +227,7 @@ public class FourDNestProtocol implements Protocol {
             mac = Mac.getInstance("HmacSHA1");
             mac.init(signingKey);
             byte[] bytes = mac.doFinal(stringToSign.getBytes());
-            result = Base64.encodeBase64String(bytes);
+            result = new String(Base64.encodeBase64(bytes));
             
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
