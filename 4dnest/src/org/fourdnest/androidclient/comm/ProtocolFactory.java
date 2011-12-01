@@ -22,11 +22,11 @@ public final class ProtocolFactory {
 	
 	/**
 	 *  Creates a new Protocol object of the requested type
-	 *  @param protocolName The type of protocol.
+	 *  @param protocolId The type of protocol.
 	 *  @throws UnknownProtocolException 
 	 *   */
-	public static Protocol createProtocol(int protocolName) throws UnknownProtocolException {
-		Class<? extends Protocol> c = protocols.get(protocolName);
+	public static Protocol createProtocol(int protocolId) throws UnknownProtocolException {
+		Class<? extends Protocol> c = protocols.get(protocolId);
 		if(c != null) {
 			try {
 				return c.newInstance();
@@ -38,10 +38,15 @@ public final class ProtocolFactory {
 				Log.e(TAG, e.getMessage());
 			}
 		}
-		throw new UnknownProtocolException(protocolName);
+		throw new UnknownProtocolException(protocolId);
 	}
 	
-	public static void registerProtocol(int protocolName, Class<? extends Protocol> c) {
-		protocols.put(Integer.valueOf(protocolName), c);
+	/**
+	 * Plugs in a new protocol type, linking it to a given protocolId
+	 * @param protocolId the unique id for this protocol.
+	 * @param c the class object from which the Protocol objects will be instantiated.
+	 */
+	public static void registerProtocol(int protocolId, Class<? extends Protocol> c) {
+		protocols.put(Integer.valueOf(protocolId), c);
 	}
 }
