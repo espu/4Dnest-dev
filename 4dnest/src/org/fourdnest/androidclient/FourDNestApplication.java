@@ -1,5 +1,7 @@
 package org.fourdnest.androidclient;
 
+import org.fourdnest.androidclient.services.SendQueueService;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -19,6 +21,8 @@ public class FourDNestApplication extends Application
 	
 	private SharedPreferences prefs;
 	private NestManager nestManager;
+
+	private SendQueueService sendQueueService;
 	
 	@Override
 	public void onCreate() { //
@@ -32,13 +36,26 @@ public class FourDNestApplication extends Application
 	 * Gets the NestManager singleton.
 	 * The NestManager object synchronizes itself, so the caller is free to store
 	 * the object.  
-	 * @return
+	 * @return the NestManager
 	 */
 	public NestManager getNestManager() {
 		if(this.nestManager == null) {
 			this.nestManager = new NestManager(this);
 		}
 		return this.nestManager;
+	}
+
+	/**
+	 * Gets the SendQueueService singleton.
+	 * The SendQueueService is created and started, if it isn't already running.
+	 * @return the SendQueueService
+	 */
+	public SendQueueService getSendQueueService() {
+		if(this.sendQueueService == null) {
+		  this.sendQueueService = new SendQueueService(this.getNestManager());
+		  this.sendQueueService.start();
+		}
+		return this.sendQueueService;
 	}
 
 	public synchronized void onSharedPreferenceChanged(
