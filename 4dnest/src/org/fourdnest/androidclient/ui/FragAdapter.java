@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,7 @@ public class FragAdapter extends FragmentPagerAdapter {
 	 * Contains all the Fragments that are used to populate the parent
 	 * ViewPager.
 	 */
-	private ArrayList<Fragment> fragments;
+	private List<Fragment> fragments;
 
 	/**
 	 * Creates a new instance of FragAdapter. Initiates the Fragment list with
@@ -34,7 +35,7 @@ public class FragAdapter extends FragmentPagerAdapter {
 		super(fm);
 		this.fragments = new ArrayList<Fragment>();
 		
-		//Add specified tabs(Fragments) to ArrayList.
+		//Add specified tabs(Fragments) to List.
 		this.fragments.add(new ListStreamFragment());
 		this.fragments.add(new MainScreenFragment(currentContext));
 		this.fragments.add(new ListStoredEggsFragment());

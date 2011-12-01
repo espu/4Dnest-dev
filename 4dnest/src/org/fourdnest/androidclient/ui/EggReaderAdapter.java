@@ -44,13 +44,13 @@ public class EggReaderAdapter extends EggListAdapter {
 	}
 
 	/**
-	 * Sets this adapter to serve the given ArrayList of eggs
+	 * Sets this adapter to serve the given List of eggs
 	 * 
 	 * @param eggs
-	 *            An ArrayList that contains the eggs that the parent view
+	 *            A List that contains the eggs that the parent view
 	 *            should display.
 	 */
-	public void setEggs(ArrayList<Egg> eggs) {
+	public void setEggs(List<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();
 		for (int i = 0; i < 8; i++) {
