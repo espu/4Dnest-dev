@@ -114,6 +114,8 @@ public class FourDNestProtocol implements Protocol {
             String secretKey = "secret";
             String userName = "testuser";
             
+            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
+            
             String signature = computeSignature(stringToSign, secretKey);
             String authHeader = userName + ":" + signature;
             post.setHeader("Authorization", authHeader);
