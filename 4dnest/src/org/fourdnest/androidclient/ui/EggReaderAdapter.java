@@ -6,18 +6,27 @@ import java.util.List;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * An adapter for serving a list of Egg views to Egg lists in
+ * ListStoredEggsFragment. The listed Egg view layouts are defined in layout
+ * file egg_element_large.
+ * 
+ * @see EggListAdapter.
+ */
 public class EggReaderAdapter extends EggListAdapter {
 
 	public EggReaderAdapter(ViewGroup parent) {
 		super(parent);
 	}
-	
+
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 		View arg1t = arg1;
 		if (arg1t == null) {
@@ -34,7 +43,14 @@ public class EggReaderAdapter extends EggListAdapter {
 		return arg1t;
 	}
 
-	public void setEggs(List<Egg> eggs) {
+	/**
+	 * Sets this adapter to serve the given ArrayList of eggs
+	 * 
+	 * @param eggs
+	 *            An ArrayList that contains the eggs that the parent view
+	 *            should display.
+	 */
+	public void setEggs(ArrayList<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();
 		for (int i = 0; i < 8; i++) {
