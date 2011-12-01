@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class NewPhotoEggActivity extends Activity{
@@ -58,7 +59,13 @@ public class NewPhotoEggActivity extends Activity{
             }
         });
 	
-        
+        Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
+        sendButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				//TODO: Add Egg to queue
+			}
+		});
         
         
 
