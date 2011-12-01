@@ -58,6 +58,9 @@ public class NewPhotoEggActivity extends Activity{
             }
         });
 	
+        
+        
+        
 
 	}
 	
