@@ -60,35 +60,23 @@ public class FourDNestProtocol implements Protocol {
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public String sendEgg(Egg egg) {
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        // http scheme
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory
-                .getSocketFactory(), 80));
-        // https scheme
-        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
-                443));
-        HttpParams params = new BasicHttpParams();
-        params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
-        ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
-
-
+        
         String concatedMd5 = "";
-        HttpClient client = new DefaultHttpClient(cm, params);
+        HttpClient client = createHttpClient();
         HttpPost post = new HttpPost(this.nest.getBaseURI() + EGG_UPLOAD_PATH);
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
         concatedMd5 += md5FromString(egg.getCaption());
-        // FIXME: Check for null file path.
         if (egg.getLocalFileURI() != null) {
             pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
                     .getPath()));
             concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
         }
         
-        
         // FIXME: Add tags later
+        
         String multipartMd5String = md5FromString(concatedMd5);
         multipartMd5String = new String(Base64.encodeBase64(multipartMd5String.getBytes()));
         
@@ -169,8 +157,22 @@ public class FourDNestProtocol implements Protocol {
 
         return entity;
     }
+    
+    private DefaultHttpClient createHttpClient() {
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        // http scheme
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory
+                .getSocketFactory(), 80));
+        // https scheme
+        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
+                443));
+        HttpParams params = new BasicHttpParams();
+        params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
+        ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+        return new DefaultHttpClient(cm, params);
+    }
 
-    public ArrayList<Tag> topTags(int count) {
+    public List<Tag> topTags(int count) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -220,7 +222,7 @@ public class FourDNestProtocol implements Protocol {
     
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                
             }
             
         }
@@ -243,10 +245,10 @@ public class FourDNestProtocol implements Protocol {
             
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         }
         return result;
         
@@ -266,10 +268,10 @@ public class FourDNestProtocol implements Protocol {
             
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         } catch (InvalidKeyException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         }
         return result;
     }
