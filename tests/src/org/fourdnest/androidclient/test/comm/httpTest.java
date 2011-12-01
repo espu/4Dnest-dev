@@ -47,7 +47,7 @@ public class httpTest extends AndroidTestCase {
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
-		Egg egg = new Egg(5, 10, null, uri, null, "Now it should finally work from assets.", tags, 100);
+		Egg egg = new Egg(5, 10, null, uri, null, "The fight continues.", tags, 100);
 
         /* SELECT to use local or web server */
 
