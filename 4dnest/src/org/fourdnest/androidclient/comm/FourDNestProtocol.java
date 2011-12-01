@@ -9,14 +9,21 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
@@ -50,8 +57,19 @@ public class FourDNestProtocol implements Protocol {
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public String sendEgg(Egg egg) {
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        // http scheme
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory
+                .getSocketFactory(), 80));
+        // https scheme
+        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
+                443));
+        HttpParams params = new BasicHttpParams();
+        ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+
+
         String concatedMd5 = "";
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = new DefaultHttpClient(cm, params);
         HttpPost post = new HttpPost(this.nest.getBaseURI() + EGG_UPLOAD_PATH);
 
         // Create list of NameValuePairs
