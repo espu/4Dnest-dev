@@ -1,23 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+        android:background="#ffffff"
+>
     <LinearLayout
    		android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="wrap_content" 
+        android:layout_alignParentTop="true"
+        >
         <ImageView
             android:id="@+id/new_photo_egg_thumbnail_view"
          	android:layout_width="fill_parent"
-         	android:layout_height="400px"
+         	android:layout_height="300px"
          	android:paddingLeft="20px"
          	android:paddingRight="20px"
          	android:cropToPadding="true"
+         	android:onClick="new_photo_egg_preview_pic"
         />
+        <RelativeLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
+        <TextView
+            android:text="@string/preview"
+            android:background="#ffffff"
+            android:layout_width="wrap_content"
+         	android:layout_height="wrap_content"
+         	android:layout_centerHorizontal="true"
+             />
+        </RelativeLayout>
     	<EditText 
         	android:layout_width="fill_parent"
-        	android:layout_height="300px" 
-        	android:id="@+id/new_photo_egg_caption_view" />
-     </LinearLayout>
-     
-</ScrollView>
+        	android:layout_height="200px" 
+        	android:paddingTop="5px"
+        	android:paddingLeft="5px"
+         	android:paddingRight="5px"
+        	android:id="@+id/new_photo_egg_caption_view" 
+        	android:hint="@string/add_message_here"
+        	/>/
+    	     </LinearLayout>
+    	<EditText
+    	    android:layout_width="fill_parent"
+    	    android:layout_height ="60px"
+    	    android:layout_above="@+id/new_photo_egg_send_egg_button"
+    	    android:hint="tags"/>
+    	
+    	<Button
+            android:id="@+id/new_photo_egg_send_egg_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/send_egg_to_nest"
+			android:layout_alignParentBottom="true"
+			/>
+</RelativeLayout>

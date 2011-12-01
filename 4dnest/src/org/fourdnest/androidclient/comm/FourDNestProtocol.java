@@ -75,11 +75,11 @@ public class FourDNestProtocol implements Protocol {
             Date date = new Date();
             
             /*
-             * StringToSign = HTTP-Verb + ‘\n’ +
-             * base64(Content-MD5) + ‘\n’ +
-             * base64(x-4dnest-multipartMD5) + ‘\n’ +
-             * Content-Type + ‘\n’ +
-             * Date + ‘\n’ +
+             * StringToSign = HTTP-Verb + '\n' +
+             * base64(Content-MD5) + '\n' +
+             * base64(x-4dnest-multipartMD5) + '\n' +
+             * Content-Type + '\n' +
+             * Date + '\n' +
              * RequestURI
              * 
              * Should be in utf-8 automatically.
