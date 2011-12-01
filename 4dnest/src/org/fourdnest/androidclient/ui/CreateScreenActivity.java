@@ -2,8 +2,6 @@ package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.R;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,7 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class CreateScreenActivity extends Activity {
+public class CreateScreenActivity extends NestSpecificActivity {
 
 	// YOU CAN EDIT THIS TO WHATEVER YOU WANT
 	private static final int SELECT_PICTURE = 1;
@@ -23,30 +21,6 @@ public class CreateScreenActivity extends Activity {
 	private String selectedImagePath;
 	// ADDED
 	private String filemanagerstring;
-	private Context currentContext;
-
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.create_view);
-
-		((Button) findViewById(R.id.openGalleryButton))
-				.setOnClickListener(new OnClickListener() {
-
-					public void onClick(View arg0) {
-						// in onCreate or any event where your want the user to
-						// select a file
-						Intent intent = new Intent();
-						intent.setType("image/*");
-						intent.setAction(Intent.ACTION_GET_CONTENT);
-						startActivityForResult(
-								Intent.createChooser(intent, "Select Picture"),
-								SELECT_PICTURE);
-
-					}
-				});
-	}
 
 	// UPDATED
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -70,7 +44,7 @@ public class CreateScreenActivity extends Activity {
 				System.out
 						.println("filemanagerstring is the right one for you!");
 			}
-			Intent myIntent = new Intent(this.currentContext,
+			Intent myIntent = new Intent(this.getApplicationContext(),
 					NewPhotoEggActivity.class);
 			myIntent.putExtra("pictureURL", imagePath);
 			startActivityForResult(myIntent, 0);
@@ -81,7 +55,7 @@ public class CreateScreenActivity extends Activity {
 	public String getPath(Uri uri) {
 		String[] projection = { MediaStore.Images.Media.DATA };
 
-		CursorLoader loader = new CursorLoader(this.currentContext, uri,
+		CursorLoader loader = new CursorLoader(this.getApplicationContext(), uri,
 				projection, null, null, null);
 		Cursor cursor = loader.loadInBackground();
 		if (cursor != null) {
@@ -94,5 +68,31 @@ public class CreateScreenActivity extends Activity {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public View getContentLayout(View view) {
+		((Button) view.findViewById(R.id.openGalleryButton))
+		.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				// in onCreate or any event where your want the user to
+				// select a file
+				Intent intent = new Intent();
+				intent.setType("image/*");
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				startActivityForResult(
+						Intent.createChooser(intent, "Select Picture"),
+						SELECT_PICTURE);
+
+			}
+		});
+		
+		return view;
+	}
+
+	@Override
+	public int getLayoutId() {
+		return R.layout.create_view;
 	}
 }
