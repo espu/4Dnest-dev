@@ -4,19 +4,28 @@ import android.util.Log;
 
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
@@ -37,6 +46,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final int HTTP_STATUSCODE_CREATED = 201;
+	private static final int CONNECTION_TIMEOUT = 15000;
 	private Nest nest;
 
 	public FourDNestProtocol() {
@@ -50,24 +60,25 @@ public class FourDNestProtocol implements Protocol {
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public String sendEgg(Egg egg) {
+        
         String concatedMd5 = "";
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = createHttpClient();
         HttpPost post = new HttpPost(this.nest.getBaseURI() + EGG_UPLOAD_PATH);
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
         concatedMd5 += md5FromString(egg.getCaption());
-        // FIXME: Check for null file path.
         if (egg.getLocalFileURI() != null) {
             pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
                     .getPath()));
             concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
         }
         
-        
         // FIXME: Add tags later
+        
         String multipartMd5String = md5FromString(concatedMd5);
+        multipartMd5String = new String(Base64.encodeBase64(multipartMd5String.getBytes()));
         
         int status = 0;
         try {
@@ -95,6 +106,8 @@ public class FourDNestProtocol implements Protocol {
             
             String secretKey = "secret";
             String userName = "testuser";
+            
+            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
             
             String signature = computeSignature(stringToSign, secretKey);
             String authHeader = userName + ":" + signature;
@@ -144,8 +157,22 @@ public class FourDNestProtocol implements Protocol {
 
         return entity;
     }
+    
+    private DefaultHttpClient createHttpClient() {
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        // http scheme
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory
+                .getSocketFactory(), 80));
+        // https scheme
+        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
+                443));
+        HttpParams params = new BasicHttpParams();
+        params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
+        ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+        return new DefaultHttpClient(cm, params);
+    }
 
-    public ArrayList<Tag> topTags(int count) {
+    public List<Tag> topTags(int count) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -191,11 +218,11 @@ public class FourDNestProtocol implements Protocol {
         if (s != null) {
             try {
                 byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
-                result = new String(Base64.encodeBase64(bytes));
+                result = new String(Hex.encodeHex(bytes));
     
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                
             }
             
         }
@@ -214,14 +241,14 @@ public class FourDNestProtocol implements Protocol {
         try {
             FileInputStream fis = new FileInputStream( new File(path));
             byte[] bytes = DigestUtils.md5(fis);
-            result = new String(Base64.encodeBase64(bytes));
+            result = new String(Hex.encodeHex(bytes));
             
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         }
         return result;
         
@@ -236,15 +263,15 @@ public class FourDNestProtocol implements Protocol {
         try {
             mac = Mac.getInstance("HmacSHA1");
             mac.init(signingKey);
-            byte[] bytes = mac.doFinal(stringToSign.getBytes());
-            result = new String(Base64.encodeBase64(bytes));
+            String hexStr = new String(Hex.encodeHex(mac.doFinal(stringToSign.getBytes())));
+            result = new String(Base64.encodeBase64(hexStr.getBytes()));
             
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         } catch (InvalidKeyException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           
         }
         return result;
     }

@@ -20,7 +20,7 @@ public class EggManager {
 	private static final String TAG = EggManager.class.getSimpleName();
 	
 	static final String DB_NAME = "4dnest.eggs.db";
-	static final int DB_VERSION = 2;
+	static final int DB_VERSION = 3;
 	
 	// Table columns
 	static final String TABLE = "egg";
@@ -169,12 +169,12 @@ public class EggManager {
 	}
 	
 	/**
-	 * Saves Nest to database, updating existing Nest with same id
+	 * Saves Egg to database, updating existing Egg with same id
 	 * and creating new one if necessary 
-	 * @param nest object to save
-	 * @return long row id or -1 on failure
+	 * @param egg object to save
+	 * @return Egg with updated info (id)
 	 */
-	public long saveEgg(Egg egg) {
+	public Egg saveEgg(Egg egg) {
 		
 		
 		SQLiteDatabase db = this.eggDb.getWritableDatabase();
@@ -227,7 +227,9 @@ public class EggManager {
 			Log.d(TAG, "Inserted new Egg to db");
 		}
 		
-		return rowid;
+		
+		egg.setId((Integer)(int)rowid);
+		return egg;
 	}
 	
 	/**
@@ -259,7 +261,7 @@ public class EggManager {
 			// Prepare SQL table creation query 
 			String tableCreateQuery = String.format(
 						"CREATE TABLE %s(" +
-						"%s int PRIMARY KEY," +
+						"%s INTEGER PRIMARY KEY," +
 						"%s int DEFAULT NULL, " +
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +

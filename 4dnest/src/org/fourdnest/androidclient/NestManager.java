@@ -3,6 +3,7 @@ package org.fourdnest.androidclient;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
@@ -22,8 +23,8 @@ public class NestManager {
 	
 	private static final String TAG = NestDatabase.class.getSimpleName();
 	
-	static final String DB_NAME = "4dnest.nests.db";
-	static final int DB_VERSION = 3;
+	private static final String DB_NAME = "4dnest.nests.db";
+	private static final int DB_VERSION = 3;
 	
 	// Table columns
 	private static final String TABLE = "nest";
@@ -44,6 +45,7 @@ public class NestManager {
 	private static final String LIMIT = "100";
 	
 	private final NestDatabase nestDb;
+	private HashMap<Integer, Nest> nestCache;
 	
 	/**
 	 * Creates new NestManager with specified context
@@ -51,6 +53,7 @@ public class NestManager {
 	 */
 	public NestManager(Context context) {
 		this.nestDb = new NestDatabase(context);
+		this.nestCache = new HashMap<Integer, Nest>();
 		
 		Log.d(TAG, "NestManager created");
 	}
@@ -84,6 +87,7 @@ public class NestManager {
 					nests.add(nest);
 				}				
 				result.moveToNext();
+				this.nestCache.put(nest.getId(), nest);
 			} 
 		}
 		
@@ -96,6 +100,11 @@ public class NestManager {
 	 * @return Nest with specified id or null
 	 */
 	public Nest getNest(int id) {
+		
+		// If Nest is in cache, return it from there
+		if(this.nestCache.containsKey(id)) {
+			return this.nestCache.get(id);
+		}
 
 		SQLiteDatabase db = this.nestDb.getReadableDatabase();
 		Cursor result = db.query(TABLE,
@@ -118,6 +127,9 @@ public class NestManager {
 			Log.d(TAG, "Nest with id " + id + " not found");
 		}
 		
+		if (nest != null) {
+			this.nestCache.put(nest.getId(), nest);
+		}
 		
 		return nest;
 		
@@ -129,8 +141,9 @@ public class NestManager {
 	 * @return 1 if deletion was successful, 0 if not
 	 */
 	public int deleteNest(int id) {
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();
+		this.nestCache.remove(id);
 		
+		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
 		int result = db.delete(TABLE, C_ID + "==" + id, null);
 		return result;
 	}
@@ -140,8 +153,9 @@ public class NestManager {
 	 * @return number of deleted Nests
 	 */
 	public int deleteAllNests() {
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();
+		this.nestCache.clear();
 		
+		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
 		int result = db.delete(TABLE, null, null);
 		return result;
 	}
@@ -234,6 +248,8 @@ public class NestManager {
 			
 			Log.d(TAG, "Inserted new Nest to db");
 		}
+		
+		this.nestCache.put(nest.getId(), nest);
 		
 		return rowid;
 	}
