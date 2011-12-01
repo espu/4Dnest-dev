@@ -13,7 +13,7 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		ViewPager awesomePager = (ViewPager) findViewById(R.id.awesomepager);
+		ViewPager awesomePager = (ViewPager) findViewById(R.id.main_pager);
 		FragAdapter fragadapter = new FragAdapter(getSupportFragmentManager(), this.getApplicationContext());
 		awesomePager.setAdapter(fragadapter);
 		awesomePager.setCurrentItem(1);
