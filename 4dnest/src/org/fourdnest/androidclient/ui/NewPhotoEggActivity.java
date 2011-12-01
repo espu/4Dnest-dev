@@ -1,9 +1,13 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,11 +15,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 public class NewPhotoEggActivity extends Activity{
@@ -42,7 +45,7 @@ public class NewPhotoEggActivity extends Activity{
 
 		}
 		/*
-		 * Adds a onclicklistener to the image so we know when to open a thumbnail
+		 * Adds a onClickListener to the image so we know when to open a thumbnail
 		 */
 		
         thumbNailView.setOnClickListener(new OnClickListener() {
@@ -64,8 +67,16 @@ public class NewPhotoEggActivity extends Activity{
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				//TODO: Add Egg to queue
-				//(FourDNestApplication) getApplication()
+				SendQueueService sendQueService = ((FourDNestApplication)getApplication()).getSendQueueService();
+				
+				//TODO: Proper implementation
+				Egg egg = new Egg();
+				egg.setAuthor("Gandalf_41");
+				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
+				egg.setLocalFileURI(Uri.parse("file://"+realPictureURL));
+				egg.setTags(new ArrayList<Tag>());
+				
+				sendQueService.queueEgg(egg, true);
 			}
 		});
         

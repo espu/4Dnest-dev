@@ -29,7 +29,7 @@ public class ReadStreamActivity extends Activity {
 			
 			public void onClick(View v) {
 				Intent intent = new Intent(v.getContext(),
-						NewPhotoEggActivity.class);
+						CreateScreenActivity.class);
 				v.getContext().startActivity(intent);
 				
 			}
@@ -40,10 +40,6 @@ public class ReadStreamActivity extends Activity {
 		adapter.setEggs(null);
 		streamList.setAdapter(adapter);
 		streamList.setOnItemClickListener(new EggElementOnClickListener());
-		
-		//TODO: Put this somewhere else
-		Intent startServiceIntent = new Intent(this.getApplicationContext(), SendQueueService.class);
-		this.getApplicationContext().startService(startServiceIntent);
 	}
 
 }
