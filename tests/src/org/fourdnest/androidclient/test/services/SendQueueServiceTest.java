@@ -2,13 +2,11 @@ package org.fourdnest.androidclient.test.services;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.comm.Protocol;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.junit.After;
@@ -30,8 +28,10 @@ public class SendQueueServiceTest extends AndroidTestCase {
 	private Egg massEgg;
 	private Egg trueEgg;
 	private Egg falseEgg;
+	private Egg manualEgg;
 	private boolean trueEggSeen = false;
 	private boolean falseEggSeen = false;
+	private boolean manualEggSeen = false;
 
 	static {
 		ProtocolFactory.registerProtocol(1024, SendQueueTestProtocol.class);
@@ -82,6 +82,16 @@ public class SendQueueServiceTest extends AndroidTestCase {
 				new ArrayList<Tag>(),
 				System.currentTimeMillis()
 			);
+		this.manualEgg = new Egg(
+				3,
+				1024,
+				"Matti",
+				null,
+				null,
+				"Manual Egg",
+				new ArrayList<Tag>(),
+				System.currentTimeMillis()
+			);
 	}
 
 	@After
@@ -106,6 +116,7 @@ public class SendQueueServiceTest extends AndroidTestCase {
 	public void testQueueEgg() {
 		trueEggSeen = false;
 		falseEggSeen = false;
+		manualEggSeen = false;
 		this.service.queueEgg(this.trueEgg, true);
 		this.service.queueEgg(this.falseEgg, false);
 		this.guaranteeSleep(3*DELAY);
@@ -116,14 +127,31 @@ public class SendQueueServiceTest extends AndroidTestCase {
 	public void testSendQueuedEgg() {
 		trueEggSeen = false;
 		falseEggSeen = false;
+		manualEggSeen = false;
+		// send the interesting Eggs and some mass eggs for filling
+		this.service.queueEgg(this.massEgg, false);
 		this.service.queueEgg(this.trueEgg, false);
 		this.service.queueEgg(this.falseEgg, false);
-		this.service.removeQueuedEgg(this.falseEgg);
-		// simulates the user doing other stuff while the Egg goes into queue
+		this.service.queueEgg(this.manualEgg, false);
+		this.service.queueEgg(this.massEgg, false);
+		// simulates the user doing other stuff while the Eggs go into queue
 		this.guaranteeSleep(2*DELAY);
+		
+		// then the user interacts with the queue: removes one and manually sends one
+		this.service.removeQueuedEgg(this.falseEgg);
+		this.service.sendQueuedEgg(this.manualEgg);
+		
+		// wait for these to take effect before checking
+		this.guaranteeSleep(3*DELAY);
+		assertTrue(manualEggSeen);	// manual should have been sent
+		assertFalse(trueEggSeen);	// this is not sent yet
+		assertFalse(falseEggSeen);	// this should have been removed
+		
+		
 		this.service.sendAllQueuedEggs();
 		this.guaranteeSleep(3*DELAY);
-		assertTrue(trueEggSeen);
+		assertTrue(manualEggSeen);	// manual should have been sent
+		assertTrue(trueEggSeen);	// this should have been sent by sendAllQueuedEggs
 		assertFalse(falseEggSeen);
 	}
 	
@@ -144,6 +172,8 @@ public class SendQueueServiceTest extends AndroidTestCase {
 			tester.trueEggSeen = true;
 		} else if(egg.equals(tester.falseEgg)) {
 			tester.falseEggSeen = true;
+		} else if(egg.equals(tester.manualEgg)) {
+			tester.manualEggSeen = true;
 		}
 	}	
 	
