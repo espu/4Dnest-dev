@@ -31,7 +31,7 @@ public class EggManagerTest extends AndroidTestCase {
 		long now = System.currentTimeMillis();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		Egg e = new Egg(
-			0,
+			null,
 			1,
 			"Matti",
 			null,
@@ -41,9 +41,9 @@ public class EggManagerTest extends AndroidTestCase {
 			now
 		);
 		
-		this.eggManager.saveEgg(e);
+		e = this.eggManager.saveEgg(e);
 		
-		Egg fetchedEgg = this.eggManager.getEgg(0);
+		Egg fetchedEgg = this.eggManager.getEgg(e.getId());
 		assertTrue(e.equals(fetchedEgg));
 		
 		
@@ -54,7 +54,7 @@ public class EggManagerTest extends AndroidTestCase {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
 		Egg e1 = new Egg(
-			0,
+			null,
 			1,
 			"Matti",
 			null,
@@ -63,10 +63,10 @@ public class EggManagerTest extends AndroidTestCase {
 			tags,
 			now
 		);
-		this.eggManager.saveEgg(e1);
+		e1 = this.eggManager.saveEgg(e1);
 		
 		Egg e2 = new Egg(
-			1,
+			null,
 			2,
 			"Matti",
 			null,
@@ -75,10 +75,10 @@ public class EggManagerTest extends AndroidTestCase {
 			tags,
 			now
 		);
-		this.eggManager.saveEgg(e2);
+		e2 = this.eggManager.saveEgg(e2);
 		
 		Egg e3 = new Egg(
-			1337,
+			null,
 			10,
 			"Matti",
 			null,
@@ -87,8 +87,7 @@ public class EggManagerTest extends AndroidTestCase {
 			tags,
 			now
 		);
-		this.eggManager.saveEgg(e3);
-		
+		e3 = this.eggManager.saveEgg(e3);
 		
 		List<Egg> eggs = this.eggManager.listEggs();
 		
@@ -128,7 +127,7 @@ public class EggManagerTest extends AndroidTestCase {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
 		Egg e1 = new Egg(
-				0,
+				null,
 				1,
 				"Matti",
 				null,
@@ -137,10 +136,10 @@ public class EggManagerTest extends AndroidTestCase {
 				tags,
 				now
 		);
-		this.eggManager.saveEgg(e1);
+		e1 = this.eggManager.saveEgg(e1);
 			
 		Egg e2 = new Egg(
-				1,
+				null,
 				2,
 				"Matti",
 				null,
@@ -149,7 +148,7 @@ public class EggManagerTest extends AndroidTestCase {
 				tags,
 				now
 		);
-		this.eggManager.saveEgg(e2);
+		e2 = this.eggManager.saveEgg(e2);
 		
 		this.eggManager.deleteAllEggs();
 		

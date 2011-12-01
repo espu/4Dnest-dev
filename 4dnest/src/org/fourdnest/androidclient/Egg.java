@@ -17,7 +17,7 @@ public class Egg {
 	//private static final String TAG = Egg.class.getSimpleName();
 	
 	/** Egg id */
-	private int id;
+	private Integer id;
 	
 	/** Id of the Nest that this Egg was or will be sent to */
 	private int nestId;
@@ -59,7 +59,7 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(int id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
@@ -78,7 +78,8 @@ public class Egg {
 		
 		Egg other = (Egg)o;
 		
-		boolean equal = (this.id == other.id &&
+		boolean equal = (
+				Util.objectsEqual(this.id, other.id) &&
 				this.nestId == other.nestId &&
 				Util.objectsEqual(this.author, other.author) && 
 				Util.objectsEqual(this.localFileURI, other.localFileURI) &&
@@ -93,7 +94,7 @@ public class Egg {
 	
 	@Override
 	public int hashCode() {
-		long hash = this.id;
+		long hash = (this.id == null ? 0 : this.id.hashCode());
         hash = hash * 3 + this.nestId;
         hash = hash * 7 + (this.author == null ? 0 : this.author.hashCode());
         hash = hash * 11 + (this.localFileURI == null ? 0 : this.localFileURI.hashCode());
@@ -111,7 +112,7 @@ public class Egg {
 	 * Sets Egg id
 	 * @param id New Egg id
 	 */
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -119,7 +120,7 @@ public class Egg {
 	 * Returns egg id
 	 * @return Egg id
 	 */
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 	
