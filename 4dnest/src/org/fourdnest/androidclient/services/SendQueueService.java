@@ -3,7 +3,6 @@ package org.fourdnest.androidclient.services;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 
