@@ -17,4 +17,5 @@
     <string name="send_egg_to_nest">Send Egg To Nest!</string>
     <string name="preview">preview</string>
     <string name="add_message_here">Add Message here</string>
+    <string name="read_stream_create_button">Create</string>
 </resources>

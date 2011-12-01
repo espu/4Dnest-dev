@@ -2,6 +2,7 @@ package org.fourdnest.androidclient.ui;
 
 import java.io.File;
 
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 
 import android.app.Activity;
@@ -64,6 +65,7 @@ public class NewPhotoEggActivity extends Activity{
 			
 			public void onClick(View v) {
 				//TODO: Add Egg to queue
+				//(FourDNestApplication) getApplication()
 			}
 		});
         
