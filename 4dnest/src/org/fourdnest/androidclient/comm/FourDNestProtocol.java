@@ -89,7 +89,9 @@ public class FourDNestProtocol implements Protocol {
             multipartMd5String + "\n" +
             ""  + "\n" +                                       //Content-type empty for now
             DateUtils.formatDate(date) + "\n" +
-            post.getURI().getPath() + "\n";
+            post.getURI().getPath();
+            
+            Log.d("message", stringToSign);
             
             String secretKey = "secret";
             String userName = "testuser";
@@ -100,6 +102,9 @@ public class FourDNestProtocol implements Protocol {
             Log.d("sign", authHeader);
             
             post.setHeader("Date", DateUtils.formatDate(date));
+            
+            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
+            
             HttpResponse response = client.execute(post);
             status = response.getStatusLine().getStatusCode();
             if (status == HTTP_STATUSCODE_CREATED) {
