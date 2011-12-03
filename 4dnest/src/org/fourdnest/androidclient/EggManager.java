@@ -231,6 +231,7 @@ public class EggManager {
 		egg.setId((Integer)(int)rowid);
 		return egg;
 	}
+
 	
 	/**
 	 * Closes database

@@ -3,9 +3,11 @@ package org.fourdnest.androidclient.services;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 
+import android.app.Application;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -19,6 +21,13 @@ import android.util.Log;
  * out of sequence.
  */
 public class SendQueueService extends Service {
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Application a = this.getApplication();
+	}
+	
 	/** Tag string used to indicate source in logging */
 	public static final String TAG = SendQueueService.class.getSimpleName();;
 	private SendQueueWorkerThread thread;
@@ -50,14 +59,26 @@ public class SendQueueService extends Service {
 	}
 	
 	/**
-	 * Queues an Egg for sending.
+	 * Queues an Egg for sending. Handles Egg meta data and saves it to database.
 	 * @param egg The Egg to be queued. May not be null.
 	 * @param autosend If true, the Egg will be sent immediately. If false,
 	 * it will be placed in a separate queue waiting user confirmation.
 	 */
 	public void queueEgg(Egg egg, boolean autosend) {
 		assert(egg != null);
-		// FIXME: write to database, or is it already done at this point?
+		/*
+		 * TODO: this.getApplication() and getApplication() return null
+		FourDNestApplication app = (FourDNestApplication) this.getApplication(); 
+		
+		// Set meta data
+		Nest currentNest = app.getCurrentNest();
+		egg.setNestId(currentNest.getId());
+		egg.setAuthor(currentNest.getUserName());
+		
+		// Save
+		egg = app.getEggManager().saveEgg(egg);
+		*/
+		// Add to queue
 		this.workQueue.add(new QueuedEgg(egg, autosend));
 	}
 	/**

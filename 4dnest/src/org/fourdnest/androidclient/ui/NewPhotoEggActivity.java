@@ -71,7 +71,6 @@ public class NewPhotoEggActivity extends Activity{
 				
 				//TODO: Proper implementation
 				Egg egg = new Egg();
-				egg.setAuthor("Gandalf_41");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realPictureURL));
 				egg.setTags(new ArrayList<Tag>());
