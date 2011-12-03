@@ -7,7 +7,6 @@ import java.util.List;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,30 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * An adapter for serving a list of Egg views to Egg lists in
+ * ListStoredEggsFragment. The listed Egg view layouts are defined in layout
+ * file egg_element_small
+ */
 public class EggListAdapter extends BaseAdapter {
-	protected List<Egg> eggs;
-	private ViewGroup parent;
 
+	/**
+	 * Contains the list of Eggs that are served to the list
+	 */
+	protected List<Egg> eggs;
+
+	/**
+	 * The ViewGroup(e.g. Listview) that uses this adapter.
+	 */
+	protected ViewGroup parent;
+
+	/**
+	 * Instantiates a new EggListAdapter.
+	 * 
+	 * @param parent
+	 *            The ViewGroup(e.g. Listview) that uses this adapter to
+	 *            populate its view.
+	 */
 	public EggListAdapter(ViewGroup parent) {
 		this.eggs = new ArrayList<Egg>();
 		this.setParent(parent);
@@ -53,6 +72,13 @@ public class EggListAdapter extends BaseAdapter {
 		return arg1t;
 	}
 
+	/**
+	 * Sets this adapter to serve the given List of eggs
+	 * 
+	 * @param eggs
+	 *            A List that contains the eggs that the parent view
+	 *            should display.
+	 */
 	public void setEggs(List<Egg> eggs) {
 		// TODO: Get a real implementation for this
 		this.eggs = new ArrayList<Egg>();

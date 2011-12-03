@@ -3,7 +3,6 @@ package org.fourdnest.androidclient.services;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 
@@ -20,6 +19,7 @@ import android.util.Log;
  * out of sequence.
  */
 public class SendQueueService extends Service {
+	/** Tag string used to indicate source in logging */
 	public static final String TAG = SendQueueService.class.getSimpleName();;
 	private SendQueueWorkerThread thread;
 	private ConcurrentLinkedQueue<Work> workQueue;
@@ -142,6 +142,9 @@ public class SendQueueService extends Service {
 
 	}
 
+	/**
+	 * @param delay The time in milliseconds to sleep between polls of the work queue
+	 */
 	public void setDelay(long delay) {
 		this.thread.setDelay(delay);
 	}
