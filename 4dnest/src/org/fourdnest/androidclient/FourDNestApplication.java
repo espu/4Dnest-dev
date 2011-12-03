@@ -1,5 +1,11 @@
 package org.fourdnest.androidclient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.fourdnest.androidclient.comm.ProtocolFactory;
+import org.fourdnest.androidclient.comm.UnknownProtocolException;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -25,7 +31,24 @@ public class FourDNestApplication extends Application
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
+	  
+	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
+	}
+	
+	private void setUpTestValues() {
+		try {
+		NestManager m = this.getNestManager();
+		Nest n = m.getNest(0);
+		if(n == null) {
+			n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		}
+		m.saveNest(n);
+		} catch(URISyntaxException urie) {
+			
+		} catch(UnknownProtocolException upe) {
+			
+		}
 	}
 
 	/**
