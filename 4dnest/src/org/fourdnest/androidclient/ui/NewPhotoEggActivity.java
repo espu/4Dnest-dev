@@ -67,7 +67,7 @@ public class NewPhotoEggActivity extends Activity{
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				SendQueueService sendQueService = ((FourDNestApplication)getApplication()).getSendQueueService();
+				//SendQueueService sendQueService = ((FourDNestApplication)getApplication()).getSendQueueService();
 				
 				//TODO: Proper implementation
 				Egg egg = new Egg();
@@ -75,7 +75,10 @@ public class NewPhotoEggActivity extends Activity{
 				egg.setLocalFileURI(Uri.parse("file://"+realPictureURL));
 				egg.setTags(new ArrayList<Tag>());
 				
-				sendQueService.queueEgg(egg, true);
+				FourDNestApplication app = (FourDNestApplication)getApplication();
+				if(app != null) {
+					app.sendEgg(egg);
+				}
 			}
 		});
         

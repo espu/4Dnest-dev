@@ -1,5 +1,4 @@
 package org.fourdnest.androidclient.services;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.fourdnest.androidclient.Egg;
@@ -10,6 +9,8 @@ import org.fourdnest.androidclient.NestManager;
 import android.app.Application;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -22,40 +23,67 @@ import android.util.Log;
  */
 public class SendQueueService extends Service {
 	
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Application a = this.getApplication();
-	}
+	/** Tag string used to indicate source in logging */	
+	public static final String TAG = SendQueueService.class.getSimpleName();
+
+	public static final String SEND_EGG = "SEND_EGG_CATEGORY";
 	
-	/** Tag string used to indicate source in logging */
-	public static final String TAG = SendQueueService.class.getSimpleName();;
+	public static final String BUNDLE_EGG_CAPTION = "BUNDLE_EGG_CAPTION";
+	public static final String BUNDLE_EGG_LOCALFILEURI = "BUNDLE_EGG_LOCALFILEURI";
+	
+	private FourDNestApplication app;
 	private SendQueueWorkerThread thread;
 	private ConcurrentLinkedQueue<Work> workQueue;
 	private ConcurrentLinkedQueue<Egg> waitingForConfirmation;
-	private NestManager nestManager;
-
-	/**
-	 * Creates the service, but does not start it.
-	 */
-	public SendQueueService(NestManager nestManager) {
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		
+		this.app = (FourDNestApplication) getApplication();
+		
 		this.workQueue = new ConcurrentLinkedQueue<Work>();
 		this.waitingForConfirmation = new ConcurrentLinkedQueue<Egg>();
+		
 		this.thread = new SendQueueWorkerThread(this.workQueue);
-		this.nestManager = nestManager;
-	}	
+	}
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(TAG, "onStartCommand called");
+		
+		
+		if(intent.hasCategory(SEND_EGG)) {
+			Egg egg = new Egg();
+			
+			egg.setCaption(intent.getStringExtra(BUNDLE_EGG_CAPTION));
+			egg.setLocalFileURI((Uri)intent.getSerializableExtra(BUNDLE_EGG_LOCALFILEURI));
+			
+			this.queueEgg(egg, true);
+			
+		}
+		
+		if(!this.thread.isAlive()) {
+			this.thread.start();
+		}
+
+		
+		return START_FLAG_REDELIVERY;
+	}
+	
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
+	}
+		
 	
 	/**
-	 * Starts the service.
+	 * Called before Service is killed. 
 	 */
-	public void start() {
-		this.thread.start();
-	}
-	/**
-	 * Stops the service
-	 */
-	public void stop() {
+	@Override
+	public void onDestroy() {
 		this.thread.dispose();
+		super.onDestroy();
 	}
 	
 	/**
@@ -66,8 +94,7 @@ public class SendQueueService extends Service {
 	 */
 	public void queueEgg(Egg egg, boolean autosend) {
 		assert(egg != null);
-		/*
-		 * TODO: this.getApplication() and getApplication() return null
+		
 		FourDNestApplication app = (FourDNestApplication) this.getApplication(); 
 		
 		// Set meta data
@@ -77,7 +104,7 @@ public class SendQueueService extends Service {
 		
 		// Save
 		egg = app.getEggManager().saveEgg(egg);
-		*/
+		
 		// Add to queue
 		this.workQueue.add(new QueuedEgg(egg, autosend));
 	}
@@ -118,7 +145,7 @@ public class SendQueueService extends Service {
 		}
 		public void doWork() {
 			if(this.autosend) {
-				Nest nest = SendQueueService.this.nestManager.getNest(
+				Nest nest = ((FourDNestApplication)SendQueueService.this.getApplication()).getNestManager().getNest(
 					this.egg.getNestId()
 				);
 				if(nest != null) {
@@ -169,13 +196,8 @@ public class SendQueueService extends Service {
 	public void setDelay(long delay) {
 		this.thread.setDelay(delay);
 	}
+
 	
-	/**
-	 * Null implementation.
-	 */
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
-	}
+	
 
 }

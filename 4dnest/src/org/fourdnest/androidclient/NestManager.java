@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 
@@ -45,7 +46,7 @@ public class NestManager {
 	private static final String LIMIT = "100";
 	
 	private final NestDatabase nestDb;
-	private HashMap<Integer, Nest> nestCache;
+	private Map<Integer, Nest> nestCache;
 	
 	/**
 	 * Creates new NestManager with specified context
@@ -85,11 +86,13 @@ public class NestManager {
 				Nest nest = this.extractNestFromCursor(result);
 				if(nest != null) {
 					nests.add(nest);
+					this.nestCache.put(nest.getId(), nest);
 				}				
 				result.moveToNext();
-				this.nestCache.put(nest.getId(), nest);
 			} 
 		}
+		
+		db.close();
 		
 		return nests;
 	}
@@ -131,6 +134,8 @@ public class NestManager {
 			this.nestCache.put(nest.getId(), nest);
 		}
 		
+		db.close();
+		
 		return nest;
 		
 	}
@@ -145,6 +150,9 @@ public class NestManager {
 		
 		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
 		int result = db.delete(TABLE, C_ID + "==" + id, null);
+		
+		db.close();
+		
 		return result;
 	}
 	
@@ -157,6 +165,9 @@ public class NestManager {
 		
 		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
 		int result = db.delete(TABLE, null, null);
+		
+		db.close();
+		
 		return result;
 	}
 	
@@ -248,6 +259,8 @@ public class NestManager {
 			
 			Log.d(TAG, "Inserted new Nest to db");
 		}
+		
+		db.close();
 		
 		this.nestCache.put(nest.getId(), nest);
 		

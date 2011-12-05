@@ -13,13 +13,40 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import android.content.Intent;
+import android.os.IBinder;
 import android.test.AndroidTestCase;
+import android.test.ServiceTestCase;
 
 /**
  * Tests the send queue service.
  * @author gronsti
  */
-public class SendQueueServiceTest extends AndroidTestCase {
+public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
+	
+	public SendQueueServiceTest() {
+		super(SendQueueService.class);
+	}
+	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+	}
+	
+	
+	public void testStartable() {
+		Intent startIntent = new Intent();
+		startIntent.setClass(getContext(), SendQueueService.class);
+		startService(startIntent);
+	}
+	
+    public void testBindable() {
+        Intent startIntent = new Intent();
+        startIntent.setClass(getContext(), SendQueueService.class);
+        IBinder service = bindService(startIntent); 
+    }
+
+	/*
 	private NestManager testNestManager;
 	private SendQueueService service;
 	private static SendQueueServiceTest tester;
@@ -49,9 +76,9 @@ public class SendQueueServiceTest extends AndroidTestCase {
 				1024,
 				"testuser", "secretkey"
 		));
-		this.service = new SendQueueService(this.testNestManager);
+		this.service = new SendQueueService();
 		this.service.setDelay(DELAY);
-		this.service.start();
+		this.service.onCreate();
 		this.massEgg = new Egg(
 				0,
 				1024,
@@ -96,7 +123,7 @@ public class SendQueueServiceTest extends AndroidTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		this.service.stop();
+		this.service.onDestroy();
 	}
 	
 	@Test
@@ -153,11 +180,12 @@ public class SendQueueServiceTest extends AndroidTestCase {
 		assertTrue(manualEggSeen);	// manual should have been sent
 		assertTrue(trueEggSeen);	// this should have been sent by sendAllQueuedEggs
 		assertFalse(falseEggSeen);
-	}
+	}*/
 	
-	/** We need to sleep before running tests to make sure that the thread
+	/* We need to sleep before running tests to make sure that the thread
 	 * has time to see the work and run it. */
-	private void guaranteeSleep(long delay) {
+	
+	/*private void guaranteeSleep(long delay) {
 		boolean slept = false;
 		try {
 			while(!slept) {
@@ -177,6 +205,7 @@ public class SendQueueServiceTest extends AndroidTestCase {
 		}
 	}	
 	
+	*/
 
 
 }
