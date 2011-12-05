@@ -46,13 +46,26 @@
     	    android:layout_height ="60px"
     	    android:layout_above="@+id/new_photo_egg_send_egg_button"
     	    android:hint="tags"/>
-    	
+ <RelativeLayout
+        android:id="@+id/nwe_photo_egg_view_bottom_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF" 
+        android:orientation="horizontal">
+    	    	<Button
+            android:id="@+id/new_photo_egg_save_draft_button"
+            android:layout_width="50px"
+            android:layout_height="30px"
+            android:text="Save as \n Draft" 
+            android:layout_toLeftOf="@+id/new_photo_egg_send_egg_button"/>/
     	<Button
             android:id="@+id/new_photo_egg_send_egg_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-			android:layout_weight="1"
 			android:text="@string/send_egg_to_nest"
-			android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true" 
 			/>
+
+    	</RelativeLayout>
 </RelativeLayout>
