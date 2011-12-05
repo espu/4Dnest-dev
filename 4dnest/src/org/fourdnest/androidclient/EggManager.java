@@ -82,6 +82,9 @@ public class EggManager {
 			} 
 		}
 		
+		result.close();
+		db.close();
+		
 		return eggs;
 	}
 	
@@ -111,6 +114,9 @@ public class EggManager {
 			Log.d(TAG, "Egg with id " + id + " not found");
 		}
 		
+		result.close();
+		db.close();
+		
 		return egg;
 		
 	}
@@ -124,6 +130,9 @@ public class EggManager {
 		SQLiteDatabase db = this.eggDb.getWritableDatabase();
 		
 		int result = db.delete(TABLE, C_ID + "==" + id, null);
+		
+		db.close();
+		
 		return result;
 	}
 	
@@ -135,6 +144,9 @@ public class EggManager {
 		SQLiteDatabase db = this.eggDb.getWritableDatabase();
 		
 		int result = db.delete(TABLE, null, null);
+		
+		db.close();
+		
 		return result;
 	}
 	
@@ -229,6 +241,9 @@ public class EggManager {
 		
 		
 		egg.setId((Integer)(int)rowid);
+		
+		db.close();
+		
 		return egg;
 	}
 

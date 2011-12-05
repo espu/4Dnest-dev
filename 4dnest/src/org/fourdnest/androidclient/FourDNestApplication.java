@@ -36,10 +36,6 @@ public class FourDNestApplication extends Application
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
 	  
-	  // Start SendQueueService
-	  //Intent intent = new Intent(this, SendQueueService.class);	  
-	  //startService(intent);
-	  
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
@@ -53,7 +49,7 @@ public class FourDNestApplication extends Application
 			Nest n = m.getNest(0);
 			
 			if(n == null) {
-				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 				m.saveNest(n);
 			}
 			
@@ -130,13 +126,4 @@ public class FourDNestApplication extends Application
 		prefEditor.putInt("currentNestId", newNestId);
 	}
 
-	public void sendEgg(Egg egg) {
-		Intent intent = new Intent(this, SendQueueService.class);
-		
-		intent.addCategory(SendQueueService.SEND_EGG);
-		intent.putExtra(SendQueueService.BUNDLE_EGG_CAPTION, egg.getCaption());
-		intent.putExtra(SendQueueService.BUNDLE_EGG_LOCALFILEURI, egg.getLocalFileURI());
-		
-		startService(intent);		
-	}
 }

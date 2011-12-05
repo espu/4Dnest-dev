@@ -8,11 +8,13 @@ import org.fourdnest.androidclient.NestManager;
 
 import android.app.Application;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * A service that manages Eggs waiting to be sent to a Nest.
@@ -28,14 +30,38 @@ public class SendQueueService extends Service {
 
 	public static final String SEND_EGG = "SEND_EGG_CATEGORY";
 	
-	public static final String BUNDLE_EGG_CAPTION = "BUNDLE_EGG_CAPTION";
-	public static final String BUNDLE_EGG_LOCALFILEURI = "BUNDLE_EGG_LOCALFILEURI";
+	public static final String BUNDLE_EGG_ID = "BUNDLE_EGG_ID";
 	
 	private FourDNestApplication app;
 	private SendQueueWorkerThread thread;
 	private ConcurrentLinkedQueue<Work> workQueue;
 	private ConcurrentLinkedQueue<Egg> waitingForConfirmation;
 	
+	/**
+	 * Static method to be called with an Egg that needs to be put
+	 * to the send queue.
+	 * 
+	 * @param context Current application context
+	 * @param egg Egg to be put to queue
+	 */
+	public static void sendEgg(Context context, Egg egg) {
+		Intent intent = new Intent(context, SendQueueService.class);
+		
+		FourDNestApplication app = (FourDNestApplication) context;
+		Egg savedEgg = app.getEggManager().saveEgg(egg);
+		
+		intent.addCategory(SendQueueService.SEND_EGG);
+		intent.putExtra(SendQueueService.BUNDLE_EGG_ID, egg.getId());
+		
+		context.startService(intent);		
+	}
+	
+	/**
+	 * Overrides basic Service onCreate method. Sets up necessary background
+	 * items.
+	 * 
+	 * Should never be called directly.
+	 */
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -48,29 +74,51 @@ public class SendQueueService extends Service {
 		this.thread = new SendQueueWorkerThread(this.workQueue);
 	}
 	
+	/**
+	 * Overrides basic Service onStartComand method. Reacts to received intents.
+	 * Core functionality is reacting to received Egg send requests.
+	 * 
+	 * Should never be called directly. 
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(TAG, "onStartCommand called");
 		
-		
+		// If Intent it categorized as egg-sending intent, act accordingly 
 		if(intent.hasCategory(SEND_EGG)) {
-			Egg egg = new Egg();
 			
-			egg.setCaption(intent.getStringExtra(BUNDLE_EGG_CAPTION));
-			egg.setLocalFileURI((Uri)intent.getSerializableExtra(BUNDLE_EGG_LOCALFILEURI));
+			// Get Egg id from Intent, fetch the Egg from db
+			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
+			Egg egg = this.app.getEggManager().getEgg(eggId);
 			
-			this.queueEgg(egg, true);
+			
+			if(egg != null) {
+				// Add meta data and re-save
+				Nest currentNest = app.getCurrentNest();
+				egg.setNestId(currentNest.getId());
+				egg.setAuthor(currentNest.getUserName());			
+				this.app.getEggManager().saveEgg(egg);
+			
+				this.queueEgg(egg, true);
+			} else {
+				Log.e(TAG, "Tried sending an unsaved egg with id " + eggId);
+			}
 			
 		}
 		
 		if(!this.thread.isAlive()) {
 			this.thread.start();
 		}
-
 		
+		// Apparently critical return value. Not sure why exactly. :p 
 		return START_FLAG_REDELIVERY;
 	}
 	
+
+	/**
+	 * Dummy override for default onBind. Returns null to signal
+	 * that this service cannot be bound.
+	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -78,7 +126,10 @@ public class SendQueueService extends Service {
 		
 	
 	/**
-	 * Called before Service is killed. 
+	 * Overrides basic Service onDestroy method. Disposes of background
+	 * items safely.
+	 * 
+	 * Should never be called directly. 
 	 */
 	@Override
 	public void onDestroy() {
@@ -92,27 +143,15 @@ public class SendQueueService extends Service {
 	 * @param autosend If true, the Egg will be sent immediately. If false,
 	 * it will be placed in a separate queue waiting user confirmation.
 	 */
-	public void queueEgg(Egg egg, boolean autosend) {
+	private void queueEgg(Egg egg, boolean autosend) {
 		assert(egg != null);
-		
-		FourDNestApplication app = (FourDNestApplication) this.getApplication(); 
-		
-		// Set meta data
-		Nest currentNest = app.getCurrentNest();
-		egg.setNestId(currentNest.getId());
-		egg.setAuthor(currentNest.getUserName());
-		
-		// Save
-		egg = app.getEggManager().saveEgg(egg);
-		
-		// Add to queue
 		this.workQueue.add(new QueuedEgg(egg, autosend));
 	}
 	/**
 	 * Removes an Egg that awaits user confirmation.
 	 * @param egg The Egg to be removed. May not be null.
 	 */
-	public void removeQueuedEgg(Egg egg) {
+	private void removeQueuedEgg(Egg egg) {
 		assert(egg != null);
 		this.workQueue.add(new ConfirmEggInQueue(egg, false));
 	}
@@ -120,14 +159,14 @@ public class SendQueueService extends Service {
 	 * Sends one Egg that awaits user confirmation, out of sequence.
 	 * @param egg The Egg to be sent. May not be null.
 	 */
-	public void sendQueuedEgg(Egg egg) {
+	private void sendQueuedEgg(Egg egg) {
 		assert(egg != null);
 		this.workQueue.add(new ConfirmEggInQueue(egg, true));
 	}
 	/**
 	 * Sends all Eggs that await user confirmation.
 	 */
-	public void sendAllQueuedEggs() {
+	private void sendAllQueuedEggs() {
 		Egg egg;
 		// drain the waitingForConfirmation queue
 		while((egg = SendQueueService.this.waitingForConfirmation.poll()) != null) {
@@ -135,6 +174,7 @@ public class SendQueueService extends Service {
 			SendQueueService.this.queueEgg(egg, true);
 		}	
 	}
+	
 	
 	private class QueuedEgg implements Work {
 		private Egg egg;

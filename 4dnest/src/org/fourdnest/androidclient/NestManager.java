@@ -92,6 +92,8 @@ public class NestManager {
 			} 
 		}
 		
+		
+		result.close();
 		db.close();
 		
 		return nests;
@@ -134,6 +136,7 @@ public class NestManager {
 			this.nestCache.put(nest.getId(), nest);
 		}
 		
+		result.close();
 		db.close();
 		
 		return nest;

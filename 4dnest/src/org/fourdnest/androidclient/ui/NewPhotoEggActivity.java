@@ -15,13 +15,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class NewPhotoEggActivity extends Activity{
+	private static final String TAG = "NewPhotoEggActivity";
 	private String pictureURL = "";
 	private String realPictureURL = "";
 	
@@ -53,7 +56,7 @@ public class NewPhotoEggActivity extends Activity{
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
-            	System.out.println("picture url is: xzy  " +realPictureURL);
+            	Log.d(TAG, "picture url is: xzy  " +realPictureURL);
             	Intent i = new Intent(Intent.ACTION_VIEW);
             	/*
             	 * LEET HACKS, needs file:// to the front or will crash !!!!!!!!!
@@ -75,10 +78,10 @@ public class NewPhotoEggActivity extends Activity{
 				egg.setLocalFileURI(Uri.parse("file://"+realPictureURL));
 				egg.setTags(new ArrayList<Tag>());
 				
-				FourDNestApplication app = (FourDNestApplication)getApplication();
-				if(app != null) {
-					app.sendEgg(egg);
-				}
+				SendQueueService.sendEgg(getApplication(), egg);
+				
+				Toast.makeText(getApplication(), "Image added to send list", Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		});
         
