@@ -44,7 +44,7 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         
-        <service android:name=".services.SendQueueService" />
+        <service android:name=".services.SendQueueService" android:enabled="true"/>
     </application>
 
 </manifest>
