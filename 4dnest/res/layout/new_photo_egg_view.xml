@@ -4,25 +4,44 @@
     android:layout_height="fill_parent"
         android:background="#ffffff"
 >
+<ScrollView
+        android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    >
+    
+    <!-- buttom padding needs to be 40dp or buttons at end will over run this view -->
     <LinearLayout
    		android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         android:layout_alignParentTop="true"
+        android:paddingBottom="40dp" 
+        android:paddingTop="5dp"
         >
         <ImageView
             android:id="@+id/new_photo_egg_thumbnail_view"
          	android:layout_width="fill_parent"
-         	android:layout_height="300px"
-         	android:paddingLeft="20px"
-         	android:paddingRight="20px"
+         	android:layout_height="150sp"
+         	android:paddingLeft="10sp"
+         	android:paddingRight="10sp"
          	android:cropToPadding="true"
          	android:onClick="new_photo_egg_preview_pic"
         />
-        <RelativeLayout 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            >
+        
+                <ImageView
+            android:id="@+id/new_photo_egg_thumbnail_view2"
+         	android:layout_width="fill_parent"
+         	android:layout_height="150sp"
+         	android:paddingLeft="10sp"
+         	android:paddingRight="10sp"
+         	android:cropToPadding="true"
+         	android:onClick="new_photo_egg_preview_pic"
+         	android:background="#000000"
+         	android:visibility="gone"
+        />
+
         <TextView
             android:text="@string/preview"
             android:background="#ffffff"
@@ -30,7 +49,6 @@
          	android:layout_height="wrap_content"
          	android:layout_centerHorizontal="true"
              />
-        </RelativeLayout>
     	<EditText 
         	android:layout_width="fill_parent"
         	android:layout_height="200px" 
@@ -40,16 +58,17 @@
         	android:id="@+id/new_photo_egg_caption_view" 
         	android:hint="@string/add_message_here"
         	/>/
-    	     </LinearLayout>
     	<EditText
     	    android:layout_width="fill_parent"
     	    android:layout_height ="60px"
     	    android:layout_above="@+id/new_photo_egg_send_egg_button"
     	    android:hint="tags"/>
+    	 </LinearLayout>
+    	 </ScrollView>
  <RelativeLayout
         android:id="@+id/nwe_photo_egg_view_bottom_buttons"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF" 
         android:orientation="horizontal">
