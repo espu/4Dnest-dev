@@ -65,5 +65,9 @@ public class httpTest extends AndroidTestCase {
 		assertTrue(protResult.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED);
 
 	}
+	
+	private void getPreviouslySentEgg() {
+	    
+	}
 
 }
