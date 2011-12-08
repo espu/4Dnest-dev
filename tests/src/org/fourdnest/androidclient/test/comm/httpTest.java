@@ -51,8 +51,8 @@ public class httpTest extends AndroidTestCase {
 
         /* SELECT to use local or web server */
 
-		//Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://10.0.2.2:8000/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		//Nest nest = new Nest(007, "testNest", "testNest", new URI("http://10.0.2.2:8000/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 
 		protocol.setNest(nest);
@@ -60,6 +60,10 @@ public class httpTest extends AndroidTestCase {
 	    Log.v("httppost", post);
 		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
 
+	}
+	
+	private void getPreviouslySentEgg() {
+	    
 	}
 
 }
