@@ -47,18 +47,22 @@ public class httpTest extends AndroidTestCase {
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
-		Egg egg = new Egg(5, 10, null, uri, null, "The fight continues.", tags, 100);
+		Egg egg = new Egg(5, 10, null, uri, null, "I return!.", tags, 100);
 
         /* SELECT to use local or web server */
 
-		//Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://10.0.2.2:8000/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		//Nest nest = new Nest(007, "testNest", "testNest", new URI("http://10.0.2.2:8000/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 
 		protocol.setNest(nest);
-		String post = protocol.sendEgg(egg);
+		ProtocolResult protResult = protocol.sendEgg(egg);
+		String post = String.valueOf(protResult.getStatusCode()) + " "; 
+		if (protResult.getUrl() != null) {
+		    post += protResult.getUrl();
+		}
 	    Log.v("httppost", post);
-		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
+		assertTrue(protResult.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED);
 
 	}
 
