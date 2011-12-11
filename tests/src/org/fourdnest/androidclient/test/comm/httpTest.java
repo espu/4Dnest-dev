@@ -47,7 +47,7 @@ public class httpTest extends AndroidTestCase {
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
-		Egg egg = new Egg(5, 10, null, uri, null, "The fight continues.", tags, 100);
+		Egg egg = new Egg(5, 10, null, uri, null, "I return!.", tags, 100);
 
         /* SELECT to use local or web server */
 
@@ -56,10 +56,18 @@ public class httpTest extends AndroidTestCase {
 		Protocol protocol = nest.getProtocol();
 
 		protocol.setNest(nest);
-		String post = protocol.sendEgg(egg);
+		ProtocolResult protResult = protocol.sendEgg(egg);
+		String post = String.valueOf(protResult.getStatusCode()) + " "; 
+		if (protResult.getUrl() != null) {
+		    post += protResult.getUrl();
+		}
 	    Log.v("httppost", post);
-		assertTrue(post.split(" ")[0].equalsIgnoreCase("201"));
+		assertTrue(protResult.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED);
 
+	}
+	
+	private void getPreviouslySentEgg() {
+	    
 	}
 
 }

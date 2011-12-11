@@ -46,6 +46,8 @@ public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
 	private static final String EGG_UPLOAD_PATH = "/v1/egg/upload/";
 	private static final int HTTP_STATUSCODE_CREATED = 201;
+	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
+	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 	private static final int CONNECTION_TIMEOUT = 15000;
 	private Nest nest;
 
@@ -59,7 +61,7 @@ public class FourDNestProtocol implements Protocol {
      * 
      * @return HTTP status code and egg URI on server if creation successful
      **/
-    public String sendEgg(Egg egg) {
+    public ProtocolResult sendEgg(Egg egg) {
         
         String concatedMd5 = "";
         HttpClient client = createHttpClient();
@@ -120,22 +122,39 @@ public class FourDNestProtocol implements Protocol {
             
             HttpResponse response = client.execute(post);
             status = response.getStatusLine().getStatusCode();
-            Log.d(TAG, response.getStatusLine().toString());
-            if (status == HTTP_STATUSCODE_CREATED) {
-                return status + " "
-                        + response.getHeaders("Location")[0].getValue();
-            }
+
+            return this.parseResult(status, response);
+
         } catch (ClientProtocolException e) {
             Log.e(TAG, "ClientProtocolException, egg not sent "
                     + e.getMessage());
-            return "0";
+            return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
         } catch (IOException e) {
             Log.e(TAG, "IOException, egg not sent " + e.getMessage());
-            return "0";
+            return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
         }
-        return String.valueOf(status);
     }
-
+    
+    /**
+     * Creates the proper ProtocolResult object from the server response
+     * 
+     * @param The statuscode given in the server response
+     * 
+     */
+    private ProtocolResult parseResult(int statusCode, HttpResponse response) {
+        if (statusCode == HTTP_STATUSCODE_CREATED) {
+            return new ProtocolResult(response.getHeaders("Location")[0]
+                    .getValue(), ProtocolResult.RESOURCE_UPLOADED);
+        }
+        else if (statusCode == HTTP_STATUSCODE_UNAUTHORIZED) {
+            return new ProtocolResult(null, ProtocolResult.AUTHORIZATION_FAILED);
+        }
+        else if (statusCode == HTTP_STATUSCODE_SERVER_ERROR) {
+            return new ProtocolResult(null, ProtocolResult.SERVER_INTERNAL_ERROR);
+        }else {
+            return new ProtocolResult(null, ProtocolResult.UNKNOWN_REASON);
+        }
+    }
 
     /**
      * Creates the MultipartEntity from name-value -pair list
