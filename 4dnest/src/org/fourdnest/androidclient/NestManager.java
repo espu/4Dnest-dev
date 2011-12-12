@@ -39,7 +39,7 @@ public class NestManager {
 	
 	private static final String[] ALL_COLUMNS = new String[]{
 		C_ID, C_NAME, C_DESCRIPTION, C_ADDRESS,
-		C_PROTOCOL, C_USERNAME, C_SECRETKEY		
+		C_PROTOCOL, C_USERNAME, C_SECRETKEY
 	};
 	
 	/** Limit of number of Nests to return */

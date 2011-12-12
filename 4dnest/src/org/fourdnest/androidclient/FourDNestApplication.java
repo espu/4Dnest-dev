@@ -7,7 +7,6 @@ import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -27,15 +26,13 @@ public class FourDNestApplication extends Application
 	private SharedPreferences prefs;
 	private NestManager nestManager;
 	private EggManager eggManager;
-
-	private SendQueueService sendQueueService;
 	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-	  
+
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
@@ -85,18 +82,6 @@ public class FourDNestApplication extends Application
 		return this.eggManager;		
 	}
 
-	/**
-	 * Gets the SendQueueService singleton.
-	 * The SendQueueService is created and started, if it isn't already running.
-	 * @return the SendQueueService
-	 */
-	/*public SendQueueService getSendQueueService() {
-		if(this.sendQueueService == null) {
-		  this.sendQueueService = new SendQueueService(this.getNestManager());
-		  this.sendQueueService.start();
-		}
-		return this.sendQueueService;
-	}*/
 
 	public synchronized void onSharedPreferenceChanged(
 			SharedPreferences sharedPreferences, String key) {

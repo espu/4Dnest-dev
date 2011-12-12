@@ -79,8 +79,6 @@ public class NewPhotoEggActivity extends Activity{
 				egg.setTags(new ArrayList<Tag>());
 				
 				SendQueueService.sendEgg(getApplication(), egg);
-				
-				Toast.makeText(getApplication(), "Image added to send list", Toast.LENGTH_SHORT).show();
 				finish();
 			}
 		});

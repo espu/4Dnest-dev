@@ -4,9 +4,11 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.Protocol;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.junit.After;
@@ -24,6 +26,7 @@ import android.test.ServiceTestCase;
  */
 public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
 	
+	private final static int NEST_ID = 1234;
 	public SendQueueServiceTest() {
 		super(SendQueueService.class);
 	}
@@ -31,6 +34,19 @@ public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		
+		FourDNestApplication app = new FourDNestApplication();
+		
+		Protocol testProtocol = new SendQueueTestProtocol();
+		
+		app.getNestManager().deleteAllNests();
+		
+		Nest nest = new Nest(NEST_ID, "Nest", "Nest descr", new URI("http://127.0.0.1"), testProtocol.getProtocolId(), "username", "secretkey");
+		app.getNestManager().saveNest(nest);
+		app.setCurrentNestId(nest.getId());
+		
+		setApplication(app);
+		setContext(app);
 	}
 	
 	

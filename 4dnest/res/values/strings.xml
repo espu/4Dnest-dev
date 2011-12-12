@@ -18,4 +18,6 @@
     <string name="preview">preview</string>
     <string name="add_message_here">Add Message here</string>
     <string name="read_stream_create_button">Create</string>
+    <string name="egg_queued">Egg queued</string>
+    <string name="egg_send_complete">Send completed</string>
 </resources>

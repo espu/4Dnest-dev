@@ -6,18 +6,14 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.Protocol;
-/*
-=======
 import org.fourdnest.androidclient.comm.ProtocolResult;
 
->>>>>>> master
 public class SendQueueTestProtocol implements Protocol {
 	
 	public int getProtocolId() {
 		return 1024;
 	}
 	public ProtocolResult sendEgg(Egg egg) {
-		SendQueueServiceTest.eggSent(egg);
 		return new ProtocolResult(null, 200);
 	}
 	public void setNest(Nest nest) {
@@ -26,4 +22,4 @@ public class SendQueueTestProtocol implements Protocol {
 		return null;
 	}
 }
-*/
+
