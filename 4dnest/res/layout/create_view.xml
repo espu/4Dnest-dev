@@ -101,23 +101,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:orientation="horizontal" >
+        android:background="#000000"
+        android:orientation="horizontal"
+        android:weightSum="1.0" >
 
-        <ToggleButton
+          <Button
             android:id="@+id/create_fifthButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_weight=".70"
             android:textOff="@string/create_screen_track_route_tag"
-            android:textOn="@string/create_screen_track_route_tag" />
+            android:textOn="@string/create_screen_track_route_tag" 
+            android:text="track route"/>
 
         <Button
             android:id="@+id/create_sixthButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Dummy Text" />
+            android:layout_weight=".30"
+            android:text="Dummy Text"/>
+             
+             
+
     </LinearLayout>
 
 </RelativeLayout>
