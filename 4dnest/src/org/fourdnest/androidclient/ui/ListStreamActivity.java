@@ -15,7 +15,7 @@ import android.widget.ListView;
  * the server. Also provides functionality to access the create view and for
  * toggling route tracking.
  */
-public class ReadStreamActivity extends NestSpecificActivity {
+public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public View getContentLayout(View view) {
@@ -44,7 +44,7 @@ public class ReadStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public int getLayoutId() {
-		return R.layout.read_stream_view;
+		return R.layout.list_stream_view;
 	}
 
 }

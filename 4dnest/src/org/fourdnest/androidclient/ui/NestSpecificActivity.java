@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 /**
  * Activity that places a button on the top of the screen. The button displays
  * the name of the current nest. Pressing the button sends the user back to
- * ReadStreamActivity.
+ * ListStreamActivity.
  */
 public abstract class NestSpecificActivity extends Activity {
 
@@ -30,7 +30,7 @@ public abstract class NestSpecificActivity extends Activity {
 			
 			public void onClick(View v) {
 				Intent intent = new Intent(v.getContext(),
-						ReadStreamActivity.class);
+						ListStreamActivity.class);
 				v.getContext().startActivity(intent);
 			}
 		});
