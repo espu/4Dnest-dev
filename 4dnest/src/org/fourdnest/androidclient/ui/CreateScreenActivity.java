@@ -79,8 +79,9 @@ public class CreateScreenActivity extends NestSpecificActivity {
 				// in onCreate or any event where your want the user to
 				// select a file
 				Intent intent = new Intent();
-				intent.setType("image/*");
+				intent.setType("audio/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
 				startActivityForResult(
 						Intent.createChooser(intent, "Select Picture"),
 						SELECT_PICTURE);

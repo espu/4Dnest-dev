@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10px"
-            android:src="@drawable/icon" />
+            android:src="@drawable/audio_create" />
 
         <ImageButton
             android:id="@+id/create_secondButton"
@@ -62,31 +62,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10px"
             android:layout_toRightOf="@+id/create_firstButton"
-            android:src="@drawable/icon" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/create_screen_lower_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/create_screen_upper_buttons"
-        android:background="#ffffff"
-        android:gravity="center_horizontal" >
-
+            android:src="@drawable/image_create" />
+        
         <ImageButton
             android:id="@+id/create_thirdButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10px"
-            android:src="@drawable/icon" />
-
-        <ImageButton
-            android:id="@+id/create_fourthButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="10px"
-            android:layout_toRightOf="@+id/create_thirdButton"
-            android:src="@drawable/icon" />
+            android:layout_toRightOf="@+id/create_secondButton"
+            android:src="@drawable/video_create" />
     </RelativeLayout>
 
     <Button
