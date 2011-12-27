@@ -31,14 +31,14 @@
         android:gravity="center_horizontal" >
 
         <ImageButton
-            android:id="@+id/create_firstButton"
+            android:id="@+id/select_audio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10px"
             android:src="@drawable/audio_create" />
 
         <ImageButton
-            android:id="@+id/create_secondButton"
+            android:id="@+id/select_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10px"
@@ -46,7 +46,7 @@
             android:src="@drawable/image_create" />
         
         <ImageButton
-            android:id="@+id/create_thirdButton"
+            android:id="@+id/select_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10px"

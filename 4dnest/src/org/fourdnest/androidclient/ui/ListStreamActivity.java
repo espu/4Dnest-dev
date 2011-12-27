@@ -26,7 +26,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 			public void onClick(View v) {
 				Intent intent = new Intent(v.getContext(),
-						CreateScreenActivity.class);
+						NewEggActivity.class);
 				v.getContext().startActivity(intent);
 
 			}
