@@ -119,7 +119,7 @@
 
         <target name="compile-main" depends="resource-src" description="Compile the java source.">
                 <mkdir dir="../target/main-classes"/>
-                <javac encoding="ascii" target="1.7" debug="true" extdirs=""
+                <javac encoding="ascii" source="1.6" target="1.6" debug="true" extdirs=""
                                 srcdir="src" destdir="../target/main-classes"
                                 bootclasspath="${android-home}/android.jar">
                         <classpath>
@@ -156,6 +156,7 @@
         <!--    </android:aapt> -->
                 </exec>
         </target>
+
         <target name="package-apk" depends="dex, package-res" description="Package the application and sign it with a debug key.">
                 <exec executable="/home/autobuild/antlib/android-sdk-linux/tools/apkbuilder">
         <!--    <android:apk-builder> -->
@@ -213,6 +214,17 @@
         <target name="autobuild" depends="clean, git-pull, package-apk, javadoc" description="Autobuild"/>
 
 
+	<target name="start-emulator" description="Start an emulator.">
+        	<android:adb><arg value="start-server"/></android:adb>
+        	<android:start-emulator>
+                	<arg line="-skin 320x480 -no-boot-anim"/>
+        	</android:start-emulator>
+	</target>
+
+	<target name="stop-emulator" description="Stop the emulator we started.">
+        	<android:stop-emulator/>
+	</target>
+
 
 	<property name="sonar.host.url" value="http://78.47.223.228:9000" />
 	<property name="sonar.jdbc.url" 
@@ -220,8 +232,6 @@
 	<property name="sonar.jdbc.driverClassName" value="org.postgresql.Driver" />
 	<property name="sonar.jdbc.username" value="sonaruser" />
 	<property name="sonar.jdbc.password" value="aweLKAISodkei38j8af" />
-
-
 	<target name="sonar" description="Sonar analysis">
 		<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
 			<classpath path="/home/autobuild/antlib/sonar-ant-task-1.2.jar" />
