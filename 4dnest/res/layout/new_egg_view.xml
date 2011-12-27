@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10px"
-            android:layout_toRightOf="@+id/create_firstButton"
+            android:layout_toRightOf="@+id/select_audio"
             android:src="@drawable/image_create" />
         
         <ImageButton
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10px"
-            android:layout_toRightOf="@+id/create_secondButton"
+            android:layout_toRightOf="@+id/select_image"
             android:src="@drawable/video_create" />
     </RelativeLayout>
         
