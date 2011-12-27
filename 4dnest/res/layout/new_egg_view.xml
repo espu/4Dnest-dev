@@ -20,6 +20,40 @@
         android:paddingBottom="40dp" 
         android:paddingTop="5dp"
         >
+        
+    <RelativeLayout
+        android:id="@+id/create_screen_upper_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/create_screen_text_margin"
+        android:layout_marginTop="5px"
+        android:background="#ffffff"
+        android:gravity="center_horizontal" >
+
+        <ImageButton
+            android:id="@+id/create_firstButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10px"
+            android:src="@drawable/audio_create" />
+
+        <ImageButton
+            android:id="@+id/create_secondButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:layout_toRightOf="@+id/create_firstButton"
+            android:src="@drawable/image_create" />
+        
+        <ImageButton
+            android:id="@+id/create_thirdButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:layout_toRightOf="@+id/create_secondButton"
+            android:src="@drawable/video_create" />
+    </RelativeLayout>
+        
         <ImageView
             android:id="@+id/new_photo_egg_thumbnail_view"
          	android:layout_width="fill_parent"
@@ -28,6 +62,7 @@
          	android:paddingRight="10sp"
          	android:cropToPadding="true"
          	android:onClick="new_photo_egg_preview_pic"
+         	android:visibility="gone"
         />
         
                 <ImageView

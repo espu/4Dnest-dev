@@ -45,7 +45,7 @@ public class CreateScreenActivity extends NestSpecificActivity {
 						.println("filemanagerstring is the right one for you!");
 			}
 			Intent myIntent = new Intent(this.getApplicationContext(),
-					NewPhotoEggActivity.class);
+					NewEggActivity.class);
 			myIntent.putExtra("pictureURL", imagePath);
 			startActivityForResult(myIntent, 0);
 		}

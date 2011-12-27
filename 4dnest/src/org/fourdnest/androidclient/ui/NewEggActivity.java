@@ -21,13 +21,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class NewPhotoEggActivity extends Activity{
+public class NewEggActivity extends Activity{
 	private String pictureURL = "";
 	private String realPictureURL = "";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.new_photo_egg_view);
+		setContentView(R.layout.new_egg_view);
 		this.getApplicationContext();
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
