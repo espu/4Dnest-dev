@@ -57,7 +57,7 @@ public class NewEggActivity extends Activity{
 
 	
 	private String fileURL = "";
-	private String realPictureURL = "";
+	private String realFileURL = "";
 	private String selectedFilePath;
 	private String filemanagerstring;
 	private ImageView thumbNailView;
@@ -75,16 +75,8 @@ public class NewEggActivity extends Activity{
 		fileURL = extras.getString("pictureURL");
 		}
 
-		
-		this.thumbNailView = (ImageView) this.findViewById(R.id.new_photo_egg_thumbnail_view);
-		File imgFile = new  File(fileURL);
 		this.upperButtons = (RelativeLayout) this.findViewById(R.id.new_egg_upper_buttons);
-		if(imgFile.exists()){
-			realPictureURL = imgFile.getAbsolutePath();
-		    Bitmap myBitmap = BitmapFactory.decodeFile(realPictureURL);
-		    thumbNailView.setImageBitmap(myBitmap);
-
-		}
+		this.thumbNailView = (ImageView) this.findViewById(R.id.new_photo_egg_thumbnail_view);
 		/*
 		 * Adds a onClickListener to the image so we know when to open a thumbnail
 		 */
@@ -94,12 +86,19 @@ public class NewEggActivity extends Activity{
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
-            	System.out.println("picture url is: xzy  " +realPictureURL);
+            	System.out.println("picture url is: xzy  " +realFileURL);
             	Intent i = new Intent(Intent.ACTION_VIEW);
             	/*
             	 * LEET HACKS, needs file:// to the front or will crash !!!!!!!!!
             	 */
-            	i.setDataAndType(Uri.parse("file://"+realPictureURL), "image/jpeg");
+            	
+            	if(currentMediaItem==mediaItemType.image){
+                	i.setDataAndType(Uri.parse("file://"+realFileURL), "image/*");
+
+            	}
+            	else if(currentMediaItem==mediaItemType.audio){
+            	i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
+            	}
             	startActivity(i);
             }
         });
@@ -114,7 +113,7 @@ public class NewEggActivity extends Activity{
 				Egg egg = new Egg();
 				egg.setAuthor("Gandalf_41");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
-				egg.setLocalFileURI(Uri.parse("file://"+realPictureURL));
+				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 				egg.setTags(new ArrayList<Tag>());
 				
 				sendQueService.queueEgg(egg, true);
@@ -176,8 +175,8 @@ public class NewEggActivity extends Activity{
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
 				File imgFile = new  File(fileURL);
 				if(imgFile.exists()){
-					realPictureURL = imgFile.getAbsolutePath();
-				    Bitmap myBitmap = BitmapFactory.decodeFile(realPictureURL);
+					realFileURL = imgFile.getAbsolutePath();
+				    Bitmap myBitmap = BitmapFactory.decodeFile(realFileURL);
 				    thumbNailView.setImageBitmap(myBitmap);
 				}
 				scrollView.postInvalidate(); //should cause a redraw.... should!
@@ -190,6 +189,10 @@ public class NewEggActivity extends Activity{
 			thumbNailView.setVisibility(View.VISIBLE);
 			upperButtons.setVisibility(View.GONE);
 			thumbNailView.setImageResource(R.drawable.note1);
+			File audioFile = new  File(fileURL);
+			realFileURL = audioFile.getAbsolutePath();
+
+			
 		
 		}
 	
