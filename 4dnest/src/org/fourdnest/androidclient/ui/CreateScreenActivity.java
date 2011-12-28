@@ -45,7 +45,7 @@ public class CreateScreenActivity extends NestSpecificActivity {
 						.println("filemanagerstring is the right one for you!");
 			}
 			Intent myIntent = new Intent(this.getApplicationContext(),
-					NewPhotoEggActivity.class);
+					NewEggActivity.class);
 			myIntent.putExtra("pictureURL", imagePath);
 			startActivityForResult(myIntent, 0);
 		}
@@ -79,8 +79,9 @@ public class CreateScreenActivity extends NestSpecificActivity {
 				// in onCreate or any event where your want the user to
 				// select a file
 				Intent intent = new Intent();
-				intent.setType("image/*");
+				intent.setType("video/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
 				startActivityForResult(
 						Intent.createChooser(intent, "Select Picture"),
 						SELECT_PICTURE);

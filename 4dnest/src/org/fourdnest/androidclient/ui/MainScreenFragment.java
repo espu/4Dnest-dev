@@ -105,7 +105,7 @@ public class MainScreenFragment extends Fragment {
 				imagePath = filemanagerstring;
 				System.out.println("filemanagerstring is the right one for you!");
 			}
-			Intent myIntent = new Intent(this.currentContext, NewPhotoEggActivity.class);
+			Intent myIntent = new Intent(this.currentContext, NewEggActivity.class);
 			myIntent.putExtra("pictureURL", imagePath);
 			startActivityForResult(myIntent, 0);           
 		}
