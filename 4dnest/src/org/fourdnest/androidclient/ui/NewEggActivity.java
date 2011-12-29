@@ -46,16 +46,7 @@ public class NewEggActivity extends Activity{
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
 	
-	/*
-	 * Next three items are static definitions used to control the 
-	 * visibility of UI elements. 
-	 */
-	
-	private static final int VISIBLE = 0; //UI Element is visible
-	private static final int INVISIBLE = 1;	//not currently used, but defined for future use
-	private static final int GONE = 2;	//makes UI elements disappear and removes it from layout
 
-	
 	private String fileURL = "";
 	private String realFileURL = "";
 	private String selectedFilePath;
@@ -98,6 +89,10 @@ public class NewEggActivity extends Activity{
             	}
             	else if(currentMediaItem==mediaItemType.audio){
             	i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
+            	}
+            	else if(currentMediaItem==mediaItemType.video){
+                	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
+
             	}
             	startActivity(i);
             }
@@ -155,7 +150,24 @@ public class NewEggActivity extends Activity{
     						SELECT_AUDIO);
 
     			}
-    		});		
+    		});
+       	
+       	((ImageButton) this.findViewById(R.id.select_video))
+    		.setOnClickListener(new OnClickListener() {
+    			public void onClick(View arg0) {
+    				// in onCreate or any event where your want the user to
+    				// select a file
+    				Intent intent = new Intent();
+    				intent.setType("video/*");
+    				intent.setAction(Intent.ACTION_GET_CONTENT);
+    				intent.addCategory(Intent.CATEGORY_OPENABLE);
+    				startActivityForResult(
+    						Intent.createChooser(intent, "Select Video"),
+    						SELECT_VIDEO);
+
+    			}
+    		});	
+       	
 	}
 
 
@@ -191,9 +203,14 @@ public class NewEggActivity extends Activity{
 			thumbNailView.setImageResource(R.drawable.note1);
 			File audioFile = new  File(fileURL);
 			realFileURL = audioFile.getAbsolutePath();
-
+		}
 			
-		
+			else if (this.currentMediaItem == mediaItemType.video){
+			thumbNailView.setVisibility(View.VISIBLE);
+			upperButtons.setVisibility(View.GONE);
+			thumbNailView.setImageResource(R.drawable.roll1);
+			File audioFile = new  File(fileURL);
+			realFileURL = audioFile.getAbsolutePath();
 		}
 	
 	}
@@ -203,7 +220,7 @@ public class NewEggActivity extends Activity{
 	 */
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && (requestCode == SELECT_PICTURE || requestCode == SELECT_AUDIO)) {
+		if (resultCode == RESULT_OK && (requestCode == SELECT_PICTURE || requestCode == SELECT_AUDIO || requestCode == SELECT_VIDEO)) {
 			Uri selectedImageUri = data.getData();
 
 			// OI FILE Manager
@@ -233,6 +250,9 @@ public class NewEggActivity extends Activity{
 			}
 			else if(requestCode == SELECT_AUDIO){
 				this.currentMediaItem = mediaItemType.audio;
+			}
+			else if(requestCode == SELECT_VIDEO){
+				this.currentMediaItem = mediaItemType.video;
 			}
 			this.fileURL = filePath;
 			this.refreshElements();
