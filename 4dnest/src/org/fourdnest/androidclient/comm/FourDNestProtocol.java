@@ -56,6 +56,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
 	private static final String JSON_FORMAT = "?format=json";
+	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
@@ -310,6 +311,49 @@ public class FourDNestProtocol implements Protocol {
 		}
         return null;
     }
+    
+    /**
+     * Retrieves a file from uri to localpath over HTTP
+     * 
+     * @param uri Location of the file in server
+     * @param localPath Local path where the file is to be saved
+     * 
+     * @return true if file retrieved successfully, false otherwise
+     */
+    public boolean getMediaFile(String uri, String localPath) {
+    	HttpClient client = createHttpClient();
+    	try {
+			HttpGet request = new HttpGet(new URI(uri));
+			HttpResponse resp = client.execute(request);
+			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
+				return false;
+			}
+			InputStream is = resp.getEntity().getContent();
+			BufferedInputStream bis = new BufferedInputStream(is);
+			FileOutputStream os = new FileOutputStream(new File(localPath));
+			BufferedOutputStream bos = new BufferedOutputStream(os);
+			int c;
+	        while ((c = bis.read()) != -1) {
+	            bos.write(c);
+	        }
+	        bos.close();
+	        bis.close();
+	        return true;
+			
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+		return false;
+    			
+	}
     
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {

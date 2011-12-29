@@ -29,4 +29,7 @@ public class SendQueueTestProtocol implements Protocol {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public boolean getMediaFile(String uri, String localPath) {
+		return false;
+	}
 }
