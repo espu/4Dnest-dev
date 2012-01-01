@@ -1,5 +1,9 @@
 package org.fourdnest.androidclient;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
+
 /**
  * A class for static utility methods. 
  */
@@ -19,5 +23,15 @@ public final class Util {
 		} else {
 			return o2 == null; // One null, other not -> fail
 		}
-	}	
+	}
+	
+	public static boolean isServiceRunning(Context ctx, Class<?> serviceClass) {
+	    ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (serviceClass.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 }

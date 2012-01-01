@@ -18,4 +18,9 @@
     <string name="preview">preview</string>
     <string name="add_message_here">Add Message here</string>
     <string name="read_stream_create_button">Create</string>
+    <string name="gps_track_on">GPS tracking started</string>
+    <string name="gps_track_off">GPS tracking disabled</string>
+    <string name="gps_track_statusbar_title">4DNest</string>
+    <string name="gps_track_statusbar_text">Route tracking active</string>
+    <string name="gps_track_gps_disabled">GPS disable, please enable to track</string>
 </resources>
