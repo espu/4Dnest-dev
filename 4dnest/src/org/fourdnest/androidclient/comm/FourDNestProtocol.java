@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.comm;
 
+import android.net.Uri;
 import android.util.Log;
 
 
@@ -14,6 +15,7 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -26,13 +28,20 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.util.EntityUtils;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -45,6 +54,9 @@ import javax.crypto.spec.SecretKeySpec;
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
+	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
+	private static final String JSON_FORMAT = "?format=json";
+	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
@@ -66,9 +78,14 @@ public class FourDNestProtocol implements Protocol {
         String concatedMd5 = "";
         HttpClient client = createHttpClient();
         HttpPost post = new HttpPost(this.nest.getBaseURI() + EGG_UPLOAD_PATH);
+        String metadata = eggToJSONstring(egg);
+        Log.d("METADATA", metadata);
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        /*pairs.add(new BasicNameValuePair("metadata", metadata));
+         * String metadataMd5 = md5FromString(metadata);
+        */
         pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
         concatedMd5 += md5FromString(egg.getCaption());
         if (egg.getLocalFileURI() != null) {
@@ -161,18 +178,22 @@ public class FourDNestProtocol implements Protocol {
      */
     private MultipartEntity createEntity(List<NameValuePair> pairs)
             throws UnsupportedEncodingException {
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT);
+    	Charset charset = Charset.forName("UTF-8");
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT, null, charset);
 
         for (int i = 0; i < pairs.size(); i++) {
             File file = new File(pairs.get(i).getValue());
             if (pairs.get(i).getName().equalsIgnoreCase("file")) {
                 entity.addPart(pairs.get(i).getName(), new FileBody(file));
             } else {
+            	StringBody strbd = new StringBody(pairs
+                        .get(i).getValue(), charset);
                 entity.addPart(pairs.get(i).getName(), new StringBody(pairs
                         .get(i).getValue()));
+                //Log.d("STRINGBODY", strbd.getCharset());
             }
         }
-
+        Log.d("CONTENTTYPE", entity.getContentType().getValue());
         return entity;
     }
     
@@ -186,6 +207,8 @@ public class FourDNestProtocol implements Protocol {
                 443));
         HttpParams params = new BasicHttpParams();
         params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
+        HttpProtocolParams.setContentCharset(params, "UTF-8");
+        HttpProtocolParams.setHttpElementCharset(params, "UTF-8");
         ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         return new DefaultHttpClient(cm, params);
     }
@@ -223,6 +246,157 @@ public class FourDNestProtocol implements Protocol {
         this.nest = nest;
 
     }
+    
+    public Egg getEgg(String uid) {
+    	HttpClient client = createHttpClient();
+        HttpGet request = new HttpGet();
+        String temp = "http://test42.4dnest.org/";
+        String uriPath = temp + EGG_DOWNLOAD_PATH + uid + "/" + JSON_FORMAT;
+        Log.d("URI", uriPath);
+       
+    	try {
+    		request.setURI(new URI(uriPath));
+    		String jsonStr = responseToString(client.execute(request));
+	    	JSONObject js = new JSONObject(jsonStr);
+	    	return jSONObjectToEgg(js);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    public List<Egg> getStream() {
+    	Egg current = null;
+    	ArrayList<Egg> eggList = new ArrayList<Egg>();
+    	HttpClient client = createHttpClient();
+        HttpGet request = new HttpGet();
+        String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + JSON_FORMAT;
+        Log.d("URIStream", uriPath);
+        try {
+			request.setURI(new URI(uriPath));
+			String jsonStr = responseToString(client.execute(request));
+			JSONObject outer = new JSONObject(jsonStr);
+			JSONArray jsonArr = outer.getJSONArray("objects");
+			for (int i = 0; i < jsonArr.length(); i++) {
+				current = jSONObjectToEgg(jsonArr.getJSONObject(i));
+				Log.d("CURRENTEGG", current.getExternalId());
+				eggList.add(current);
+			}
+			return eggList;
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
+    }
+    
+    /**
+     * Retrieves a file from uri to localpath over HTTP
+     * 
+     * @param uri Location of the file in server
+     * @param localPath Local path where the file is to be saved
+     * 
+     * @return true if file retrieved successfully, false otherwise
+     */
+    public boolean getMediaFile(String uri, String localPath) {
+    	HttpClient client = createHttpClient();
+    	try {
+			HttpGet request = new HttpGet(new URI(uri));
+			HttpResponse resp = client.execute(request);
+			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
+				return false;
+			}
+			InputStream is = resp.getEntity().getContent();
+			BufferedInputStream bis = new BufferedInputStream(is);
+			FileOutputStream os = new FileOutputStream(new File(localPath));
+			BufferedOutputStream bos = new BufferedOutputStream(os);
+			int c;
+	        while ((c = bis.read()) != -1) {
+	            bos.write(c);
+	        }
+	        bos.close();
+	        bis.close();
+	        return true;
+			
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+		return false;
+    			
+	}
+    
+    private Egg jSONObjectToEgg(JSONObject js) {
+    	try {
+			String caption = js.getString("caption");
+			String externalFileUri = js.getString("resource_uri");
+			String author = js.getString("author");
+			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, null, 0);
+			String uid = js.getString("uid");
+			egg.setExternalId(uid);
+			return egg;
+		} catch (JSONException e) {
+			Log.e("JSONTOEGG", "Got JSONexception");
+		}
+    	return null;
+    }
+    
+    private String eggToJSONstring(Egg egg) {
+    	JSONObject temp = new JSONObject();
+    	try {
+			temp.put("author", egg.getAuthor());
+			temp.put("caption", egg.getCaption());
+			return temp.toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return "";
+    }
+    
+    private String responseToString(HttpResponse response) throws IOException {
+    	InputStream content = null;
+    	content = response.getEntity().getContent();
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    	byte[] buf = new byte[1024];
+    	int len;
+    	while ((len = content.read(buf)) > 0) {
+    	bout.write(buf, 0, len);
+    	}
+    	content.close();
+    	return bout.toString();
+    }
+    
+    
     /**
      * Hashes the string in MD5 and returns a base64 encoded string
      * of the hash
