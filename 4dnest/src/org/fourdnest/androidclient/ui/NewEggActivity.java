@@ -10,6 +10,10 @@ import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 public class NewEggActivity extends Activity{
 	
@@ -41,9 +46,16 @@ public class NewEggActivity extends Activity{
 	private static final int SELECT_PICTURE = 1; //this is needed for selecting picture
 	private static final int SELECT_AUDIO = 2;
 	private static final int SELECT_VIDEO = 3;
+	protected static final int CAMERA_PIC_REQUEST = 4;
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
+	/*
+	 *  ID values for dialogues
+	 */
+	static final int DIALOG_ASK_AUDIO = 0;
+	static final int DIALOG_ASK_IMAGE = 1;
+	//static final int DIALOG_GAMEOVER_ID = 1;
 	
 
 	private String fileURL = "";
@@ -124,14 +136,15 @@ public class NewEggActivity extends Activity{
 			public void onClick(View arg0) {
 				// in onCreate or any event where your want the user to
 				// select a file
-				Intent intent = new Intent();
+				showDialog(DIALOG_ASK_IMAGE);
+				/*Intent intent = new Intent();
 				intent.setType("image/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
 				intent.addCategory(Intent.CATEGORY_OPENABLE);
 				startActivityForResult(
 						Intent.createChooser(intent, "Select Picture"),
 						SELECT_PICTURE);
-
+			*/
 			}
 		});
     	
@@ -218,6 +231,54 @@ public class NewEggActivity extends Activity{
 	 * This method is used once image has been selected. 
 	 */
 	
+	protected Dialog onCreateDialog(int id) {
+	    Dialog dialog = null;
+	    switch(id) {
+	    case DIALOG_ASK_IMAGE:
+	    	final CharSequence[] items = {"Open Camera", "Open Media Gallery"};
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	builder.setTitle("Select Source");
+	    	builder.setItems(items, new DialogInterface.OnClickListener() {
+	    	    public void onClick(DialogInterface dialog, int item) {
+	    	    	if(item==1){ //notice the id order is reversed (for no particular reason)
+	    	    		Intent intent = new Intent();
+	    	    		intent.setType("image/*");
+	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
+	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
+	    	    		startActivityForResult(
+							Intent.createChooser(intent, "Select Picture"),
+							SELECT_PICTURE);
+	    	    	}
+	    	    	else if(item==0){
+	    	    		//define the file-name to save photo taken by Camera activity
+	    	    		String fileName = "4dpic.jpg";
+	    	    		//create parameters for Intent with filename
+	    	    		ContentValues values = new ContentValues();
+	    	    		values.put(MediaStore.Images.Media.TITLE, fileName);
+	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
+	    	    		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
+	    	    		Uri imageUri = getContentResolver().insert(
+	    	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+	    	    		//create new Intent
+	    	    		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+	    	    		startActivityForResult(intent, CAMERA_PIC_REQUEST);
+ 
+	    	    	}
+	    	    }
+	    	});
+	    	dialog = builder.create();
+	    case DIALOG_ASK_AUDIO:
+	        // do the work to define the game over Dialog
+	        break;
+	    default:
+	        dialog = null;
+	    }
+	    return dialog;
+	}
+	
+	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK && (requestCode == SELECT_PICTURE || requestCode == SELECT_AUDIO || requestCode == SELECT_VIDEO)) {
 			Uri selectedImageUri = data.getData();
@@ -259,6 +320,8 @@ public class NewEggActivity extends Activity{
 			//		NewEggActivity.class);
 			//myIntent.putExtra("pictureURL", imagePath);
 			//startActivityForResult(myIntent, 0);
+		}
+		else if(requestCode==CAMERA_PIC_REQUEST){
 		}
 	}
 
