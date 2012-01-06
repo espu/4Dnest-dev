@@ -47,6 +47,7 @@ public class NewEggActivity extends Activity{
 	private static final int SELECT_AUDIO = 2;
 	private static final int SELECT_VIDEO = 3;
 	protected static final int CAMERA_PIC_REQUEST = 4;
+	protected static final int CAMERA_VIDEO_REQUEST = 5;
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -55,6 +56,7 @@ public class NewEggActivity extends Activity{
 	 */
 	static final int DIALOG_ASK_AUDIO = 0;
 	static final int DIALOG_ASK_IMAGE = 1;
+	static final int DIALOG_ASK_VIDEO = 2;
 	//static final int DIALOG_GAMEOVER_ID = 1;
 	
 
@@ -64,7 +66,7 @@ public class NewEggActivity extends Activity{
 	private String filemanagerstring;
 	private ImageView thumbNailView;
 	private RelativeLayout upperButtons;
-
+	private Uri capturedImageURI;
 
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class NewEggActivity extends Activity{
 				
 				//TODO: Proper implementation
 				Egg egg = new Egg();
-				egg.setAuthor("Gandalf_41");
+				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 				egg.setTags(new ArrayList<Tag>());
@@ -169,14 +171,7 @@ public class NewEggActivity extends Activity{
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
-    				Intent intent = new Intent();
-    				intent.setType("video/*");
-    				intent.setAction(Intent.ACTION_GET_CONTENT);
-    				intent.addCategory(Intent.CATEGORY_OPENABLE);
-    				startActivityForResult(
-    						Intent.createChooser(intent, "Select Video"),
-    						SELECT_VIDEO);
-
+    				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
        	
@@ -227,15 +222,11 @@ public class NewEggActivity extends Activity{
 	
 	}
 	
-	/*
-	 * This method is used once image has been selected. 
-	 */
-	
 	protected Dialog onCreateDialog(int id) {
 	    Dialog dialog = null;
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE:
-	    	final CharSequence[] items = {"Open Camera", "Open Media Gallery"};
+	    	final CharSequence[] items = {"Open Camera", "Open Picture Gallery"};
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	builder.setTitle("Select Source");
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -251,32 +242,81 @@ public class NewEggActivity extends Activity{
 	    	    	}
 	    	    	else if(item==0){
 	    	    		//define the file-name to save photo taken by Camera activity
-	    	    		String fileName = "4dpic.jpg";
+	    	    		String fileName = "dpic.jpg";
 	    	    		//create parameters for Intent with filename
 	    	    		ContentValues values = new ContentValues();
 	    	    		values.put(MediaStore.Images.Media.TITLE, fileName);
-	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
-	    	    		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-	    	    		Uri imageUri = getContentResolver().insert(
+	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Image captured for 4D Nest");
+	    	    		/*
+	    	    		 * We are going to save the Uri to the image before actually taking the picture.
+	    	    		 * This was the way used in the example, so far I haven't been able to find a better
+	    	    		 * way (but there has to be one, this cant be good)
+	    	    		 */
+	    	    		capturedImageURI = getContentResolver().insert(
 	    	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 	    	    		//create new Intent
-	    	    		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+	    	    		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
+	    	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageURI); //tell the intent where to store the file
 	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 	    	    		startActivityForResult(intent, CAMERA_PIC_REQUEST);
- 
 	    	    	}
 	    	    }
 	    	});
 	    	dialog = builder.create();
-	    case DIALOG_ASK_AUDIO:
-	        // do the work to define the game over Dialog
-	        break;
+	    	break;
+	    
+	    case DIALOG_ASK_VIDEO:
+	    	final CharSequence[] videoItems = {"Open Camera", "Open Video Gallery"};
+	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
+	    	videoBuilder.setTitle("Select Source");
+	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
+	    	    public void onClick(DialogInterface dialog, int item) {
+	    	    	if(item==0){
+	    	    		//String fileName = "dpic.jpg";
+	    	    		//create parameters for Intent with filename
+	    	    		ContentValues values = new ContentValues();
+	    	    		//values.put(MediaStore.Images.Media.TITLE, fileName);
+	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Video captured for 4D Nest");
+	    	    		/*
+	    	    		 * We are going to save the Uri to the image before actually taking the picture.
+	    	    		 * This was the way used in the example, so far I haven't been able to find a better
+	    	    		 * way (but there has to be one, this cant be good)
+	    	    		 */
+	    	    		/*capturedImageURI = getContentResolver().insert(
+	    	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); */
+	    	    		//create new Intent
+	    	    		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE );
+	    	    		//intent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageURI); //tell the intent where to store the file
+	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+	    	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
+	    	    	}
+	    	    	if(item==1){
+	    	    		Intent intent = new Intent();
+	    	    		intent.setType("video/*");
+	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
+	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
+	    	    		startActivityForResult(
+    						Intent.createChooser(intent, "Select Video"),
+    						SELECT_VIDEO);
+	    	    	}
+	    	    }
+	    	});
+	    	dialog = videoBuilder.create();
+	    	break;
+
+	    	    	
+	    	    
+	    
 	    default:
 	        dialog = null;
 	    }
 	    return dialog;
 	}
+	
+
+	/*
+	 * This method is used once media item has been selected or captured. 
+	 */
 	
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -322,6 +362,66 @@ public class NewEggActivity extends Activity{
 			//startActivityForResult(myIntent, 0);
 		}
 		else if(requestCode==CAMERA_PIC_REQUEST){
+			if (resultCode == RESULT_OK) {
+				
+				/*
+				 * Its essentially the same code again. I think I should move this over to some nice
+				 * cosy private help method some where.
+				 */
+				
+				filemanagerstring = capturedImageURI.getPath();
+
+				// MEDIA GALLERY
+				selectedFilePath = getPath(capturedImageURI);
+				
+				// NOW WE HAVE OUR WANTED STRING
+				String filePath = "";
+				if (selectedFilePath != null) {
+					filePath = selectedFilePath;
+					System.out
+							.println("selectedImagePath is the right one for you!");
+				} else {
+					filePath = filemanagerstring;
+					System.out
+							.println("filemanagerstring is the right one for you!");
+				}
+				this.fileURL = filePath;
+				this.currentMediaItem = mediaItemType.image;
+				this.refreshElements();
+				
+				
+				
+			} else if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+			}
+			else {
+				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+			}
+		}
+		
+		else if(requestCode==CAMERA_VIDEO_REQUEST){
+			Uri selectedImageUri = data.getData();
+
+			// OI FILE Manager
+			filemanagerstring = selectedImageUri.getPath();
+
+			// MEDIA GALLERY
+			selectedFilePath = getPath(selectedImageUri);
+			
+			// NOW WE HAVE OUR WANTED STRING
+			String filePath = "";
+			if (selectedFilePath != null) {
+				filePath = selectedFilePath;
+				System.out
+						.println("selectedImagePath is the right one for you!");
+			} else {
+				filePath = filemanagerstring;
+				System.out
+						.println("filemanagerstring is the right one for you!");
+			}
+			this.fileURL = filePath;
+			this.currentMediaItem = mediaItemType.video;
+			this.refreshElements();
 		}
 	}
 
