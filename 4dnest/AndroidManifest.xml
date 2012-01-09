@@ -43,6 +43,10 @@
             android:name=".ui.CreateScreenActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity 
+            android:name=".ui.StreamPreferenceActivity"
+            android:label="@string/app_name">
+        </activity>
     </application>
 
 </manifest>

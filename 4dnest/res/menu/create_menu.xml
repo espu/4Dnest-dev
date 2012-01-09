@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item 
         android:id="@+id/menu_create_help"
-        android:title="Help Create"
+        android:title="@string/menu_help"
         android:icon="@android:drawable/ic_menu_help"></item>
     <item
         android:id="@+id/about_menu"
-        android:title="About"
+        android:title="@string/menu_about"
         android:icon="@android:drawable/ic_menu_info_details"></item>
     <item 
         android:id="@+id/menu_create_pref"
-        android:title="Settings"
+        android:title="@string/menu_settings"
         android:icon="@android:drawable/ic_menu_preferences"></item>
 
 </menu>

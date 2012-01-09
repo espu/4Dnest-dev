@@ -82,9 +82,11 @@ public abstract class NestSpecificActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.menu_stream_pref:
+			startActivity(new Intent(this, StreamPreferenceActivity.class));
+			return true;
+		default :
+			return super.onOptionsItemSelected(item);
 		}
 	}
 }
