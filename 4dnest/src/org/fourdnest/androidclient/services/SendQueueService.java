@@ -3,6 +3,7 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.comm.ProtocolResult;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -100,9 +101,35 @@ public class SendQueueService extends IntentService {
 			if(egg == null) {
 				Log.d(TAG, "Egg with id " + eggId + " not found");
 			} else {
-				app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
-				Log.d(TAG, "Send completed");
-				this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
+				if(res.getStatusCode() == res.RESOURCE_UPLOADED) {
+					this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+					Log.d(TAG, "Send completed");
+				} else {
+					String message;
+					
+					switch (res.getStatusCode()) {
+					case ProtocolResult.AUTHORIZATION_FAILED:
+						message = "Authorization failed";
+						break;
+					case ProtocolResult.SENDING_FAILED:
+						message = "Sending failed";
+						break;
+					case ProtocolResult.SERVER_INTERNAL_ERROR:
+						message = "Server internal error";
+						break;
+					case ProtocolResult.UNKNOWN_REASON:
+						message = "Unknown failure";
+						break;
+					default:
+						message = "Unknown result";
+						break;
+					}
+					this.handler.post(new ToastDisplay(app, "Send failed: " + message, Toast.LENGTH_SHORT));
+					Log.d(TAG, "Send failed: " + res.getStatusCode());
+				}
+				
+				
 			}
 		}
 		
