@@ -1,12 +1,16 @@
 package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.Util;
+import org.fourdnest.androidclient.services.RouteTrackService;
 
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 /**
  * The starting activity of the application. Displays a list of eggs present on
@@ -18,6 +22,20 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public View getContentLayout(View view) {
 	
+		ToggleButton trackButton = (ToggleButton) view.findViewById(R.id.route_tracker_button);
+		trackButton.setChecked(Util.isServiceRunning(view.getContext(), RouteTrackService.class));
+		
+		trackButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), RouteTrackService.class);
+				if(Util.isServiceRunning(v.getContext(), RouteTrackService.class)) {
+					v.getContext().stopService(intent);
+				} else {
+					v.getContext().startService(intent);
+				}
+			}
+		});
 		
 		Button createButton = (Button) view.findViewById(R.id.create_button);
 		createButton.setOnClickListener(new OnClickListener() {

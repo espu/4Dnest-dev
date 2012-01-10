@@ -100,7 +100,7 @@ public class SendQueueService extends IntentService {
 			if(egg == null) {
 				Log.d(TAG, "Egg with id " + eggId + " not found");
 			} else {
-				//app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
+				app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
 				Log.d(TAG, "Send completed");
 				this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
 			}
