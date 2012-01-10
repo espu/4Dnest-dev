@@ -44,7 +44,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
-	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
+	private static final String EGG_UPLOAD_PATH = "/v1/egg/upload/";
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
@@ -122,7 +122,9 @@ public class FourDNestProtocol implements Protocol {
             
             HttpResponse response = client.execute(post);
             status = response.getStatusLine().getStatusCode();
+
             return this.parseResult(status, response);
+
         } catch (ClientProtocolException e) {
             Log.e(TAG, "ClientProtocolException, egg not sent "
                     + e.getMessage());
