@@ -94,11 +94,36 @@
         	android:id="@+id/new_photo_egg_caption_view" 
         	android:hint="@string/add_message_here"
         	/>/
-    	<EditText
+    	<!-- <EditText
     	    android:layout_width="fill_parent"
     	    android:layout_height ="60px"
     	    android:layout_above="@+id/new_photo_egg_send_egg_button"
-    	    android:hint="tags"/>
+    	    android:hint="tags"/>-->
+    	<org.fourdnest.androidclient.ui.TaggingTool
+    	    android:layout_width="fill_parent"
+    	    android:layout_height ="wrap_content"
+    	    android:layout_above="@+id/new_photo_egg_send_egg_button"
+    	    android:background="#FFFFFF"
+    	    />
+   		    <TableLayout
+        	android:id="@+id/autocomplete_row"
+        	android:layout_width="fill_parent"
+        	android:layout_height="60dp"
+        	android:background="#FFFFFF" 
+        	android:stretchColumns="0">
+        	<TableRow>
+	        <AutoCompleteTextView android:id="@+id/autocomplete_tag"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"/>
+	        <Button
+            android:id="@+id/add_tag_button"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="FIXME" 
+            />
+	        </TableRow>
+	     	</TableLayout>
     	 </LinearLayout>
     	 </ScrollView>
  <RelativeLayout
