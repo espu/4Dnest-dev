@@ -83,15 +83,15 @@ public class FourDNestProtocol implements Protocol {
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-        /*pairs.add(new BasicNameValuePair("metadata", metadata));
-         * String metadataMd5 = md5FromString(metadata);
-        */
-        pairs.add(new BasicNameValuePair("caption", egg.getCaption()));
-        concatedMd5 += md5FromString(egg.getCaption());
+        pairs.add(new BasicNameValuePair("metadata", metadata));
+        String metadataMd5 = md5FromString(metadata);
+        concatedMd5 += metadataMd5;
         if (egg.getLocalFileURI() != null) {
-            pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
-                    .getPath()));
-            concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath());
+            if (new File(egg.getLocalFileURI().getPath()).isFile()) {
+                pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
+                        .getPath()));
+                concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath()); 
+            }
         }
         
         // FIXME: Add tags later
@@ -329,31 +329,35 @@ public class FourDNestProtocol implements Protocol {
 				return false;
 			}
 			InputStream is = resp.getEntity().getContent();
-			BufferedInputStream bis = new BufferedInputStream(is);
-			FileOutputStream os = new FileOutputStream(new File(localPath));
-			BufferedOutputStream bos = new BufferedOutputStream(os);
-			int c;
-	        while ((c = bis.read()) != -1) {
-	            bos.write(c);
-	        }
-	        bos.close();
-	        bis.close();
+			writeInputStreamToFile(is, localPath);
 	        return true;
 			
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "getMediaFile: Invalid URI");
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "getMediaFile: Execute failed");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "getMediaFile: Write operation failed");
 		}
     	
 		return false;
     			
 	}
+    
+    private void writeInputStreamToFile(InputStream is, String path) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(is);
+        FileOutputStream os = new FileOutputStream(new File(path));
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+        int c;
+        try {
+            while ((c = bis.read()) != -1) {
+                bos.write(c);
+            }
+        } finally {
+            bos.close();
+            bis.close();
+        }
+    }
     
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
