@@ -285,11 +285,11 @@ public class NestManager {
 	 */
 	private class NestDatabase extends SQLiteOpenHelper {
 		
-		private Context context;
+		//private Context context;
 		
 		public NestDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);			
-			this.context = context;
+			//this.context = context;
 			
 			Log.d(TAG, "NestDatabase created");
 		}

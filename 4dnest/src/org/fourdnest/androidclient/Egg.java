@@ -3,9 +3,6 @@ package org.fourdnest.androidclient;
 import java.util.ArrayList;
 import java.util.List;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Represents one Egg, which is the unit of content in the system.
  * The Egg can be a local stored Egg or a temporary copy of an Egg from the
@@ -41,6 +38,9 @@ public class Egg {
 	
 	/** When Egg was last uploaded to associated Nest */
 	private long lastUpload;
+	
+	/** ID used by the server for this particular egg*/
+	private String externalId;
 	
 	// FIXME: automatic metadata.
 	
@@ -229,6 +229,21 @@ public class Egg {
 	 */
 	public long getLastUpload() {
 		return this.lastUpload;
+	}
+	/**
+	 * Set the externalId
+	 * @param externalId the External id
+	 */
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	
+	/**
+	 * Returns the external id
+	 * @return external id
+	 */
+	public String getExternalId() {
+		return this.externalId;
 	}
 	
 }
