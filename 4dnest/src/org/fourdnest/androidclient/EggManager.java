@@ -49,7 +49,7 @@ public class EggManager {
 	 */
 	public EggManager(Context context, String uniqueRole) {
 		if(uniqueRole == null ||  uniqueRole != uniqueRole.replaceAll("[^a-z]", "")) {
-			throw new IllegalArgumentException("Invalid uniqueRole: non-null string with only a-z required");
+			//throw new IllegalArgumentException("Invalid uniqueRole: non-null string with only a-z required");
 		}
 		
 		this.dbName = "org.4dnest.androidclient.eggs." + uniqueRole + ".db";   
