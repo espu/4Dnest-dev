@@ -9,10 +9,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.text.TextUtils.TruncateAt;
-import android.util.AttributeSet;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -25,82 +27,49 @@ public class TaggingTool extends LinearLayout {
     };
 	
 	private List<TagCheckBox> buttons;
-	private List<TagRow> rows;
+	private FlowLayout tagFlowLayout;
+	private AutoCompleteTextView tagTextView;
 
-	public TaggingTool(Context context) {
+	public TaggingTool(Context context, ViewGroup parent) {
 		super(context);
-		this.initialize(context);
-	}
-
-	public TaggingTool(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.initialize(context);
-	}
-	
-	private void initialize(Context context) {
 		this.buttons = new ArrayList<TagCheckBox>();
-		this.rows = new ArrayList<TagRow>();
+		
+		LayoutInflater inflater = LayoutInflater.from(context);
+		inflater.inflate(R.layout.taggingtool_layout, this, true);
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_dropdown_item_1line, FIXME_DUMMYTAGS);
-        AutoCompleteTextView tagTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_tag);
-        if(tagTextView == null) {
-        	Log.e(TAG, "autocomplete_tag was null");
-        } else {
-        	tagTextView.setAdapter(adapter);
-        }
+        this.tagTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_tag);
+        this.tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flowlayout);
+      	tagTextView.setAdapter(adapter);
 
-		this.addTagRow();
-		
-		this.setOrientation(VERTICAL);
-		this.addTag("Testing tagging tool", true);
-		this.addTag("Llllllllllllllllllllllllllllllllllllong", true);
-		this.addTag("Short", true);
-		this.addTag("tags", true);
-	}
-	
-	public void addTag(String tag, boolean force) {
-		TagCheckBox button = new TagCheckBox(getContext(), tag);
-		boolean succeeded = false;
-		for(TagRow row : this.rows) {
-			succeeded = row.offer(button);
-			if(succeeded) { break; }
-		}
-		if(!succeeded && force) {
-			succeeded = addTagRow().offer(button);
-		}
-		if(succeeded) {
-			this.buttons.add(button);
-		}
-	}
-	
-	private TagRow addTagRow() {
-		TagRow newrow = (new TagRow(getContext()));
-		this.rows.add(newrow);
-		this.addView(newrow);
-		return newrow;
-	}
-	
-	private class TagRow extends LinearLayout {
-		private int spaceLeft;
-		public TagRow(Context context) {
-			super(context);
-			this.setOrientation(HORIZONTAL);
-			this.spaceLeft = 2;	//FIXME replace with screen width based measure
-		}
-		public boolean offer(TagCheckBox button) {
-			if(this.spaceLeft < 1) {
-				return false;
+       	((Button) this.findViewById(R.id.add_tag_button))
+		.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				TaggingTool.this.addTag(TaggingTool.this.tagTextView.getText(), true);
+				TaggingTool.this.tagTextView.setText("");
 			}
-			this.addView(button);
-			this.spaceLeft--;	//FIXME debug workaround
-			//The problem is: can't use getWidth or getMeasuredWidth, as nothing is layouted yet
-			return true;
-		}
+		});
+      	
+		this.setOrientation(VERTICAL);
+		parent.addView(this);
+		
+		// DEBUG
+		this.addTag("Testing tagging tool", false);
+		this.addTag("Llllllllllllllllllllllllllllllllllllong", false);
+		this.addTag("Checked", true);
+		this.addTag("Short", false);
+		this.addTag("tags", false);
 	}
 	
+	public void addTag(CharSequence tag, boolean checked) {
+		TagCheckBox button = new TagCheckBox(getContext(), tag);
+		button.setChecked(checked);
+		this.tagFlowLayout.addView(button);
+	}
+
 	private class TagCheckBox extends CheckBox {
-		public TagCheckBox(Context context, String tag) {
+		public TagCheckBox(Context context, CharSequence tag) {
 			super(context);
 			this.setBackgroundResource(R.drawable.tagcheckbox);
 			this.setTextColor(Color.BLACK);
