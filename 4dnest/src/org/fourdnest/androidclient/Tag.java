@@ -14,8 +14,8 @@ public class Tag {
 	 * Creates a new Tag.
 	 * @param name The user-visible string representing the tag.
 	 */
-	public Tag(String name){
-		this.name = name;
+	public Tag(CharSequence name){
+		this.name = name.toString();
 	}
 	
 	/**

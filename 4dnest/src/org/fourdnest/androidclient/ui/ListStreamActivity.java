@@ -1,5 +1,10 @@
 package org.fourdnest.androidclient.ui;
 
+import java.util.ArrayList;
+
+import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.EggManager;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
@@ -23,22 +28,36 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public View getContentLayout(View view) {
 
-	
-		ToggleButton trackButton = (ToggleButton) view.findViewById(R.id.route_tracker_button);
-		trackButton.setChecked(Util.isServiceRunning(view.getContext(), RouteTrackService.class));
-		
+		FourDNestApplication application = (FourDNestApplication) getApplication();
+		EggManager manager = application.getStreamEggManager();
+
+		ArrayList<Egg> eggs = (ArrayList<Egg>) application.getCurrentNest()
+				.getProtocol().getStream();
+		if (eggs != null) {
+			for (Egg egg : eggs) {
+				manager.saveEgg(egg);
+			}
+		}
+
+		ToggleButton trackButton = (ToggleButton) view
+				.findViewById(R.id.route_tracker_button);
+		trackButton.setChecked(Util.isServiceRunning(view.getContext(),
+				RouteTrackService.class));
+
 		trackButton.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), RouteTrackService.class);
-				if(Util.isServiceRunning(v.getContext(), RouteTrackService.class)) {
+				Intent intent = new Intent(v.getContext(),
+						RouteTrackService.class);
+				if (Util.isServiceRunning(v.getContext(),
+						RouteTrackService.class)) {
 					v.getContext().stopService(intent);
 				} else {
 					v.getContext().startService(intent);
 				}
 			}
 		});
-		
+
 		Button createButton = (Button) view.findViewById(R.id.create_button);
 		createButton.setOnClickListener(new OnClickListener() {
 
@@ -51,7 +70,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		ListView streamList = (ListView) view.findViewById(R.id.egg_list);
 		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
-		adapter.setEggs(null);
+		adapter.setEggs(manager.listEggs());
 		streamList.setAdapter(adapter);
 		streamList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -71,6 +90,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public int getLayoutId() {
 		return R.layout.list_stream_view;
-	}	
+	}
 
 }

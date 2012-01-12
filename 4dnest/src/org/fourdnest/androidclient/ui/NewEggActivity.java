@@ -22,12 +22,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -67,6 +71,7 @@ public class NewEggActivity extends Activity{
 	private ImageView thumbNailView;
 	private RelativeLayout upperButtons;
 	private Uri capturedImageURI;
+	private TaggingTool taggingTool;
 
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +125,7 @@ public class NewEggActivity extends Activity{
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				egg.setTags(new ArrayList<Tag>());
+				egg.setTags(NewEggActivity.this.taggingTool.getCheckedTags());
 				SendQueueService.sendEgg(getApplication(), egg);
 			}
 		});
@@ -170,8 +175,10 @@ public class NewEggActivity extends Activity{
     				// select a file
     				showDialog(DIALOG_ASK_VIDEO);
     			}
-    		});	
+    		});
        	
+       	LinearLayout inputsLinearLayout = (LinearLayout) this.findViewById(R.id.new_egg_inputs_linearlayout);
+       	this.taggingTool = new TaggingTool(this, inputsLinearLayout);
 	}
 
 
@@ -439,6 +446,41 @@ public class NewEggActivity extends Activity{
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Creates the options menu on the press of the Menu button.
+	 * 
+	 * @param menu The menu to inflate
+	 * @return Boolean indicating success of creating the menu
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.create_menu, menu);
+		return true;
+	}
+	
+	/**
+	 * Specifies the action to perform when a menu item is pressed.
+	 * 
+	 * @param item The MenuItem that was pressed
+	 * @return Boolean indicating success of identifying the item
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_create_pref:
+			startActivity(new Intent(this, PrefsActivity.class));
+			return true;
+		case R.id.menu_create_help:
+			//TODO create help for new egg
+			return true;
+		case R.id.menu_create_discard:
+			//TODO discard implementation
+			return true;
+		}
+		return false;
 	}
 	
 	

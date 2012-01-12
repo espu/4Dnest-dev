@@ -128,7 +128,7 @@ public class EasySSLSocketFactory implements SocketFactory,
 
     public boolean equals(Object obj) {
         return ((obj != null) && obj.getClass().equals(
-                EasySSLSocketFactory.class));
+                this.getClass()));
     }
 
     public int hashCode() {
