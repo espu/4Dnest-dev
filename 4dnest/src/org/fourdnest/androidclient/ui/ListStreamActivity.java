@@ -5,6 +5,8 @@ import org.fourdnest.androidclient.R;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -17,14 +19,12 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public View getContentLayout(View view) {
-	
-		
+
 		Button createButton = (Button) view.findViewById(R.id.create_button);
 		createButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(),
-						NewEggActivity.class);
+				Intent intent = new Intent(v.getContext(), NewEggActivity.class);
 				v.getContext().startActivity(intent);
 
 			}
@@ -34,8 +34,17 @@ public class ListStreamActivity extends NestSpecificActivity {
 		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
 		adapter.setEggs(null);
 		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new EggElementOnClickListener());
-		
+		streamList.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Intent intent = new Intent(arg1.getContext(),
+						ViewEggActivity.class);
+				arg0.getContext().startActivity(intent);
+
+			}
+		});
+
 		return view;
 
 	}
