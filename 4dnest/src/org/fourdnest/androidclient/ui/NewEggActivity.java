@@ -114,17 +114,14 @@ public class NewEggActivity extends Activity{
         Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
-			public void onClick(View v) {
-				SendQueueService sendQueService = ((FourDNestApplication)getApplication()).getSendQueueService();
-				
+			public void onClick(View v) {				
 				//TODO: Proper implementation
 				Egg egg = new Egg();
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 				egg.setTags(new ArrayList<Tag>());
-				
-				sendQueService.queueEgg(egg, true);
+				SendQueueService.sendEgg(getApplication(), egg);
 			}
 		});
         

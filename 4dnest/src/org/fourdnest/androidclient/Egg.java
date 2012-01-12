@@ -1,10 +1,10 @@
 package org.fourdnest.androidclient;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Represents one Egg, which is the unit of content in the system.
@@ -15,7 +15,8 @@ import android.net.Uri;
  */
 public class Egg {
 	//private static final String TAG = Egg.class.getSimpleName();
-	
+
+
 	/** Egg id */
 	private Integer id;
 	
@@ -40,6 +41,9 @@ public class Egg {
 	
 	/** When Egg was last uploaded to associated Nest */
 	private long lastUpload;
+	
+	/** ID used by the server for this particular egg*/
+	private String externalId;
 	
 	// FIXME: automatic metadata.
 	
@@ -95,13 +99,13 @@ public class Egg {
 	@Override
 	public int hashCode() {
 		long hash = (this.id == null ? 0 : this.id.hashCode());
-        hash = hash * 3 + this.nestId;
-        hash = hash * 7 + (this.author == null ? 0 : this.author.hashCode());
-        hash = hash * 11 + (this.localFileURI == null ? 0 : this.localFileURI.hashCode());
-        hash = hash * 13 + (this.remoteFileURI == null ? 0 : this.remoteFileURI.hashCode());
-        hash = hash * 17 + (this.caption == null ? 0 : this.caption.hashCode());
-        hash = hash * 19 + (this.tags == null ? 0 : this.tags.hashCode());
-        hash = hash * 23 + this.lastUpload;
+        hash = hash + this.nestId;
+        hash = hash + (this.author == null ? 0 : this.author.hashCode());
+        hash = hash + (this.localFileURI == null ? 0 : this.localFileURI.hashCode());
+        hash = hash + (this.remoteFileURI == null ? 0 : this.remoteFileURI.hashCode());
+        hash = hash + (this.caption == null ? 0 : this.caption.hashCode());
+        hash = hash + (this.tags == null ? 0 : this.tags.hashCode());
+        hash = hash + this.lastUpload;
         
         int intHash = (int) (hash % Integer.MAX_VALUE);
         
@@ -228,6 +232,21 @@ public class Egg {
 	 */
 	public long getLastUpload() {
 		return this.lastUpload;
+	}
+	/**
+	 * Set the externalId
+	 * @param externalId the External id
+	 */
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	
+	/**
+	 * Returns the external id
+	 * @return external id
+	 */
+	public String getExternalId() {
+		return this.externalId;
 	}
 	
 }

@@ -25,31 +25,34 @@ public class FourDNestApplication extends Application
 	
 	private SharedPreferences prefs;
 	private NestManager nestManager;
-
-	private SendQueueService sendQueueService;
+	private EggManager eggManager;
 	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-	  
+
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
 	
+	/**
+	 * Checks if Nest with ID 0 exists and creates it if not. Temporary debug-helper method.
+	 */
 	private void setUpTestValues() {
 		try {
-		NestManager m = this.getNestManager();
-		Nest n = m.getNest(0);
-		if(n == null) {
-			n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-		}
-		m.saveNest(n);
-		} catch(URISyntaxException urie) {
+			NestManager m = this.getNestManager();
+			Nest n = m.getNest(0);
 			
+			if(n == null) {
+				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/fourdnest/api"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+				m.saveNest(n);
+			}
+			
+			this.setCurrentNestId(n.getId());
+		} catch(URISyntaxException urie) {	
 		} catch(UnknownProtocolException upe) {
-			
 		}
 	}
 
@@ -65,41 +68,47 @@ public class FourDNestApplication extends Application
 		}
 		return this.nestManager;
 	}
-
+	
 	/**
-	 * Gets the SendQueueService singleton.
-	 * The SendQueueService is created and started, if it isn't already running.
-	 * @return the SendQueueService
+	 * Gets the EggManager singleton.
+	 * The EggManager object synchronizes itself, so the caller is free to store
+	 * the object.
+	 * @return the EggManager
 	 */
-	public SendQueueService getSendQueueService() {
-		if(this.sendQueueService == null) {
-		  this.sendQueueService = new SendQueueService(this.getNestManager());
-		  this.sendQueueService.start();
+	public EggManager getEggManager() {
+		if(this.eggManager == null) {
+			this.eggManager = new EggManager(this);
 		}
-		return this.sendQueueService;
+		return this.eggManager;		
 	}
+
 
 	public synchronized void onSharedPreferenceChanged(
 			SharedPreferences sharedPreferences, String key) {
 		this.getApplicationContext();
 		// TODO Auto-generated method stub
 	}
+	
+	public synchronized Nest getCurrentNest() {
+		return this.nestManager.getNest(this.getCurrentNestId());
+	}
 
 	/**
 	 * Gets the id of the currently active Nest.
 	 * @return The id of the currently active Nest. 
 	 */
-	public synchronized String getCurrentNestId() {
-		return this.prefs.getString("currentNestId", "");
+	public synchronized int getCurrentNestId() {
+		return this.prefs.getInt("currentNestId", 0);
 	}
 	/**
 	 * Sets the currently active Nest. The setting is persisted between
 	 * restarts of the application.
 	 * @param newNestId Id of the new active Nest. Must be a valid Nest id.
 	 */
-	public synchronized void setCurrentNestId(String newNestId) {
+	public synchronized void setCurrentNestId(int newNestId) {
 		//FIXME check that newNestId is valid?
 		SharedPreferences.Editor prefEditor = this.prefs.edit();
-		prefEditor.putString("currentNestId", newNestId);
+		prefEditor.putInt("currentNestId", newNestId);
 	}
+
 }

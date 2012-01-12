@@ -4,22 +4,65 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.NestManager;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.Protocol;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import android.content.Intent;
+import android.os.IBinder;
 import android.test.AndroidTestCase;
+import android.test.ServiceTestCase;
 
 /**
  * Tests the send queue service.
  * @author gronsti
  */
-public class SendQueueServiceTest extends AndroidTestCase {
+public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
+	
+	private final static int NEST_ID = 1234;
+	public SendQueueServiceTest() {
+		super(SendQueueService.class);
+	}
+	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		FourDNestApplication app = new FourDNestApplication();
+		
+		Protocol testProtocol = new SendQueueTestProtocol();
+		
+		app.getNestManager().deleteAllNests();
+		
+		Nest nest = new Nest(NEST_ID, "Nest", "Nest descr", new URI("http://127.0.0.1"), testProtocol.getProtocolId(), "username", "secretkey");
+		app.getNestManager().saveNest(nest);
+		app.setCurrentNestId(nest.getId());
+		
+		setApplication(app);
+		setContext(app);
+	}
+	
+	
+	public void testStartable() {
+		Intent startIntent = new Intent();
+		startIntent.setClass(getContext(), SendQueueService.class);
+		startService(startIntent);
+	}
+	
+    public void testBindable() {
+        Intent startIntent = new Intent();
+        startIntent.setClass(getContext(), SendQueueService.class);
+        IBinder service = bindService(startIntent); 
+    }
+
+	/*
 	private NestManager testNestManager;
 	private SendQueueService service;
 	private static SendQueueServiceTest tester;
@@ -49,9 +92,9 @@ public class SendQueueServiceTest extends AndroidTestCase {
 				1024,
 				"testuser", "secretkey"
 		));
-		this.service = new SendQueueService(this.testNestManager);
+		this.service = new SendQueueService();
 		this.service.setDelay(DELAY);
-		this.service.start();
+		this.service.onCreate();
 		this.massEgg = new Egg(
 				0,
 				1024,
@@ -96,7 +139,7 @@ public class SendQueueServiceTest extends AndroidTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		this.service.stop();
+		this.service.onDestroy();
 	}
 	
 	@Test
@@ -153,11 +196,12 @@ public class SendQueueServiceTest extends AndroidTestCase {
 		assertTrue(manualEggSeen);	// manual should have been sent
 		assertTrue(trueEggSeen);	// this should have been sent by sendAllQueuedEggs
 		assertFalse(falseEggSeen);
-	}
+	}*/
 	
-	/** We need to sleep before running tests to make sure that the thread
+	/* We need to sleep before running tests to make sure that the thread
 	 * has time to see the work and run it. */
-	private void guaranteeSleep(long delay) {
+	
+	/*private void guaranteeSleep(long delay) {
 		boolean slept = false;
 		try {
 			while(!slept) {
@@ -177,6 +221,7 @@ public class SendQueueServiceTest extends AndroidTestCase {
 		}
 	}	
 	
+	*/
 
 
 }
