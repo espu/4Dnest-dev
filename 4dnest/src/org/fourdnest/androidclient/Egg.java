@@ -42,6 +42,9 @@ public class Egg {
 	/** When Egg was last uploaded to associated Nest */
 	private long lastUpload;
 	
+	/** ID used by the server for this particular egg*/
+	private String externalId;
+	
 	// FIXME: automatic metadata.
 	
 	
@@ -229,6 +232,21 @@ public class Egg {
 	 */
 	public long getLastUpload() {
 		return this.lastUpload;
+	}
+	/**
+	 * Set the externalId
+	 * @param externalId the External id
+	 */
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	
+	/**
+	 * Returns the external id
+	 * @return external id
+	 */
+	public String getExternalId() {
+		return this.externalId;
 	}
 	
 }
