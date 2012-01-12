@@ -7,6 +7,7 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,12 +54,7 @@ public class EggReaderAdapter extends EggListAdapter {
 	 *            should display.
 	 */
 	public void setEggs(List<Egg> eggs) {
-		// TODO: Get a real implementation for this
 		this.eggs = eggs;
-//		this.eggs = new ArrayList<Egg>();
-//		for (int i = 0; i < 8; i++) {
-//			this.eggs.add(new Egg());
-//		}
 	}
 
 }
