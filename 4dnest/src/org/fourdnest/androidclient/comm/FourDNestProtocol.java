@@ -163,8 +163,7 @@ public class FourDNestProtocol implements Protocol {
             } else {
             	StringBody strbd = new StringBody(pairs
                         .get(i).getValue(), charset);
-                entity.addPart(pairs.get(i).getName(), new StringBody(pairs
-                        .get(i).getValue()));
+                entity.addPart(pairs.get(i).getName(), strbd);
                 //Log.d("STRINGBODY", strbd.getCharset());
             }
         }
@@ -255,6 +254,7 @@ public class FourDNestProtocol implements Protocol {
         Log.d("URIStream", uriPath);
         try {
 			request.setURI(new URI(uriPath));
+			addAuthentication(request, "");
 			String jsonStr = responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
 			JSONArray jsonArr = outer.getJSONArray("objects");
@@ -288,6 +288,7 @@ public class FourDNestProtocol implements Protocol {
     	HttpClient client = createHttpClient();
     	try {
 			HttpGet request = new HttpGet(new URI(uri));
+			addAuthentication(request, "");
 			HttpResponse resp = client.execute(request);
 			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
 				return false;
@@ -472,6 +473,7 @@ public class FourDNestProtocol implements Protocol {
         String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
                 + "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
         String authHead = user + ":" + computeSignature(stringToSign, key);
+        Log.d("HASH", authHead);
         base.setHeader("Authorization", authHead);
         
         base.setHeader("Date", DateUtils.formatDate(date));
