@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class NewEggActivity extends Activity{
 	private ImageView thumbNailView;
 	private RelativeLayout upperButtons;
 	private Uri capturedImageURI;
+	private TaggingTool taggingTool;
 
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,7 +125,7 @@ public class NewEggActivity extends Activity{
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				egg.setTags(new ArrayList<Tag>());
+				egg.setTags(NewEggActivity.this.taggingTool.getCheckedTags());
 				SendQueueService.sendEgg(getApplication(), egg);
 			}
 		});
@@ -173,8 +175,10 @@ public class NewEggActivity extends Activity{
     				// select a file
     				showDialog(DIALOG_ASK_VIDEO);
     			}
-    		});	
+    		});
        	
+       	LinearLayout inputsLinearLayout = (LinearLayout) this.findViewById(R.id.new_egg_inputs_linearlayout);
+       	this.taggingTool = new TaggingTool(this, inputsLinearLayout);
 	}
 
 
