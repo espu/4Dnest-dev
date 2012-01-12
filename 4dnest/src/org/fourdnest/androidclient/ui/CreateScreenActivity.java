@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -97,5 +100,37 @@ public class CreateScreenActivity extends NestSpecificActivity {
 	@Override
 	public int getLayoutId() {
 		return R.layout.create_view;
+	}
+	/**
+	 * Creates the options menu on the press of the Menu button.
+	 * 
+	 * @param menu The menu to inflate
+	 * @return Boolean indicating success of creating the menu
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.create_menu, menu);
+		return true;
+	}
+	
+	/**
+	 * Specifies the action to perform when a menu item is pressed.
+	 * 
+	 * @param item The MenuItem that was pressed
+	 * @return Boolean indicating success of identifying the item
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_create_pref:
+			startActivity(new Intent(this, PrefsActivity.class));
+			return true;
+		case R.id.menu_create_help:
+			return true;
+		case R.id.menu_create_discard:
+			return true;
+		}
+		return false;
 	}
 }
