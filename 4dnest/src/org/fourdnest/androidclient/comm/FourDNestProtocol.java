@@ -225,6 +225,7 @@ public class FourDNestProtocol implements Protocol {
        
     	try {
     		request.setURI(new URI(uriPath));
+    		addAuthentication(request, "");
     		String jsonStr = responseToString(client.execute(request));
 	    	JSONObject js = new JSONObject(jsonStr);
 	    	return jSONObjectToEgg(js);
@@ -340,7 +341,7 @@ public class FourDNestProtocol implements Protocol {
 			String caption = js.getString("caption");
 			String externalFileUri = js.getString("resource_uri");
 			String author = js.getString("author");
-			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, null, 0);
+			Egg egg = new Egg(null, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, null, 0);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			return egg;
@@ -360,6 +361,13 @@ public class FourDNestProtocol implements Protocol {
     	try {
 			temp.put("author", egg.getAuthor());
 			temp.put("caption", egg.getCaption());
+			JSONArray tags = new JSONArray();
+			for (int i = 0; i<egg.getTags().size(); i++) {
+			    JSONObject tag = new JSONObject();
+			    tag.put("name", egg.getTags().get(i).getName());
+			    tags.put(tag);
+			}
+			temp.put("tags", tags);
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
