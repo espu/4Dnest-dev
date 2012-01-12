@@ -11,11 +11,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.Header;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -56,6 +58,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
 	private static final String JSON_FORMAT = "?format=json";
+	private static final String UNICODE = "UTF-8";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
@@ -71,6 +74,8 @@ public class FourDNestProtocol implements Protocol {
      * Parses egg's content and sends it in multipart mime format with HTTP
      * post.
      * 
+     * @param egg The egg that we want to send to the server
+     * 
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public ProtocolResult sendEgg(Egg egg) {
@@ -83,14 +88,20 @@ public class FourDNestProtocol implements Protocol {
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-        pairs.add(new BasicNameValuePair("metadata", metadata));
+        pairs.add(new BasicNameValuePair("data", metadata));
         String metadataMd5 = md5FromString(metadata);
+        Log.d("metadataMD5", metadataMd5);
+
         concatedMd5 += metadataMd5;
         if (egg.getLocalFileURI() != null) {
             if (new File(egg.getLocalFileURI().getPath()).isFile()) {
                 pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
                         .getPath()));
-                concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath()); 
+                
+                String fileMd5 = md5FromFile(egg.getLocalFileURI().getPath());
+                Log.d("fileMD5", fileMd5);
+                
+                concatedMd5 += fileMd5;
             }
         }
         
@@ -102,41 +113,8 @@ public class FourDNestProtocol implements Protocol {
         int status = 0;
         try {
             post.setEntity(this.createEntity(pairs));
-            Date date = new Date();
-            
-            /*
-             * StringToSign = HTTP-Verb + '\n' +
-             * base64(Content-MD5) + '\n' +
-             * base64(x-4dnest-multipartMD5) + '\n' +
-             * Content-Type + '\n' +
-             * Date + '\n' +
-             * RequestURI
-             * 
-             * Should be in utf-8 automatically.
-             */
-            String stringToSign = post.getMethod() + "\n" +
-            "" + "\n" +                                     //Content-MD5 empty for now
-            multipartMd5String + "\n" +
-            ""  + "\n" +                                       //Content-type empty for now
-            DateUtils.formatDate(date) + "\n" +
-            post.getURI().getPath();
-            
-            Log.d("message", stringToSign);
-            
-            String secretKey = "secret";
-            String userName = "testuser";
-            
-            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
-            
-            String signature = computeSignature(stringToSign, secretKey);
-            String authHeader = userName + ":" + signature;
-            post.setHeader("Authorization", authHeader);
-            Log.d("sign", authHeader);
-            
-            post.setHeader("Date", DateUtils.formatDate(date));
-            
-            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
-            
+            addAuthentication(post, multipartMd5String);
+            Log.d("AUTH", post.getHeaders("Authorization")[0].getValue());
             HttpResponse response = client.execute(post);
             status = response.getStatusLine().getStatusCode();
 
@@ -155,8 +133,9 @@ public class FourDNestProtocol implements Protocol {
     /**
      * Creates the proper ProtocolResult object from the server response
      * 
-     * @param The statuscode given in the server response
-     * 
+     * @param statusCode The statuscode given in the server response
+     * @param response The response from the server.
+     * @return The created ProtocolResult
      */
     private ProtocolResult parseResult(int statusCode, HttpResponse response) {
         if (statusCode == HTTP_STATUSCODE_CREATED) {
@@ -181,7 +160,7 @@ public class FourDNestProtocol implements Protocol {
      */
     private MultipartEntity createEntity(List<NameValuePair> pairs)
             throws UnsupportedEncodingException {
-    	Charset charset = Charset.forName("UTF-8");
+    	Charset charset = Charset.forName(UNICODE);
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT, null, charset);
 
         for (int i = 0; i < pairs.size(); i++) {
@@ -191,15 +170,17 @@ public class FourDNestProtocol implements Protocol {
             } else {
             	StringBody strbd = new StringBody(pairs
                         .get(i).getValue(), charset);
-                entity.addPart(pairs.get(i).getName(), new StringBody(pairs
-                        .get(i).getValue()));
+                entity.addPart(pairs.get(i).getName(), strbd);
                 //Log.d("STRINGBODY", strbd.getCharset());
             }
         }
         Log.d("CONTENTTYPE", entity.getContentType().getValue());
         return entity;
     }
-    
+    /**
+     * Creates a new HTTPClient with configured parameters and schemes.
+     * @return DefaultHttpClient
+     */
     private DefaultHttpClient createHttpClient() {
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         // http scheme
@@ -210,8 +191,8 @@ public class FourDNestProtocol implements Protocol {
                 443));
         HttpParams params = new BasicHttpParams();
         params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
-        HttpProtocolParams.setContentCharset(params, "UTF-8");
-        HttpProtocolParams.setHttpElementCharset(params, "UTF-8");
+        HttpProtocolParams.setContentCharset(params, UNICODE);
+        HttpProtocolParams.setHttpElementCharset(params, UNICODE);
         ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         return new DefaultHttpClient(cm, params);
     }
@@ -225,31 +206,16 @@ public class FourDNestProtocol implements Protocol {
 	public int getProtocolId() {
 		return ProtocolFactory.PROTOCOL_4DNEST;
 	}
-	
-    public String getTest() throws Exception {
-        HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet();
-        request.setURI(new URI("http://hs.fi/index.html"));
-        HttpResponse response = client.execute(request);
-        BufferedReader in = new BufferedReader(new InputStreamReader(response
-                .getEntity().getContent()));
-        StringBuffer sb = new StringBuffer("");
-        String line = "";
-        String NL = System.getProperty("line.separator");
-        while ((line = in.readLine()) != null) {
-            sb.append(line + NL);
-        }
-        in.close();
-        String page = sb.toString();
-
-        return page;
-    }
 
     public void setNest(Nest nest) {
         this.nest = nest;
 
     }
-    
+    /**
+     * Retrieves a single egg from the server and returns it.
+     * @param uid The server side id of the egg that we want to retrieve.
+     * @return The retrieved egg
+     */
     public Egg getEgg(String uid) {
     	HttpClient client = createHttpClient();
         HttpGet request = new HttpGet();
@@ -281,6 +247,11 @@ public class FourDNestProtocol implements Protocol {
     	return null;
     }
     
+    /**
+     * Retrieves the metadata of all the eggs in the server. Parses this metadata and creates a list of eggs from it
+     * 
+     * @return List of egg objects, obtained from the server.
+     */
     public List<Egg> getStream() {
     	Egg current = null;
     	ArrayList<Egg> eggList = new ArrayList<Egg>();
@@ -290,6 +261,7 @@ public class FourDNestProtocol implements Protocol {
         Log.d("URIStream", uriPath);
         try {
 			request.setURI(new URI(uriPath));
+			addAuthentication(request, "");
 			String jsonStr = responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
 			JSONArray jsonArr = outer.getJSONArray("objects");
@@ -300,17 +272,13 @@ public class FourDNestProtocol implements Protocol {
 			}
 			return eggList;
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: Invalid URI");
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: client execute failed");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: got IOException");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "JSONstring formatted incorrectly");
 		}
         return null;
     }
@@ -327,6 +295,7 @@ public class FourDNestProtocol implements Protocol {
     	HttpClient client = createHttpClient();
     	try {
 			HttpGet request = new HttpGet(new URI(uri));
+			addAuthentication(request, "");
 			HttpResponse resp = client.execute(request);
 			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
 				return false;
@@ -361,7 +330,11 @@ public class FourDNestProtocol implements Protocol {
             bis.close();
         }
     }
-    
+    /**
+     * Turns a JSONObject into an egg object
+     * @param js The JSONobject
+     * @return created egg
+     */
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
 			String caption = js.getString("caption");
@@ -377,6 +350,11 @@ public class FourDNestProtocol implements Protocol {
     	return null;
     }
     
+    /**
+     * Turns egg into a JSON formatted string
+     * @param egg
+     * @return JSON formatted string, containing egg metadata
+     */
     private String eggToJSONstring(Egg egg) {
     	JSONObject temp = new JSONObject();
     	try {
@@ -416,7 +394,7 @@ public class FourDNestProtocol implements Protocol {
         String result = "";
         if (s != null) {
             try {
-                byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
+                byte[] bytes = DigestUtils.md5(s.getBytes(UNICODE));
                 result = new String(Hex.encodeHex(bytes));
     
             } catch (UnsupportedEncodingException e) {
@@ -452,7 +430,12 @@ public class FourDNestProtocol implements Protocol {
         return result;
         
     }
-    
+    /**
+     * Computes the Hmac-Sha1 signature for the given string
+     * @param stringToSign String to be signed
+     * @param secretKey The key that is used to sign the string
+     * @return The signature
+     */
     private String computeSignature(String stringToSign, String secretKey) {
         String result = "";
         byte[] keyBytes = secretKey.getBytes();
@@ -473,6 +456,38 @@ public class FourDNestProtocol implements Protocol {
            
         }
         return result;
+    }
+    /**
+     * Creates the needed headers for authentication and fills them.
+     * @param base The Httpmessage base
+     * @param multipartMd5 the multipart md5 string
+     */
+    private void addAuthentication(HttpRequestBase base, String multipartMd5) {
+        /* StringToSign = HTTP-Verb + '\n' +
+         * base64(Content-MD5) + '\n' +
+         * base64(x-4dnest-multipartMD5) + '\n' +
+         * Content-Type + '\n' +
+         * Date + '\n' +
+         * RequestURI
+         * 
+         * Should be in utf-8 automatically.
+         */
+        String user = "Hard-coded";
+        String key = "secret";
+        String verb = base.getMethod();
+        String requestUri = base.getURI().getPath();
+        Date date = new Date();
+        String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
+                + "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
+        Log.d("stringtosign", stringToSign);
+
+        String authHead = user + ":" + computeSignature(stringToSign, key);
+        Log.d("HASH", authHead);
+        base.setHeader("Authorization", authHead);
+        
+        base.setHeader("Date", DateUtils.formatDate(date));
+        
+        base.setHeader("x-4dnest-multipartMD5", multipartMd5);
     }
     
 }
