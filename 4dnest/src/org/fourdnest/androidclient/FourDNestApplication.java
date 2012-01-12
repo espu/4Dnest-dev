@@ -4,8 +4,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
+import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -32,15 +34,23 @@ public class FourDNestApplication extends Application
 	private final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
+	private static FourDNestApplication app;
+	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
 	  this.setUpTestValues();
+	  app = this;
 	  Log.i(TAG, "onCreated");
+	  //warm start TagSuggestionService
+	  startService(new Intent(this, TagSuggestionService.class));
 	}
 	
+	public static FourDNestApplication getApplication() {
+		return app;
+	}
 	/**
 	 * Checks if Nest with ID 0 exists and creates it if not.
 	 * Temporary debug-helper method.

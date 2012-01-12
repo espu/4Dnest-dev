@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -67,6 +68,8 @@ public class TaggingTool extends LinearLayout {
       	
 		this.setOrientation(VERTICAL);
 		parent.addView(this);
+		
+		//List<Tag> lastUsed = TagSuggestionService.getLast
 		
 		// DEBUG
 		this.addTag(new Tag("Testing tagging tool"), false);

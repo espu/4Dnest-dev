@@ -41,7 +41,7 @@ public class TagSuggestionService extends IntentService {
 	private Map<Integer, List<Tag>> remoteTags;
 	private int maxSize;
 
-	private static FourDNestApplication app;
+	private FourDNestApplication app;
 	
 	/**
 	 * Constructor, simply calls super. Never used explicitly in user code.
@@ -64,6 +64,7 @@ public class TagSuggestionService extends IntentService {
 		this.lastUsedTags = new HashMap<Integer, List<Tag>>();
 		this.localTags = new HashMap<Integer, HashSet<Tag>>();
 		this.remoteTags = new HashMap<Integer, List<Tag>>();
+		this.app = FourDNestApplication.getApplication();
 
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(	//Be power efficient: we don't need exact timing
@@ -78,11 +79,6 @@ public class TagSuggestionService extends IntentService {
         		)
         );
 	}
-
-	public static void setApp(FourDNestApplication fourdnestapp) {
-		app = fourdnestapp;
-	}
-	
 
 	/**
 	 * Returns a list of all seen tags, for use in for example autocompletion.
