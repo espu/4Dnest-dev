@@ -67,11 +67,12 @@ public class SendQueueService extends IntentService {
 		Nest currentNest = app.getCurrentNest();		
 		if(currentNest == null) {
 			Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
+			return;
 		}
 		
 		egg.setAuthor(currentNest.getUserName());
 		egg.setNestId(currentNest.getId());
-		Egg savedEgg = app.getEggManager().saveEgg(egg);
+		Egg savedEgg = app.getDraftEggManager().saveEgg(egg);
 		
 		Intent intent = new Intent(context, SendQueueService.class);
 		intent.addCategory(SendQueueService.SEND_EGG);
@@ -96,16 +97,21 @@ public class SendQueueService extends IntentService {
 			
 			// Get Egg id from Intent, fetch the Egg from db
 			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
-			Egg egg = app.getEggManager().getEgg(eggId);
+			Egg egg = app.getDraftEggManager().getEgg(eggId);
 			
 			if(egg == null) {
 				Log.d(TAG, "Egg with id " + eggId + " not found");
 			} else {
 				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
-				if(res.getStatusCode() == res.RESOURCE_UPLOADED) {
+				if(res.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED) {
+					// Display message
 					this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+					// Delete Egg from drafts
+					app.getDraftEggManager().deleteEgg(eggId);
+					
 					Log.d(TAG, "Send completed");
 				} else {
+					// Something went wrong, transform code to message
 					String message;
 					
 					switch (res.getStatusCode()) {
@@ -125,6 +131,7 @@ public class SendQueueService extends IntentService {
 						message = "Unknown result";
 						break;
 					}
+					// Display message and die
 					this.handler.post(new ToastDisplay(app, "Send failed: " + message, Toast.LENGTH_SHORT));
 					Log.d(TAG, "Send failed: " + res.getStatusCode());
 				}
@@ -139,10 +146,10 @@ public class SendQueueService extends IntentService {
 	/**
 	 * Private class to display Toasts in main thread
 	 */
-	private class ToastDisplay implements Runnable {
-		String message;
-		Context context;
-		int duration;
+	private static class ToastDisplay implements Runnable {
+		private String message;
+		private Context context;
+		private int duration;
 		
 		/**
 		 * Runnable ToastDisplayer, added to a Handler to be run at a later time or

@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import android.content.Intent;
 import android.os.IBinder;
-import android.test.AndroidTestCase;
 import android.test.ServiceTestCase;
 
 /**

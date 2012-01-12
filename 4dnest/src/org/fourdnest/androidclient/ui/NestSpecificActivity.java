@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -59,4 +62,57 @@ public abstract class NestSpecificActivity extends Activity {
 	 * @return An integer representing the id of the specified layout.
 	 */
 	public abstract int getLayoutId();
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		switch(getLayoutId()) {
+			case R.layout.list_stream_view:
+				inflater.inflate(R.menu.stream_menu, menu);
+				return true;
+			case R.layout.create_view: 
+				inflater.inflate(R.menu.create_menu, menu);
+				return true;
+			case R.layout.read_view:
+				inflater.inflate(R.menu.view_menu, menu);
+				return true;
+			default : 
+				return super.onCreateOptionsMenu(menu);
+		}
+		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_stream_pref:
+			startActivity(new Intent(this, PrefsActivity.class));
+			return true;
+		case R.id.menu_stream_help:
+			return true;
+		case R.id.menu_stream_nests:
+			return true;
+		case R.id.menu_stream_drafts:
+			return true;
+		case R.id.menu_create_discard:
+			return true;
+		case R.id.menu_create_help:
+			return true;
+		case R.id.menu_create_pref:
+			startActivity(new Intent(this, PrefsActivity.class));
+			return true;
+		case R.id.menu_view_delete:
+			return true;
+		case R.id.menu_view_edit:
+			startActivity(new Intent(this, NewEggActivity.class));
+			return true;
+		case R.id.menu_view_help:
+			return true;
+		case R.id.menu_view_pref:
+			startActivity(new Intent(this, PrefsActivity.class));
+			return true;
+		default :
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }

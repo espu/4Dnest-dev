@@ -19,7 +19,6 @@ public class EggManager {
 	
 	private static final String TAG = EggManager.class.getSimpleName();
 	
-	static final String DB_NAME = "4dnest.eggs.db";
 	static final int DB_VERSION = 3;
 	
 	// Table columns
@@ -40,13 +39,21 @@ public class EggManager {
 	// TODO: Add tag relation table when we have tag manager
 		
 	private final EggDatabase eggDb;
+	private String dbName;
 	
 	/**
-	 * Creates new NestManager with specified context
+	 * Creates new NestManager with specified context and
+	 * role. Role is used to differentiate databases and thus
+	 * allow running multiple parallel EggManagers 
 	 * @param context
 	 */
-	public EggManager(Context context) {
-		this.eggDb = new EggDatabase(context);
+	public EggManager(Context context, String uniqueRole) {
+		if(uniqueRole == null ||  uniqueRole != uniqueRole.replaceAll("[^a-z]", "")) {
+			//throw new IllegalArgumentException("Invalid uniqueRole: non-null string with only a-z required");
+		}
+		
+		this.dbName = "org.4dnest.androidclient.eggs." + uniqueRole + ".db";   
+		this.eggDb = new EggDatabase(context, this.dbName);
 		
 		Log.d(TAG, "EggManager created");
 	}
@@ -262,11 +269,11 @@ public class EggManager {
 	 *  Actual database handler inside NestManager
 	 */
 	static class EggDatabase extends SQLiteOpenHelper {
-		private Context context;
+		//private Context context;
 		
-		public EggDatabase(Context context) {
-			super(context, DB_NAME, null, DB_VERSION);			
-			this.context = context;			
+		public EggDatabase(Context context, String dbName) {
+			super(context, dbName, null, DB_VERSION);			
+			//this.context = context;			
 			Log.d(TAG, "EggDatabase created");
 		}
 

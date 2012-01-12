@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
-import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -25,14 +24,18 @@ public class FourDNestApplication extends Application
 	
 	private SharedPreferences prefs;
 	private NestManager nestManager;
-	private EggManager eggManager;
+	
+	private final String draftEggManagerRole = "draft";
+	private EggManager draftEggManager;
+	
+	private final String streamEggManagerRole = "stream";
+	private EggManager streamEggManager;
 	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
@@ -70,17 +73,32 @@ public class FourDNestApplication extends Application
 	}
 	
 	/**
-	 * Gets the EggManager singleton.
+	 * Gets the EggManager singleton for draft eggs.
 	 * The EggManager object synchronizes itself, so the caller is free to store
 	 * the object.
 	 * @return the EggManager
 	 */
-	public EggManager getEggManager() {
-		if(this.eggManager == null) {
-			this.eggManager = new EggManager(this);
+	public EggManager getDraftEggManager() {
+		if(this.draftEggManager == null) {
+			this.draftEggManager = new EggManager(this, this.draftEggManagerRole);
 		}
-		return this.eggManager;		
+		return this.draftEggManager;
 	}
+	
+	/**
+	 * Gets the EggManager singleton for stream eggs.
+	 * The EggManager object synchronizes itself, so the caller is free to store
+	 * the object.
+	 * @return the EggManager
+	 */
+	public EggManager getStreamEggManager() {
+		if(this.streamEggManager == null) {
+			this.streamEggManager = new EggManager(this, this.streamEggManagerRole);
+		}
+		return this.streamEggManager;
+	}
+	
+	
 
 
 	public synchronized void onSharedPreferenceChanged(
