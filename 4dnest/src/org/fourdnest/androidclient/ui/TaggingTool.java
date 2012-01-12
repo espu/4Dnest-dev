@@ -20,6 +20,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
+/**
+ * An UI element for attaching tags to the Egg that is being edited.
+ * Consists of a growing set of checkbox buttons for each tag,
+ * and an autocompleting text field for adding tags.
+ */
 public class TaggingTool extends LinearLayout {
 	/** Tag string used to indicate source in logging */	
 	public static final String TAG = TaggingTool.class.getSimpleName();
@@ -31,6 +36,11 @@ public class TaggingTool extends LinearLayout {
 	private FlowLayout tagFlowLayout;
 	private AutoCompleteTextView tagTextView;
 
+	/**
+	 * Creates and initializes the TaggingTool.
+	 * @param context The context for the TaggingTool.
+	 * @param parent The parent element into which TaggingTool will add itself.
+	 */
 	public TaggingTool(Context context, ViewGroup parent) {
 		super(context);
 		this.buttons = new ArrayList<TagCheckBox>();
@@ -66,6 +76,12 @@ public class TaggingTool extends LinearLayout {
 		this.addTag(new Tag("tags"), false);
 	}
 	
+	/**
+	 * Adds a single new tag, or marks the corresponding tag as selected
+	 * if it already exists.
+	 * @param tag The tag to add.
+	 * @param checked Should the tag be initially checked.
+	 */
 	public void addTag(Tag tag, boolean checked) {
 		for(TagCheckBox button : this.buttons) {
 			if(button.getTag().equals(tag)) {
@@ -79,6 +95,9 @@ public class TaggingTool extends LinearLayout {
 		this.buttons.add(button);
 	}
 
+	/**
+	 * @return a list of all checked tags.
+	 */
 	public List<Tag> getCheckedTags() {
 		List<Tag> out = new ArrayList<Tag>(this.buttons.size());
 		for(TagCheckBox button : this.buttons) {
@@ -89,6 +108,9 @@ public class TaggingTool extends LinearLayout {
 		return out;
 	}
 	
+	/**
+	 * A clickable checkbox representing one Tag. 
+	 */
 	private class TagCheckBox extends CheckBox {
 		private Tag tag;
 		public TagCheckBox(Context context, Tag tag) {
