@@ -71,6 +71,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public int getLayoutId() {
 		return R.layout.list_stream_view;
-	}
+	}	
 
 }
