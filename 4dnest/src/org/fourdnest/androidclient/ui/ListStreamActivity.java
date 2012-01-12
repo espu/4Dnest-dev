@@ -33,10 +33,9 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		ArrayList<Egg> eggs = (ArrayList<Egg>) application.getCurrentNest()
 				.getProtocol().getStream();
-		if (eggs != null) {
-			for (Egg egg : eggs) {
-				manager.saveEgg(egg);
-			}
+		
+		for (Egg egg : eggs) {
+			manager.saveEgg(egg);
 		}
 
 		ToggleButton trackButton = (ToggleButton) view

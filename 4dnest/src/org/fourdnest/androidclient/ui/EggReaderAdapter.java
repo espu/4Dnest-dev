@@ -39,6 +39,8 @@ public class EggReaderAdapter extends EggListAdapter {
 		ImageView thumbnail = (ImageView) arg1t.findViewById(R.id.thumbnail);
 		TextView message = (TextView) arg1t.findViewById(R.id.message);
 		TextView date = (TextView) arg1t.findViewById(R.id.date);
+		
+		message.setText(egg.getCaption());
 
 		return arg1t;
 	}
