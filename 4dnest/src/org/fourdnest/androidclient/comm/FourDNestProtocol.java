@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -86,7 +87,7 @@ public class FourDNestProtocol implements Protocol {
 
         // Create list of NameValuePairs
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-        pairs.add(new BasicNameValuePair("metadata", metadata));
+        pairs.add(new BasicNameValuePair("data", metadata));
         String metadataMd5 = md5FromString(metadata);
         concatedMd5 += metadataMd5;
         if (egg.getLocalFileURI() != null) {
@@ -105,41 +106,8 @@ public class FourDNestProtocol implements Protocol {
         int status = 0;
         try {
             post.setEntity(this.createEntity(pairs));
-            Date date = new Date();
-            
-            /*
-             * StringToSign = HTTP-Verb + '\n' +
-             * base64(Content-MD5) + '\n' +
-             * base64(x-4dnest-multipartMD5) + '\n' +
-             * Content-Type + '\n' +
-             * Date + '\n' +
-             * RequestURI
-             * 
-             * Should be in utf-8 automatically.
-             */
-            String stringToSign = post.getMethod() + "\n" +
-            "" + "\n" +                                     //Content-MD5 empty for now
-            multipartMd5String + "\n" +
-            ""  + "\n" +                                       //Content-type empty for now
-            DateUtils.formatDate(date) + "\n" +
-            post.getURI().getPath();
-            
-            Log.d("message", stringToSign);
-            
-            String secretKey = "secret";
-            String userName = "testuser";
-            
-            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
-            
-            String signature = computeSignature(stringToSign, secretKey);
-            String authHeader = userName + ":" + signature;
-            post.setHeader("Authorization", authHeader);
-            Log.d("sign", authHeader);
-            
-            post.setHeader("Date", DateUtils.formatDate(date));
-            
-            post.setHeader("x-4dnest-multipartMD5", multipartMd5String);
-            
+            addAuthentication(post, multipartMd5String);
+            Log.d("AUTH", post.getHeaders("Authorization")[0].getValue());
             HttpResponse response = client.execute(post);
             status = response.getStatusLine().getStatusCode();
 
@@ -297,17 +265,13 @@ public class FourDNestProtocol implements Protocol {
 			}
 			return eggList;
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: Invalid URI");
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: client execute failed");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "getStream: got IOException");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "JSONstring formatted incorrectly");
 		}
         return null;
     }
@@ -484,6 +448,35 @@ public class FourDNestProtocol implements Protocol {
            
         }
         return result;
+    }
+    /**
+     * Creates the needed headers for authentication and fills them.
+     * @param base The Httpmessage base
+     * @param multipartMd5 the multipart md5 string
+     */
+    private void addAuthentication(HttpRequestBase base, String multipartMd5) {
+        /* StringToSign = HTTP-Verb + '\n' +
+         * base64(Content-MD5) + '\n' +
+         * base64(x-4dnest-multipartMD5) + '\n' +
+         * Content-Type + '\n' +
+         * Date + '\n' +
+         * RequestURI
+         * 
+         * Should be in utf-8 automatically.
+         */
+        String user = "Hard-coded";
+        String key = "secret";
+        String verb = base.getMethod();
+        String requestUri = base.getURI().getPath();
+        Date date = new Date();
+        String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
+                + "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
+        String authHead = user + ":" + computeSignature(stringToSign, key);
+        base.setHeader("Authorization", authHead);
+        
+        base.setHeader("Date", DateUtils.formatDate(date));
+        
+        base.setHeader("x-4dnest-multipartMD5", multipartMd5);
     }
     
 }
