@@ -71,6 +71,8 @@ public class FourDNestProtocol implements Protocol {
      * Parses egg's content and sends it in multipart mime format with HTTP
      * post.
      * 
+     * @param egg The egg that we want to send to the server
+     * 
      * @return HTTP status code and egg URI on server if creation successful
      **/
     public ProtocolResult sendEgg(Egg egg) {
@@ -155,8 +157,9 @@ public class FourDNestProtocol implements Protocol {
     /**
      * Creates the proper ProtocolResult object from the server response
      * 
-     * @param The statuscode given in the server response
-     * 
+     * @param statusCode The statuscode given in the server response
+     * @param response The response from the server.
+     * @return The created ProtocolResult
      */
     private ProtocolResult parseResult(int statusCode, HttpResponse response) {
         if (statusCode == HTTP_STATUSCODE_CREATED) {
@@ -199,7 +202,10 @@ public class FourDNestProtocol implements Protocol {
         Log.d("CONTENTTYPE", entity.getContentType().getValue());
         return entity;
     }
-    
+    /**
+     * Creates a new HTTPClient with configured parameters and schemes.
+     * @return DefaultHttpClient
+     */
     private DefaultHttpClient createHttpClient() {
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         // http scheme
@@ -225,31 +231,16 @@ public class FourDNestProtocol implements Protocol {
 	public int getProtocolId() {
 		return ProtocolFactory.PROTOCOL_4DNEST;
 	}
-	
-    public String getTest() throws Exception {
-        HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet();
-        request.setURI(new URI("http://hs.fi/index.html"));
-        HttpResponse response = client.execute(request);
-        BufferedReader in = new BufferedReader(new InputStreamReader(response
-                .getEntity().getContent()));
-        StringBuffer sb = new StringBuffer("");
-        String line = "";
-        String NL = System.getProperty("line.separator");
-        while ((line = in.readLine()) != null) {
-            sb.append(line + NL);
-        }
-        in.close();
-        String page = sb.toString();
-
-        return page;
-    }
 
     public void setNest(Nest nest) {
         this.nest = nest;
 
     }
-    
+    /**
+     * Retrieves a single egg from the server and returns it.
+     * @param uid The server side id of the egg that we want to retrieve.
+     * @return The retrieved egg
+     */
     public Egg getEgg(String uid) {
     	HttpClient client = createHttpClient();
         HttpGet request = new HttpGet();
@@ -281,6 +272,11 @@ public class FourDNestProtocol implements Protocol {
     	return null;
     }
     
+    /**
+     * Retrieves the metadata of all the eggs in the server. Parses this metadata and creates a list of eggs from it
+     * 
+     * @return List of egg objects, obtained from the server.
+     */
     public List<Egg> getStream() {
     	Egg current = null;
     	ArrayList<Egg> eggList = new ArrayList<Egg>();
@@ -361,7 +357,11 @@ public class FourDNestProtocol implements Protocol {
             bis.close();
         }
     }
-    
+    /**
+     * Turns a JSONObject into an egg object
+     * @param js The JSONobject
+     * @return created egg
+     */
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
 			String caption = js.getString("caption");
@@ -377,6 +377,11 @@ public class FourDNestProtocol implements Protocol {
     	return null;
     }
     
+    /**
+     * Turns egg into a JSON formatted string
+     * @param egg
+     * @return JSON formatted string, containing egg metadata
+     */
     private String eggToJSONstring(Egg egg) {
     	JSONObject temp = new JSONObject();
     	try {
@@ -452,7 +457,12 @@ public class FourDNestProtocol implements Protocol {
         return result;
         
     }
-    
+    /**
+     * Computes the Hmac-Sha1 signature for the given string
+     * @param stringToSign String to be signed
+     * @param secretKey The key that is used to sign the string
+     * @return The signature
+     */
     private String computeSignature(String stringToSign, String secretKey) {
         String result = "";
         byte[] keyBytes = secretKey.getBytes();
