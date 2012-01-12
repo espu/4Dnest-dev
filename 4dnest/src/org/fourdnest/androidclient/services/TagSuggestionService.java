@@ -23,8 +23,6 @@ import android.util.Log;
 /**
  * A service that keeps caches of recent and/or popular tags,
  * both local and remote. 
- * @author gronsti
- *
  */
 public class TagSuggestionService extends IntentService {
 	/** Tag string used to indicate source in logging */	
@@ -43,7 +41,7 @@ public class TagSuggestionService extends IntentService {
 	private Map<Integer, List<Tag>> remoteTags;
 	private int maxSize;
 
-	private NestManager nestManager;
+	private static FourDNestApplication app;
 	
 	/**
 	 * Constructor, simply calls super. Never used explicitly in user code.
@@ -62,13 +60,11 @@ public class TagSuggestionService extends IntentService {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Log.d(TAG, "onCreate");
 		this.lastUsedTags = new HashMap<Integer, List<Tag>>();
 		this.localTags = new HashMap<Integer, HashSet<Tag>>();
 		this.remoteTags = new HashMap<Integer, List<Tag>>();
-	}
-	
-	public void startUpdates(FourDNestApplication app) {
-		this.nestManager = app.getNestManager();
+
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(	//Be power efficient: we don't need exact timing
         		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
@@ -82,6 +78,11 @@ public class TagSuggestionService extends IntentService {
         		)
         );
 	}
+
+	public static void setApp(FourDNestApplication fourdnestapp) {
+		app = fourdnestapp;
+	}
+	
 
 	/**
 	 * Returns a list of all seen tags, for use in for example autocompletion.
@@ -143,12 +144,14 @@ public class TagSuggestionService extends IntentService {
 	 * Loops through all Nests updating their tag cache
 	 */
 	private synchronized void updateRemoteTags() {
-		List<Nest> nests = this.nestManager.listNests();
+		NestManager nestManager = app.getNestManager();
+		List<Nest> nests = nestManager.listNests();
 		for(Nest nest : nests) {
 			Integer nestId = Integer.valueOf(nest.getId());
 			Protocol protocol = nest.getProtocol();
 			List<Tag> tags = protocol.topTags(REMOTE_TAG_COUNT);
 			if(tags != null) {
+				Log.d(TAG, "Tags updated for Nest with id " + nestId);
 				this.remoteTags.put(nestId, tags);
 			} else {
 				Log.w(TAG, "Nest with id " + nestId + " returned null topTags");
