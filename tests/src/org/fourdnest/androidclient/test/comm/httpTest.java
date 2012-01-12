@@ -51,10 +51,10 @@ public class httpTest extends AndroidTestCase {
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
 
-		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "More stuff", tags, 100);
+		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "tägei tulee", tags, 100);
         /* SELECT to use local or web server */
 
-		Nest nest = new Nest(007, "testNest", "testNest", new URI("https://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		//Nest nest = new Nest(007, "testNest", "testNest", new URI("http://10.0.2.2:8000/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 
