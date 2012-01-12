@@ -360,6 +360,11 @@ public class FourDNestProtocol implements Protocol {
     	try {
 			temp.put("author", egg.getAuthor());
 			temp.put("caption", egg.getCaption());
+			JSONArray tags = new JSONArray();
+            for (int i = 0; i<egg.getTags().size(); i++) {
+                tags.put(new String(egg.getTags().get(i).getName()));
+            }
+            temp.put("tags", tags);
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
