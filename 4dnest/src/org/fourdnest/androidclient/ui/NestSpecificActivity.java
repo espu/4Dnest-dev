@@ -59,4 +59,5 @@ public abstract class NestSpecificActivity extends Activity {
 	 * @return An integer representing the id of the specified layout.
 	 */
 	public abstract int getLayoutId();
+		
 }
