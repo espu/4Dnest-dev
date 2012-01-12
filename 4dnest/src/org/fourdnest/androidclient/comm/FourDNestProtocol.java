@@ -56,6 +56,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
 	private static final String JSON_FORMAT = "?format=json";
+	private static final String UNICODE = "UTF-8";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
@@ -178,7 +179,7 @@ public class FourDNestProtocol implements Protocol {
      */
     private MultipartEntity createEntity(List<NameValuePair> pairs)
             throws UnsupportedEncodingException {
-    	Charset charset = Charset.forName("UTF-8");
+    	Charset charset = Charset.forName(UNICODE);
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT, null, charset);
 
         for (int i = 0; i < pairs.size(); i++) {
@@ -207,8 +208,8 @@ public class FourDNestProtocol implements Protocol {
                 443));
         HttpParams params = new BasicHttpParams();
         params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
-        HttpProtocolParams.setContentCharset(params, "UTF-8");
-        HttpProtocolParams.setHttpElementCharset(params, "UTF-8");
+        HttpProtocolParams.setContentCharset(params, UNICODE);
+        HttpProtocolParams.setHttpElementCharset(params, UNICODE);
         ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         return new DefaultHttpClient(cm, params);
     }
@@ -413,7 +414,7 @@ public class FourDNestProtocol implements Protocol {
         String result = "";
         if (s != null) {
             try {
-                byte[] bytes = DigestUtils.md5(s.getBytes("UTF-8"));
+                byte[] bytes = DigestUtils.md5(s.getBytes(UNICODE));
                 result = new String(Hex.encodeHex(bytes));
     
             } catch (UnsupportedEncodingException e) {
