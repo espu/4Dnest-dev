@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.Tag;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -46,7 +47,10 @@ public class TaggingTool extends LinearLayout {
        	((Button) this.findViewById(R.id.add_tag_button))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
-				TaggingTool.this.addTag(TaggingTool.this.tagTextView.getText(), true);
+				TaggingTool.this.addTag(
+					new Tag(TaggingTool.this.tagTextView.getText()),
+					true
+				);
 				TaggingTool.this.tagTextView.setText("");
 			}
 		});
@@ -55,28 +59,41 @@ public class TaggingTool extends LinearLayout {
 		parent.addView(this);
 		
 		// DEBUG
-		this.addTag("Testing tagging tool", false);
-		this.addTag("Llllllllllllllllllllllllllllllllllllong", false);
-		this.addTag("Checked", true);
-		this.addTag("Short", false);
-		this.addTag("tags", false);
+		this.addTag(new Tag("Testing tagging tool"), false);
+		this.addTag(new Tag("Llllllllllllllllllllllllllllllllllllong"), false);
+		this.addTag(new Tag("Checked"), true);
+		this.addTag(new Tag("Short"), false);
+		this.addTag(new Tag("tags"), false);
 	}
 	
-	public void addTag(CharSequence tag, boolean checked) {
+	public void addTag(Tag tag, boolean checked) {
 		TagCheckBox button = new TagCheckBox(getContext(), tag);
 		button.setChecked(checked);
 		this.tagFlowLayout.addView(button);
+		this.buttons.add(button);
 	}
 
+	public List<Tag> getCheckedTags() {
+		List<Tag> out = new ArrayList<Tag>(this.buttons.size());
+		for(TagCheckBox button : this.buttons) {
+			if(button.isChecked()) {
+				out.add(button.getTag());
+			}
+		}
+		return out;
+	}
+	
 	private class TagCheckBox extends CheckBox {
-		public TagCheckBox(Context context, CharSequence tag) {
+		private Tag tag;
+		public TagCheckBox(Context context, Tag tag) {
 			super(context);
+			this.tag = tag;
 			this.setBackgroundResource(R.drawable.tagcheckbox);
 			this.setTextColor(Color.BLACK);
 			this.setTextSize(12);
 			this.setSingleLine(true);
 			this.setEllipsize(TruncateAt.END);
-			this.setText(tag);
+			this.setText(tag.getName());
 			this.setHeight(60);
 			this.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
@@ -88,6 +105,9 @@ public class TaggingTool extends LinearLayout {
 					}
 				}
 			});
+		}
+		public Tag getTag() {
+			return this.tag;
 		}
 	}
 }

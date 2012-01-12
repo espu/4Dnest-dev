@@ -30,7 +30,7 @@
 	android:layout_marginLeft="5dp"/>
 	<Button
 	android:id="@+id/add_tag_button"
-	android:layout_width="60dp"
+	android:layout_width="80dp"
 	android:layout_height="wrap_content"
 	android:text="@string/add_tag_button" 
 	/>

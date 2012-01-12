@@ -122,7 +122,7 @@ public class NewEggActivity extends Activity{
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				egg.setTags(new ArrayList<Tag>());
+				egg.setTags(NewEggActivity.this.taggingTool.getCheckedTags());
 				SendQueueService.sendEgg(getApplication(), egg);
 			}
 		});
