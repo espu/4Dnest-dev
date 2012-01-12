@@ -17,6 +17,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.Header;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -89,12 +90,18 @@ public class FourDNestProtocol implements Protocol {
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("data", metadata));
         String metadataMd5 = md5FromString(metadata);
+        Log.d("metadataMD5", metadataMd5);
+
         concatedMd5 += metadataMd5;
         if (egg.getLocalFileURI() != null) {
             if (new File(egg.getLocalFileURI().getPath()).isFile()) {
                 pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
                         .getPath()));
-                concatedMd5 += md5FromFile(egg.getLocalFileURI().getPath()); 
+                
+                String fileMd5 = md5FromFile(egg.getLocalFileURI().getPath());
+                Log.d("fileMD5", fileMd5);
+                
+                concatedMd5 += fileMd5;
             }
         }
         
@@ -472,6 +479,8 @@ public class FourDNestProtocol implements Protocol {
         Date date = new Date();
         String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
                 + "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
+        Log.d("stringtosign", stringToSign);
+
         String authHead = user + ":" + computeSignature(stringToSign, key);
         Log.d("HASH", authHead);
         base.setHeader("Authorization", authHead);
