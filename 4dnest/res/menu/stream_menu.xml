@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item 
-        android:id="@+id/menu_stream_help"
-        android:title="@string/menu_help"
-        android:icon="@android:drawable/ic_menu_help"></item>
     <item
-        android:id="@+id/menu_about"
-        android:title="@string/menu_about"
-        android:icon="@android:drawable/ic_menu_info_details"></item>
-        <item 
+        android:id="@+id/menu_stream_drafts"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/menu_drafts"></item>
+    <item
+        android:id="@+id/menu_stream_nests"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/menu_nests"></item>
+    <item
         android:id="@+id/menu_stream_pref"
-        android:title="@string/menu_settings"
-        android:icon="@android:drawable/ic_menu_preferences"></item>
-
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/menu_settings"></item>
+    <item
+        android:id="@+id/menu_stream_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/menu_help"></item>
 </menu>

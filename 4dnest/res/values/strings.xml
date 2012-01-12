@@ -20,5 +20,10 @@
     <string name="read_stream_create_button">Create</string>
     <string name="menu_help">Help</string>
     <string name="menu_about">About</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">Preferences</string>
+    <string name="menu_discard">Discard</string>
+    <string name="menu_drafts">Drafts</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_nests">Edit Nests</string>
 </resources>
