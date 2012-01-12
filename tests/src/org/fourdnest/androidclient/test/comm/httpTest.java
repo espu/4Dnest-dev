@@ -45,11 +45,13 @@ public class httpTest extends AndroidTestCase {
 	@Test
 	public void testHttpPost() throws Exception {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag("Programming"));
+		tags.add(new Tag("Video Games"));
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
 		Log.v("Path", uri.getPath());
 
-		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "generic hashtest", tags, 100);
+		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "More stuff", tags, 100);
         /* SELECT to use local or web server */
 
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("https://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
@@ -69,8 +71,8 @@ public class httpTest extends AndroidTestCase {
 	
 	@Test
 	public void testGetEgg() throws Exception{
-		String eggId = "OTngW6mSd99l";
-		String expectedResult = "Test post with curl in Maarintalo";
+		String eggId = "73M0hLExLwr5";
+		String expectedResult = "generic hashtest";
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);

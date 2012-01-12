@@ -225,6 +225,7 @@ public class FourDNestProtocol implements Protocol {
        
     	try {
     		request.setURI(new URI(uriPath));
+    		addAuthentication(request, "");
     		String jsonStr = responseToString(client.execute(request));
 	    	JSONObject js = new JSONObject(jsonStr);
 	    	return jSONObjectToEgg(js);
