@@ -2,9 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <EditTextPreference
-        android:key="nestBaseUri"
-        android:summary=""
-        android:title="Example Title" >
+        android:key="nest_base_uri"
+        android:summary="Temporary Nest Base URI"
+        android:title="Nest Base URI" >
     </EditTextPreference>
 
 </PreferenceScreen>
