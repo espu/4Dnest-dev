@@ -21,5 +21,16 @@ public class SendQueueTestProtocol implements Protocol {
 	public List<Tag> topTags(int count) {
 		return null;
 	}
+	public Egg getEgg(String uid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public List<Egg> getStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public boolean getMediaFile(String uri, String localPath) {
+		return false;
+	}
 }
 
