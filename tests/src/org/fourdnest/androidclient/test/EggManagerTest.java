@@ -17,7 +17,7 @@ public class EggManagerTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		this.eggManager = new EggManager(this.getContext(), "default");
+		this.eggManager	 = new EggManager(this.getContext(), "default");
 		this.eggManager2 = new EggManager(this.getContext(), "alternate");
 		
 		this.eggManager.deleteAllEggs();

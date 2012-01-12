@@ -3,9 +3,6 @@ package org.fourdnest.androidclient;
 import java.util.ArrayList;
 import java.util.List;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Represents one Egg, which is the unit of content in the system.
  * The Egg can be a local stored Egg or a temporary copy of an Egg from the

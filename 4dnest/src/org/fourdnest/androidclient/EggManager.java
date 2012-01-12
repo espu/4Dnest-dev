@@ -48,8 +48,8 @@ public class EggManager {
 	 * @param context
 	 */
 	public EggManager(Context context, String uniqueRole) {
-		if(uniqueRole.contains("[^a-z]")) {
-			throw new IllegalArgumentException("uniqueRole must only contain characters a-z");
+		if(uniqueRole == null ||  uniqueRole != uniqueRole.replaceAll("[^a-z]", "")) {
+			throw new IllegalArgumentException("Invalid uniqueRole: non-null string with only a-z required");
 		}
 		
 		this.dbName = "org.4dnest.androidclient.eggs." + uniqueRole + ".db";   
@@ -269,11 +269,11 @@ public class EggManager {
 	 *  Actual database handler inside NestManager
 	 */
 	static class EggDatabase extends SQLiteOpenHelper {
-		private Context context;
+		//private Context context;
 		
 		public EggDatabase(Context context, String dbName) {
 			super(context, dbName, null, DB_VERSION);			
-			this.context = context;			
+			//this.context = context;			
 			Log.d(TAG, "EggDatabase created");
 		}
 
