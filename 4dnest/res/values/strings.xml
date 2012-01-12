@@ -18,4 +18,7 @@
     <string name="preview">preview</string>
     <string name="add_message_here">Add Message here</string>
     <string name="read_stream_create_button">Create</string>
+    <string name="welcome_title">Welcome to 4DNest!</string>
+    <string name="setup_qr">Read in QR-code</string>
+    <string name="setup_manual">Fill in by Hand</string>
 </resources>
