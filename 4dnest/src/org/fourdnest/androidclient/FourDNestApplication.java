@@ -33,7 +33,6 @@ public class FourDNestApplication extends Application
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-	  
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
