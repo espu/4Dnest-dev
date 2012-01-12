@@ -3,8 +3,12 @@ package org.fourdnest.androidclient.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -129,6 +133,26 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onStatusChanged");
 		Toast.makeText(this, "onStatusChanged: " + provider, Toast.LENGTH_SHORT);
 	}
+	
+	/**
+	 * Converts a Location object to JSON object with relevant information
+	 * @param loc
+	 * @return JSON representation of Location
+	 * @throws JSONException
+	 */
+	private JSONObject locationToJSON(Location loc) throws JSONException {
+    	JSONObject json = new JSONObject();
+    	
+		json.put("accuracy", loc.getAccuracy());
+		json.put("altitude", loc.getAltitude());
+		json.put("bearing", loc.getBearing());
+		json.put("latitude", loc.getLatitude());
+		json.put("longitude", loc.getLongitude());
+		json.put("speed", loc.getSpeed());
+		json.put("time", loc.getTime());
+		
+		return json;    	
+    }
 	
 
 }
