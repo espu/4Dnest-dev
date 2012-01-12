@@ -67,6 +67,12 @@ public class TaggingTool extends LinearLayout {
 	}
 	
 	public void addTag(Tag tag, boolean checked) {
+		for(TagCheckBox button : this.buttons) {
+			if(button.getTag().equals(tag)) {
+				button.setChecked(true);
+				return;
+			}
+		}
 		TagCheckBox button = new TagCheckBox(getContext(), tag);
 		button.setChecked(checked);
 		this.tagFlowLayout.addView(button);
