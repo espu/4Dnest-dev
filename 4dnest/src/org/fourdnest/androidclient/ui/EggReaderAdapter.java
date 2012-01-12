@@ -52,10 +52,11 @@ public class EggReaderAdapter extends EggListAdapter {
 	 */
 	public void setEggs(List<Egg> eggs) {
 		// TODO: Get a real implementation for this
-		this.eggs = new ArrayList<Egg>();
-		for (int i = 0; i < 8; i++) {
-			this.eggs.add(new Egg());
-		}
+		this.eggs = eggs;
+//		this.eggs = new ArrayList<Egg>();
+//		for (int i = 0; i < 8; i++) {
+//			this.eggs.add(new Egg());
+//		}
 	}
 
 }
