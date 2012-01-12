@@ -71,7 +71,7 @@ public class SendQueueService extends IntentService {
 		
 		egg.setAuthor(currentNest.getUserName());
 		egg.setNestId(currentNest.getId());
-		Egg savedEgg = app.getEggManager().saveEgg(egg);
+		Egg savedEgg = app.getDraftEggManager().saveEgg(egg);
 		
 		Intent intent = new Intent(context, SendQueueService.class);
 		intent.addCategory(SendQueueService.SEND_EGG);
@@ -96,7 +96,7 @@ public class SendQueueService extends IntentService {
 			
 			// Get Egg id from Intent, fetch the Egg from db
 			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
-			Egg egg = app.getEggManager().getEgg(eggId);
+			Egg egg = app.getDraftEggManager().getEgg(eggId);
 			
 			if(egg == null) {
 				Log.d(TAG, "Egg with id " + eggId + " not found");
