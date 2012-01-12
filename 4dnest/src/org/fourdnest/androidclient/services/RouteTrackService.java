@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.R;
@@ -23,12 +24,16 @@ import android.widget.Toast;
 
 public class RouteTrackService extends Service implements LocationListener {
 	
-	
+	private List<Location> locationCache;
 	private LocationManager locationManager;
 	private String provider = "gps"; // Fixed provider
+	
 	private int NOTE_ON = R.string.gps_track_on;
 	private int NOTE_OFF = R.string.gps_track_off;
+	
 	private final String TAG = RouteTrackService.class.getSimpleName();
+	private final int LOCATION_MIN_DELAY = 1000; // ms
+	private final float LOCATION_MIN_DISTANCE = 5; // m
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -38,13 +43,17 @@ public class RouteTrackService extends Service implements LocationListener {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
+		
+		
 		this.locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        this.locationManager.requestLocationUpdates(
+        		this.provider,
+        		LOCATION_MIN_DELAY,
+        		LOCATION_MIN_DISTANCE,
+        		this
+        		);
         
-        long minTime = 1000; //ms
-        float minDist = 5; //m        
-        this.locationManager.requestLocationUpdates(this.provider, minTime, minDist, this);
-        
-        
+        this.locationCache = new ArrayList<Location>();        
 	}
 	
 	@Override
@@ -73,8 +82,6 @@ public class RouteTrackService extends Service implements LocationListener {
         // Start service in foreground
         this.startForeground(this.NOTE_ON, notification);
         
-        
-        
         // Run until explicitly stopped
         return START_STICKY;
     }
@@ -87,16 +94,24 @@ public class RouteTrackService extends Service implements LocationListener {
 		
 	    // Cancel the persistent notification.
 		this.stopForeground(true);
-	
+		
+		String message = "Tracking stopped. ";
+		message += this.locationCache.size() + " Locations received.";
+		
+		// Empty the cache
+		this.locationCache = new ArrayList<Location>();
+		
 		// Tell the user we stopped.
-	    Toast.makeText(this, this.NOTE_OFF, Toast.LENGTH_SHORT).show();
-	    
-	    
+	    //Toast.makeText(this, this.NOTE_OFF, Toast.LENGTH_SHORT).show();	    
+		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 	}
 
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged");
 		Toast.makeText(this, "New location: " + location.getLongitude(), Toast.LENGTH_SHORT);
+		
+		// Add some sanity checks, for now just cache it
+		this.locationCache.add(location);
 	}
 
 	public void onProviderDisabled(String provider) {
