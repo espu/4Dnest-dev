@@ -37,7 +37,6 @@ public class Tag {
 	}
 	@Override
 	public int hashCode() {
-		assert false;
-		return 0; //FIXME: Will this ever be used in a HashMap?
+		return this.name.hashCode();
 	}
 }

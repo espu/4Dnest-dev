@@ -70,7 +70,7 @@ public class TaggingTool extends LinearLayout {
 		
 		// DEBUG
 		this.addTag(new Tag("Testing tagging tool"), false);
-		this.addTag(new Tag("Llllllllllllllllllllllllllllllllllllong"), false);
+		this.addTag(new Tag("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"), false);
 		this.addTag(new Tag("Checked"), true);
 		this.addTag(new Tag("Short"), false);
 		this.addTag(new Tag("tags"), false);
