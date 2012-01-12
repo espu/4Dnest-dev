@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
-import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -37,10 +36,6 @@ public class FourDNestApplication extends Application
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 	  this.setUpTestValues();
 	  Log.i(TAG, "onCreated");
 	}
