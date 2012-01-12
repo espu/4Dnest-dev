@@ -1,160 +1,175 @@
 package org.fourdnest.androidclient.services;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
-import org.fourdnest.androidclient.NestManager;
+import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.comm.ProtocolResult;
 
-import android.app.Service;
+import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
- * A service that manages Eggs waiting to be sent to a Nest.
- * Eggs can be marked for immediate sending or queued in waiting
- * for user confirmation or cancellation. The queue of Eggs waiting
- * for confirmation cannot be reordered, but Eggs can be manually sent from it
- * out of sequence.
+ * A service for sending Egg to it's specified Nest in the background.
+ * Jobs are sent via Intent (use sendEgg convenience method) and queued
+ * for sending automatically. 
  */
-public class SendQueueService extends Service {
-	/** Tag string used to indicate source in logging */
-	public static final String TAG = SendQueueService.class.getSimpleName();;
-	private SendQueueWorkerThread thread;
-	private ConcurrentLinkedQueue<Work> workQueue;
-	private ConcurrentLinkedQueue<Egg> waitingForConfirmation;
-	private NestManager nestManager;
-
-	/**
-	 * Creates the service, but does not start it.
-	 */
-	public SendQueueService(NestManager nestManager) {
-		this.workQueue = new ConcurrentLinkedQueue<Work>();
-		this.waitingForConfirmation = new ConcurrentLinkedQueue<Egg>();
-		this.thread = new SendQueueWorkerThread(this.workQueue);
-		this.nestManager = nestManager;
-	}	
+public class SendQueueService extends IntentService {
+	
+	/** Tag string used to indicate source in logging */	
+	public static final String TAG = SendQueueService.class.getSimpleName();
+	
+	/** Intent should have this category when Egg is meant to be extracted from extras */
+	public static final String SEND_EGG = "SEND_EGG_CATEGORY";
+	/** Key for Egg id in Intent extras */
+	public static final String BUNDLE_EGG_ID = "BUNDLE_EGG_ID";
+	
+	/** Internal Handler for displaying Toast after job completes */
+	private Handler handler;
 	
 	/**
-	 * Starts the service.
+	 * Constructor, simply calls super. Never used explicitly in user code.
 	 */
-	public void start() {
-		this.thread.start();
+	public SendQueueService() {
+		super(SendQueueService.class.getName());
 	}
 	/**
-	 * Stops the service
+	 * Constructor, simply calls super. Never used explicitly in user code.
+	 * @param name
 	 */
-	public void stop() {
-		this.thread.dispose();
+	public SendQueueService(String name) {
+		super(name);
 	}
 	
 	/**
-	 * Queues an Egg for sending.
-	 * @param egg The Egg to be queued. May not be null.
-	 * @param autosend If true, the Egg will be sent immediately. If false,
-	 * it will be placed in a separate queue waiting user confirmation.
-	 */
-	public void queueEgg(Egg egg, boolean autosend) {
-		assert(egg != null);
-		// FIXME: write to database, or is it already done at this point?
-		this.workQueue.add(new QueuedEgg(egg, autosend));
-	}
-	/**
-	 * Removes an Egg that awaits user confirmation.
-	 * @param egg The Egg to be removed. May not be null.
-	 */
-	public void removeQueuedEgg(Egg egg) {
-		assert(egg != null);
-		this.workQueue.add(new ConfirmEggInQueue(egg, false));
-	}
-	/**
-	 * Sends one Egg that awaits user confirmation, out of sequence.
-	 * @param egg The Egg to be sent. May not be null.
-	 */
-	public void sendQueuedEgg(Egg egg) {
-		assert(egg != null);
-		this.workQueue.add(new ConfirmEggInQueue(egg, true));
-	}
-	/**
-	 * Sends all Eggs that await user confirmation.
-	 */
-	public void sendAllQueuedEggs() {
-		Egg egg;
-		// drain the waitingForConfirmation queue
-		while((egg = SendQueueService.this.waitingForConfirmation.poll()) != null) {
-			// put it back in the send queue, with autosend on
-			SendQueueService.this.queueEgg(egg, true);
-		}	
-	}
-	
-	private class QueuedEgg implements Work {
-		private Egg egg;
-		private boolean autosend;
-		public QueuedEgg(Egg egg, boolean autosend) {
-			this.egg = egg;
-			this.autosend = autosend;
-		}
-		public void doWork() {
-			if(this.autosend) {
-				Nest nest = SendQueueService.this.nestManager.getNest(
-					this.egg.getNestId()
-				);
-				if(nest != null) {
-					nest.getProtocol().sendEgg(egg);
-				} else {
-					Log.d(TAG, "Tried to send Egg to nonexisting nest " + this.egg.getNestId());
-				}
-			} else {
-				SendQueueService.this.waitingForConfirmation.add(this.egg);
-			}
-		}
-	}
-	
-	private class ConfirmEggInQueue implements Work {
-		private Egg egg;
-		private boolean send;
-		public ConfirmEggInQueue(Egg egg, boolean send) {
-			this.egg = egg;
-			this.send = send;
-		}
-		public void doWork() {
-			if(
-					SendQueueService.this.waitingForConfirmation.remove(this.egg) &&
-					this.send
-			) {
-				// put it back in the send queue, with autosend on
-				SendQueueService.this.queueEgg(this.egg, true);
-			}
-		}
-	}
-	
-	private static class SendQueueWorkerThread extends WorkerThread<Work> {
-		public SendQueueWorkerThread(
-				ConcurrentLinkedQueue<Work> queue
-		) {
-			super("SendQueue", queue);
-		}
-
-		@Override
-		protected void doPeriodically() {
-		}
-
-	}
-
-	/**
-	 * @param delay The time in milliseconds to sleep between polls of the work queue
-	 */
-	public void setDelay(long delay) {
-		this.thread.setDelay(delay);
-	}
-	
-	/**
-	 * Null implementation.
+	 * Override for default onCreate method. Creates a Handler for Toasts
+	 * and calls super()
 	 */
 	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
+	public void onCreate() {
+		this.handler = new Handler();
+		super.onCreate();
 	}
+	
+	/**
+	 * Static method to be called with an Egg that needs to be put
+	 * to the send queue. Handles all the ugly details.
+	 * 
+	 * @param context Current application context
+	 * @param egg Egg to be put to queue
+	 */
+	public static void sendEgg(Context context, Egg egg) {
+		FourDNestApplication app = (FourDNestApplication)context; 
+		
+		Nest currentNest = app.getCurrentNest();		
+		if(currentNest == null) {
+			Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
+			return;
+		}
+		
+		egg.setAuthor(currentNest.getUserName());
+		egg.setNestId(currentNest.getId());
+		Egg savedEgg = app.getDraftEggManager().saveEgg(egg);
+		
+		Intent intent = new Intent(context, SendQueueService.class);
+		intent.addCategory(SendQueueService.SEND_EGG);
+		intent.putExtra(SendQueueService.BUNDLE_EGG_ID, savedEgg.getId());
 
+		context.startService(intent);
+		Toast.makeText(context, context.getString(R.string.egg_queued), Toast.LENGTH_SHORT).show();
+	}
+	
+	/**
+	 * Default Intent handler for IntentService. All Intents get sent here.
+	 * Extracts Egg id from Intent extras, finds an Egg with that id and
+	 * sends it to the Nest specified in the Egg. 
+	 */
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		Log.d(TAG, "onHandleIntent called");
+		
+		// If Intent it categorized as egg-sending intent, act accordingly 
+		if(intent.hasCategory(SEND_EGG)) {			
+			FourDNestApplication app = (FourDNestApplication) this.getApplication();
+			
+			// Get Egg id from Intent, fetch the Egg from db
+			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
+			Egg egg = app.getDraftEggManager().getEgg(eggId);
+			
+			if(egg == null) {
+				Log.d(TAG, "Egg with id " + eggId + " not found");
+			} else {
+				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
+				if(res.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED) {
+					// Display message
+					this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+					// Delete Egg from drafts
+					app.getDraftEggManager().deleteEgg(eggId);
+					
+					Log.d(TAG, "Send completed");
+				} else {
+					// Something went wrong, transform code to message
+					String message;
+					
+					switch (res.getStatusCode()) {
+					case ProtocolResult.AUTHORIZATION_FAILED:
+						message = "Authorization failed";
+						break;
+					case ProtocolResult.SENDING_FAILED:
+						message = "Sending failed";
+						break;
+					case ProtocolResult.SERVER_INTERNAL_ERROR:
+						message = "Server internal error";
+						break;
+					case ProtocolResult.UNKNOWN_REASON:
+						message = "Unknown failure";
+						break;
+					default:
+						message = "Unknown result";
+						break;
+					}
+					// Display message and die
+					this.handler.post(new ToastDisplay(app, "Send failed: " + message, Toast.LENGTH_SHORT));
+					Log.d(TAG, "Send failed: " + res.getStatusCode());
+				}
+				
+				
+			}
+		}
+		
+		
+	}
+	
+	/**
+	 * Private class to display Toasts in main thread
+	 */
+	private static class ToastDisplay implements Runnable {
+		private String message;
+		private Context context;
+		private int duration;
+		
+		/**
+		 * Runnable ToastDisplayer, added to a Handler to be run at a later time or
+		 * in a different thread
+		 * @param context Target context to display Toast in
+		 * @param message Message content
+		 * @param duration Toast.LENGTH_SHORT or Toast.LENGTH_LONG
+		 */
+		public ToastDisplay(Context context, String message, int duration) {
+			this.context = context;
+			this.message = message;
+			this.duration = duration;
+		}
+		
+		/**
+		 * Called when Runnable is executed. displays Toast as specified when object was created
+		 */
+		public void run() {
+			Toast.makeText(this.context, this.message, this.duration).show();
+		}
+	
+	}
 }

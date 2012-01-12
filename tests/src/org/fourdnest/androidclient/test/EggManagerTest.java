@@ -12,19 +12,23 @@ import android.test.AndroidTestCase;
 public class EggManagerTest extends AndroidTestCase {
 	
 	EggManager eggManager;
+	EggManager eggManager2;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		this.eggManager = new EggManager(this.getContext());
+		this.eggManager	 = new EggManager(this.getContext(), "default");
+		this.eggManager2 = new EggManager(this.getContext(), "alternate");
 		
 		this.eggManager.deleteAllEggs();
+		this.eggManager2.deleteAllEggs();
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		
 		this.eggManager.close();
+		this.eggManager2.close();
 	}
 	
 	public void testSaveAndGetEgg() {
@@ -47,6 +51,31 @@ public class EggManagerTest extends AndroidTestCase {
 		assertTrue(e.equals(fetchedEgg));
 		
 		
+	}
+	
+	public void testSaveEggToMultipleManagers() {
+		long now = System.currentTimeMillis();
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		Egg e = new Egg(
+			null,
+			1,
+			"Matti",
+			null,
+			null,
+			"TestCaption",
+			tags,
+			now
+		);
+		Egg e2 = e;
+		
+		e = this.eggManager.saveEgg(e);
+		e2 = this.eggManager2.saveEgg(e);
+		
+		Egg fetchedEgg = this.eggManager.getEgg(e.getId());
+		Egg fetchedEgg2 = this.eggManager2.getEgg(e2.getId());
+		assertTrue(e.equals(fetchedEgg));
+		assertTrue(e2.equals(fetchedEgg2));
+	
 	}
 
 	public void testListEggs() {

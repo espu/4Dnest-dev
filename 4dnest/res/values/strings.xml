@@ -26,4 +26,14 @@
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_nests">Edit Nests</string>
+    <string name="welcome_title">Welcome to 4DNest!</string>
+    <string name="setup_qr">Read in QR-code</string>
+    <string name="setup_manual">Fill in by Hand</string>
+    <string name="egg_queued">Egg queued</string>
+    <string name="egg_send_complete">Send completed</string>
+    <string name="gps_track_on">GPS tracking started</string>
+    <string name="gps_track_off">GPS tracking disabled</string>
+    <string name="gps_track_statusbar_title">4DNest</string>
+    <string name="gps_track_statusbar_text">Route tracking active</string>
+    <string name="gps_track_gps_disabled">GPS disable, please enable to track</string>
 </resources>

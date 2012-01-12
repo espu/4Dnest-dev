@@ -57,16 +57,19 @@ public class CreateScreenActivity extends NestSpecificActivity {
 		CursorLoader loader = new CursorLoader(this.getApplicationContext(), uri,
 				projection, null, null, null);
 		Cursor cursor = loader.loadInBackground();
+		String result = null;
+		
 		if (cursor != null) {
 			// HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
 			// THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
 			int columnIndex = cursor
 					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 			cursor.moveToFirst();
-			return cursor.getString(columnIndex);
-		} else {
-			return null;
+			result = cursor.getString(columnIndex);
 		}
+		cursor.close();
+		
+		return result;
 	}
 
 	@Override
