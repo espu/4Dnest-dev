@@ -57,7 +57,7 @@ public class TagSuggestionService extends IntentService {
 	/** Use String[] instead of List<Tag>, to avoid converting back and forth.
 	 * Intents only support standard types. */
 	private Map<Integer, String[]> lastUsedTags;
-	private Map<Integer, HashSet<String>> localTags;
+	private Map<Integer, Set<String>> localTags;
 	private Map<Integer, String[]> remoteTags;
 
 	private FourDNestApplication app;
@@ -81,7 +81,7 @@ public class TagSuggestionService extends IntentService {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
 		this.lastUsedTags = new HashMap<Integer, String[]>();
-		this.localTags = new HashMap<Integer, HashSet<String>>();
+		this.localTags = new HashMap<Integer, Set<String>>();
 		this.remoteTags = new HashMap<Integer, String[]>();
 		this.app = FourDNestApplication.getApplication();
 		this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -105,6 +105,7 @@ public class TagSuggestionService extends IntentService {
 	 * Request broadcasting of the current tag suggestions
 	 */
 	public static void requestTagBroadcast(Context context) {
+		Log.d(TAG, "requestTagBroadcast");
 		FourDNestApplication app = (FourDNestApplication) context;
 		Integer currentNestId = Integer.valueOf(app.getCurrentNestId());
 		
@@ -121,6 +122,7 @@ public class TagSuggestionService extends IntentService {
 	 * @param tags The tags attached to the last sent Egg.
 	 */
 	public static void setLastUsedTags(Context context, List<Tag> tags) {
+		Log.d(TAG, "setLastUsedTags");
 		FourDNestApplication app = (FourDNestApplication) context;
 		Integer currentNestId = Integer.valueOf(app.getCurrentNestId());
 
@@ -137,7 +139,7 @@ public class TagSuggestionService extends IntentService {
 	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "onHandleIntent called");
+		Log.d(TAG, "onHandleIntent");
 		if(intent.hasCategory(UPDATE_REMOTE_TAGS)) {
 			updateRemoteTags();
 		} else if(intent.hasCategory(GET_TAGS)) {
@@ -201,6 +203,14 @@ public class TagSuggestionService extends IntentService {
 		Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
 		String[] tags = intent.getStringArrayExtra(BUNDLE_TAG_LIST);
 		this.lastUsedTags.put(currentNestId, tags);
+		Set<String> lt = this.localTags.get(currentNestId);
+		if(lt == null) {
+			lt = new HashSet<String>();
+			this.localTags.put(currentNestId, lt);
+		}
+		for(String tag : tags) {
+			lt.add(tag);
+		}
 	}
 
 	private static String[] tagListToStringArray(List<Tag> tags) {

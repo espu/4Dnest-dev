@@ -1,13 +1,13 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
+import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -125,8 +125,10 @@ public class NewEggActivity extends Activity{
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				egg.setTags(NewEggActivity.this.taggingTool.getCheckedTags());
+				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
+				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
+				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 			}
 		});
         
@@ -178,7 +180,7 @@ public class NewEggActivity extends Activity{
     		});
        	
        	LinearLayout inputsLinearLayout = (LinearLayout) this.findViewById(R.id.new_egg_inputs_linearlayout);
-       	this.taggingTool = new TaggingTool(this, inputsLinearLayout);
+       	this.taggingTool = new TaggingTool(getApplication(), inputsLinearLayout);
 	}
 
 
