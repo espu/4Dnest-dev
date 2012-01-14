@@ -69,7 +69,7 @@ public class TaggingTool extends LinearLayout {
 		this.setOrientation(VERTICAL);
 		parent.addView(this);
 		
-		//List<Tag> lastUsed = TagSuggestionService.getLast
+		TagSuggestionService.requestTagBroadcast(context);
 		
 		// DEBUG
 		this.addTag(new Tag("Testing tagging tool"), false);
