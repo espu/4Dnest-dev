@@ -309,7 +309,7 @@ public class EggManager {
 			);
 			
 			db.execSQL(tableCreateQuery);
-			
+			db.close();
 			Log.d(TAG, "onCreated SQL: " + tableCreateQuery);
 		}
 
@@ -323,7 +323,8 @@ public class EggManager {
 			db.execSQL(tableDropQuery);
 			Log.d(TAG, "onUpgrade: Dropped existing table");
 			
-			onCreate(db);		
+			onCreate(db);
+			db.close();
 		}
 		
 	}
