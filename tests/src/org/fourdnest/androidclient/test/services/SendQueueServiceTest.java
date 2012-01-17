@@ -21,7 +21,6 @@ import android.test.ServiceTestCase;
 
 /**
  * Tests the send queue service.
- * @author gronsti
  */
 public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
 	
