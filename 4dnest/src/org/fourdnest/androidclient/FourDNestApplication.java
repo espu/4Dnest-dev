@@ -41,6 +41,7 @@ public class FourDNestApplication extends Application
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
+
 	  this.setUpTestValues();
 	  app = this;
 	  Log.i(TAG, "onCreated");
@@ -64,7 +65,6 @@ public class FourDNestApplication extends Application
 				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 				m.saveNest(n);
 			}
-			
 			this.setCurrentNestId(n.getId());
 		} catch(URISyntaxException urie) {	
 		} catch(UnknownProtocolException upe) {

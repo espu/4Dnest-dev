@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,7 +37,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-public class NewEggActivity extends Activity{
+public class NewEggActivity extends NestSpecificActivity{
+
 	
 	/*
 	 * currentMediaItemType is used to track what media item is selected
@@ -73,10 +75,10 @@ public class NewEggActivity extends Activity{
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
 
-	
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.new_egg_view);
+	@Override
+	public View getContentLayout(View view) {
+		//super.onCreate(savedInstanceState);
+		//setContentView(R.layout.new_egg_view);
 		this.getApplicationContext();
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
@@ -84,8 +86,8 @@ public class NewEggActivity extends Activity{
 		fileURL = extras.getString("pictureURL");
 		}
 
-		this.upperButtons = (RelativeLayout) this.findViewById(R.id.new_egg_upper_buttons);
-		this.thumbNailView = (ImageView) this.findViewById(R.id.new_photo_egg_thumbnail_view);
+		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
+		this.thumbNailView = (ImageView) view.findViewById(R.id.new_photo_egg_thumbnail_view);
 		/*
 		 * Adds a onClickListener to the image so we know when to open a thumbnail
 		 */
@@ -116,7 +118,7 @@ public class NewEggActivity extends Activity{
             }
         });
 	
-        Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
+        Button sendButton = (Button) view.findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {				
@@ -137,7 +139,7 @@ public class NewEggActivity extends Activity{
 		* so user can select a new picture.
 		 */
         
-    	((ImageButton) this.findViewById(R.id.select_image))
+    	((ImageButton) view.findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				// in onCreate or any event where your want the user to
@@ -154,7 +156,7 @@ public class NewEggActivity extends Activity{
 			}
 		});
     	
-       	((ImageButton) this.findViewById(R.id.select_audio))
+       	((ImageButton) view.findViewById(R.id.select_audio))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
@@ -170,17 +172,17 @@ public class NewEggActivity extends Activity{
     			}
     		});
        	
-       	((ImageButton) this.findViewById(R.id.select_video))
+       	((ImageButton) view.findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
     				showDialog(DIALOG_ASK_VIDEO);
     			}
-    		});
-       	
-       	LinearLayout inputsLinearLayout = (LinearLayout) this.findViewById(R.id.new_egg_inputs_linearlayout);
-       	this.taggingTool = new TaggingTool(getApplication(), inputsLinearLayout);
+    		});	
+       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_egg_inputs_linearlayout);
+       	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
+       	return view;
 	}
 	
     @Override
@@ -191,6 +193,12 @@ public class NewEggActivity extends Activity{
     }
 
 
+	
+	public int getLayoutId() {
+		return R.layout.new_egg_view;
+	}
+	
+	
 	/*
 	 * Used to refresh the elements displayed when an media item is selected / unselected
 	 */
@@ -234,12 +242,11 @@ public class NewEggActivity extends Activity{
 		}
 	
 	}
-	
 	protected Dialog onCreateDialog(int id) {
 	    Dialog dialog = null;
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE:
-	    	final CharSequence[] items = {"Open Camera", "Open Picture Gallery"};
+	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_photo_camera), getString(R.string.new_egg_dialogue_open_image_callery)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	builder.setTitle("Select Source");
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -250,16 +257,17 @@ public class NewEggActivity extends Activity{
 	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
 	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
 	    	    		startActivityForResult(
-							Intent.createChooser(intent, "Select Picture"),
+							Intent.createChooser(intent, getString(R.string.new_egg_intent_select_picture)),	//the second argument is the title of intent
 							SELECT_PICTURE);
 	    	    	}
 	    	    	else if(item==0){
 	    	    		//define the file-name to save photo taken by Camera activity
-	    	    		String fileName = "dpic.jpg";
+	    	    		String fileName = "dpic.jpg"; //there is a string res for this but I decided not to use if for now 
+	    	    		//TODO:generate better filenames
 	    	    		//create parameters for Intent with filename
 	    	    		ContentValues values = new ContentValues();
 	    	    		values.put(MediaStore.Images.Media.TITLE, fileName);
-	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Image captured for 4D Nest");
+	    	    		values.put(MediaStore.Images.Media.DESCRIPTION, getString(R.string.new_egg_intent_image_description));
 	    	    		/*
 	    	    		 * We are going to save the Uri to the image before actually taking the picture.
 	    	    		 * This was the way used in the example, so far I haven't been able to find a better
@@ -279,7 +287,7 @@ public class NewEggActivity extends Activity{
 	    	break;
 	    
 	    case DIALOG_ASK_VIDEO:
-	    	final CharSequence[] videoItems = {"Open Camera", "Open Video Gallery"};
+	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_camera), getString(R.string.new_egg_dialogue_open_video_callery)};
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
 	    	videoBuilder.setTitle("Select Source");
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {

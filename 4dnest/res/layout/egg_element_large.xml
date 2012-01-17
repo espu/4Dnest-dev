@@ -23,6 +23,12 @@
                 android:adjustViewBounds="true"
                 android:maxHeight="50pt"
                 android:src="@drawable/icon" />
+            
+            <TextView
+                android:id="@+id/author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anonymous" />
 
             <TextView
                 android:id="@+id/date"

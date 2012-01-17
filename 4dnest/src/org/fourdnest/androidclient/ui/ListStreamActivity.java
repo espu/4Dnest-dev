@@ -10,6 +10,7 @@ import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,10 +37,9 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		ArrayList<Egg> eggs = (ArrayList<Egg>) application.getCurrentNest()
 				.getProtocol().getStream();
-		if (eggs != null) {
-			for (Egg egg : eggs) {
-				manager.saveEgg(egg);
-			}
+		Log.d("EGGAMOUNT", String.valueOf(eggs.size()));
+		for (Egg egg : eggs) {
+			manager.saveEgg(egg);
 		}
 
 		ToggleButton trackButton = (ToggleButton) view
@@ -73,7 +73,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		ListView streamList = (ListView) view.findViewById(R.id.egg_list);
 		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
-		adapter.setEggs(manager.listEggs());
+		adapter.setEggs(eggs);
 		streamList.setAdapter(adapter);
 		streamList.setOnItemClickListener(new OnItemClickListener() {
 

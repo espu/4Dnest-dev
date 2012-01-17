@@ -37,4 +37,11 @@
     <string name="gps_track_statusbar_text">Route tracking active</string>
     <string name="gps_track_gps_disabled">GPS disable, please enable to track</string>
     <string name="add_tag_button">Add tag</string>
+    <string name="new_egg_intent_select_picture">Select Picture</string>
+    <string name="new_egg_intent_image_description">Image captured for 4D Nest</string>
+    <string name="new_egg_intent_image_file_name">dpic.jpg</string>
+    <string name="new_egg_dialogue_open_image_callery">Open Picture Gallery</string>
+    <string name="new_egg_dialogue_open_photo_camera">Open Camera</string>
+    <string name="new_egg_dialogue_open_video_camera">Open Camera</string>
+    <string name="new_egg_dialogue_open_video_callery">Open Video Gallery</string>
 </resources>
