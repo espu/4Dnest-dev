@@ -100,7 +100,13 @@ public class TagSuggestionService extends IntentService {
         		)
         );
 	}
-
+	
+    @Override
+    public void onDestroy() {
+    	Log.d(TAG, "onDestroy");
+    }
+	
+	
 	/**
 	 * Request broadcasting of the current tag suggestions
 	 */
@@ -135,23 +141,35 @@ public class TagSuggestionService extends IntentService {
 
 	/**
 	 * Default Intent handler for IntentService. All Intents get sent here.
-	 * Updates the remote tag cache.
+	 * Asynch processing of tasks with inexact timing goes here.
 	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Log.d(TAG, "onHandleIntent");
 		if(intent.hasCategory(UPDATE_REMOTE_TAGS)) {
 			updateRemoteTags();
-		} else if(intent.hasCategory(GET_TAGS)) {
+		}
+	}
+	/**
+	 * Timing sensitive fast tasks are handled here 
+	 */
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(TAG, "onStartCommand");
+		if(intent.hasCategory(GET_TAGS)) {
 			broadcastTags(intent);
 		} else if(intent.hasCategory(SET_LAST_USED_TAGS)) {
 			handleLastUsedTags(intent);
 		}
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
+		return START_STICKY;
 	}
 	/**
 	 * Loops through all Nests updating their tag cache
 	 */
 	private synchronized void updateRemoteTags() {
+		Log.d(TAG, "updateRemoteTags");
 		NestManager nestManager = app.getNestManager();
 		List<Nest> nests = nestManager.listNests();
 		for(Nest nest : nests) {

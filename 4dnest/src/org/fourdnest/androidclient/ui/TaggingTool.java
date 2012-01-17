@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.InputFilter;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,10 +36,14 @@ public class TaggingTool extends LinearLayout {
 	/** Tag string used to indicate source in logging */	
 	public static final String TAG = TaggingTool.class.getSimpleName();
 	
+	private static final InputFilter[] tagFilter = { new Tag.TagFilter() };
+	
 	private List<TagCheckBox> buttons;
 	private FlowLayout tagFlowLayout;
 	private AutoCompleteTextView tagTextView;
 	private LocalBroadcastManager mLocalBroadcastManager;
+
+	private BroadcastReceiver mReceiver;
 
 	/**
 	 * Creates and initializes the TaggingTool.
@@ -54,11 +59,12 @@ public class TaggingTool extends LinearLayout {
         this.tagTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_tag);
         this.tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flowlayout);
 
+        this.tagTextView.setFilters(tagFilter);
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(context);
 		IntentFilter filter = new IntentFilter();
         filter.addAction(TagSuggestionService.ACTION_AUTOCOMPLETE_TAGS);
         filter.addAction(TagSuggestionService.ACTION_LAST_USED_TAGS);
-        BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        this.mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
             	Log.d(TAG, "BroadcastReceiver.onReceive");
@@ -98,13 +104,23 @@ public class TaggingTool extends LinearLayout {
 		this.setOrientation(VERTICAL);
 		parent.addView(this);
 		
+		Log.d(TAG, "TaggingTool created");
 		TagSuggestionService.requestTagBroadcast(context);
 		
 		// DEBUG
-		this.addTag(new Tag("Testing tagging tool"), false);
-		this.addTag(new Tag("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"), false);
-		this.addTag(new Tag("Checked"), true);
+		//this.addTag(new Tag("Testing tagging tool"), false);
+		//this.addTag(new Tag("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"), false);
+		//this.addTag(new Tag("Checked"), true);
 	}
+	
+	/**
+	 * LinearLayout does not have onDestroy, so this is not an override.
+	 * Using the same naming scheme as android for consistency.
+	 */
+	public void onDestroy() {
+		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
+	}
+	
 	
 	/**
 	 * Adds a single new tag, or marks the corresponding tag as selected

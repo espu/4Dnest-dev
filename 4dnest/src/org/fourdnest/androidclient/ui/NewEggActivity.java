@@ -182,6 +182,13 @@ public class NewEggActivity extends Activity{
        	LinearLayout inputsLinearLayout = (LinearLayout) this.findViewById(R.id.new_egg_inputs_linearlayout);
        	this.taggingTool = new TaggingTool(getApplication(), inputsLinearLayout);
 	}
+	
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	this.taggingTool.onDestroy();
+    	this.taggingTool = null;
+    }
 
 
 	/*

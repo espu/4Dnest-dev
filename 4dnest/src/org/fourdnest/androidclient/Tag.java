@@ -1,5 +1,10 @@
 package org.fourdnest.androidclient;
 
+import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+
 /**
  * Represents one Tag(type). The same Tag object can be attached to several
  * Eggs.
@@ -33,10 +38,48 @@ public class Tag {
 		
 		Tag other = (Tag)o;
 		
-		return Util.objectsEqual(this.name, other.name);
+		return this.name.equalsIgnoreCase(other.name);
 	}
 	@Override
 	public int hashCode() {
-		return this.name.hashCode();
+		return this.name.toLowerCase().hashCode();
 	}
+	
+	/**
+	 * InputFilter to constrain a text field to valid chars.
+	 */
+	public static class TagFilter implements InputFilter {
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+        	StringBuilder sb = new StringBuilder();
+        	char cursor;
+        	boolean unmodified = true;
+        	
+            for (int i = start; i < end; i++) {
+            	cursor = source.charAt(i);
+                if (Character.isLetterOrDigit(cursor)) {
+                	// Let letters and digits through
+                	sb.append(cursor);
+                	continue;
+                } else if (Character.isWhitespace(cursor)) {
+                	// Let whitespace through
+                	sb.append(cursor);
+                	continue;
+                } else {
+                	unmodified = false;
+                }
+            }
+            if (unmodified) {
+            	return null; // keep original
+            }
+            if (source instanceof Spanned) {
+                SpannableString sp = new SpannableString(sb);
+                TextUtils.copySpansFrom((Spanned) source,
+                                        start, end, null, sp, 0);
+                return sp;
+            }
+            return sb.toString();
+        }
+    }
+
 }
