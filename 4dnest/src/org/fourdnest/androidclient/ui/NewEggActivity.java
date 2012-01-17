@@ -225,12 +225,11 @@ public class NewEggActivity extends Activity{
 		}
 	
 	}
-	
 	protected Dialog onCreateDialog(int id) {
 	    Dialog dialog = null;
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE:
-	    	final CharSequence[] items = {"Open Camera", "Open Picture Gallery"};
+	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_photo_camera), getString(R.string.new_egg_dialogue_open_image_callery)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	builder.setTitle("Select Source");
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -241,16 +240,17 @@ public class NewEggActivity extends Activity{
 	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
 	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
 	    	    		startActivityForResult(
-							Intent.createChooser(intent, "Select Picture"),
+							Intent.createChooser(intent, getString(R.string.new_egg_intent_select_picture)),	//the second argument is the title of intent
 							SELECT_PICTURE);
 	    	    	}
 	    	    	else if(item==0){
 	    	    		//define the file-name to save photo taken by Camera activity
-	    	    		String fileName = "dpic.jpg";
+	    	    		String fileName = "dpic.jpg"; //there is a string res for this but I decided not to use if for now 
+	    	    		//TODO:generate better filenames
 	    	    		//create parameters for Intent with filename
 	    	    		ContentValues values = new ContentValues();
 	    	    		values.put(MediaStore.Images.Media.TITLE, fileName);
-	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Image captured for 4D Nest");
+	    	    		values.put(MediaStore.Images.Media.DESCRIPTION, getString(R.string.new_egg_intent_image_description));
 	    	    		/*
 	    	    		 * We are going to save the Uri to the image before actually taking the picture.
 	    	    		 * This was the way used in the example, so far I haven't been able to find a better
@@ -270,7 +270,7 @@ public class NewEggActivity extends Activity{
 	    	break;
 	    
 	    case DIALOG_ASK_VIDEO:
-	    	final CharSequence[] videoItems = {"Open Camera", "Open Video Gallery"};
+	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_camera), getString(R.string.new_egg_dialogue_open_video_callery)};
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
 	    	videoBuilder.setTitle("Select Source");
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
