@@ -68,17 +68,49 @@ public class httpTest extends AndroidTestCase {
 		assertTrue(protResult.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED);
 
 	}
-	
+	/*
 	@Test
-	public void testGetEgg() throws Exception{
-		String eggId = "73M0hLExLwr5";
-		String expectedResult = "generic hashtest";
+	public void testOverwriteEgg() throws Exception {
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag("Programming"));
+		tags.add(new Tag("Video Games"));
+		MemoryCardInitializer.initialize(this.getContext());
+		Uri uri = Uri.parse("/sdcard/kuva.jpg");
+
+		Egg egg = new Egg(5, 10, "Old author", uri, null, "Before overwrite, should not be seen", tags, 100);
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
-		Egg egg = protocol.getEgg(eggId);
-		assertTrue(egg != null);
-		assertTrue(egg.getCaption().compareToIgnoreCase(expectedResult) == 0);
+		ProtocolResult protResult = protocol.sendEgg(egg);
+		String[] parts = protResult.getUrl().split("/");
+		egg.setExternalId(parts[parts.length-1]);
+		egg.setCaption("New Caption, this should be seen");
+		egg.setAuthor("New Author");
+		protResult = protocol.overwriteEgg(egg);
+		Log.d("OVERWRITERESULT", String.valueOf(protResult.getStatusCode()));
+		Egg got = protocol.getEgg(egg.getExternalId());
+		assertTrue(got.getCaption() == egg.getCaption());
+	}*/
+	
+	@Test
+	public void testGetEgg() throws Exception{
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag("Programming"));
+		tags.add(new Tag("Video Games"));
+		MemoryCardInitializer.initialize(this.getContext());
+		String eggId = "";
+		Uri uri = Uri.parse("/sdcard/kuva.jpg");
+		Egg egg = new Egg(5, 10, "Egg sender", uri, null, "Sending egg to test retrieve with tags", tags, 100);
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		Protocol protocol = nest.getProtocol();
+		protocol.setNest(nest);
+		ProtocolResult protResult = protocol.sendEgg(egg);
+		String[] parts = protResult.getUrl().split("/");
+		eggId = parts[parts.length-1];
+		Egg got = protocol.getEgg(eggId);
+		assertTrue(got != null);
+		assertTrue(egg.getCaption().compareToIgnoreCase(got.getCaption()) == 0);
+		assertTrue(egg.getTags().size() > 0);
 		Log.d("EGGCAPTION", egg.getCaption());
 	}
 	
@@ -89,6 +121,15 @@ public class httpTest extends AndroidTestCase {
 		protocol.setNest(nest);
 		List<Egg> eggList = protocol.getStream();
 		assertTrue(eggList.size() > 0);
+	}
+	
+	@Test
+	public void testTopTags() throws Exception {
+		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		Protocol protocol = nest.getProtocol();
+		protocol.setNest(nest);
+		List<Tag> tags = protocol.topTags(5);
+		assertTrue(tags.size() > 0);
 	}
 	
 	private void getPreviouslySentEgg() {
