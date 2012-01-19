@@ -29,6 +29,12 @@
 		android:summary="@string/prefs_nest_accept_all_certs_descr">
 	</CheckBoxPreference>
 
+	<CheckBoxPreference
+		android:key="kiosk_mode"
+		android:title="@string/pref_kiosk_title"
+		android:defaultValue="false">
+	</CheckBoxPreference>
+
     </PreferenceCategory>
 
 
