@@ -198,19 +198,6 @@ public class EggManager {
 		
 		SQLiteDatabase db = this.eggDb.getWritableDatabase();
 		
-		// API level 8 would have insertWithOnConflict, have to work around it
-		// and check for conflict and then either insert or update
-
-		// Check if nest with id exists
-		Cursor result = db.query(TABLE,
-				new String[] {C_ID},
-				C_ID + "==" + egg.getId(),
-				null, // No selection args
-				null, // No GROUP BY
-				null, // No HAVING
-				null, // No ORDER BY
-				"1"); // LIMIT 1
-		
 		// Create ContentValues object for Nest
 		ContentValues values = new ContentValues();
 		values.put(C_ID, egg.getId());
@@ -224,8 +211,28 @@ public class EggManager {
 		values.put(C_CAPTION, egg.getCaption());
 		values.put(C_LASTUPLOAD, egg.getLastUpload());
 		
+		// API level 8 would have insertWithOnConflict, have to work around it
+		// and check for conflict and then either insert or update
+
+		// Check if nest with id exists
+		boolean insertNew = true;
+		if(egg.getId() != null) {
+			Cursor result = db.query(TABLE,
+					new String[] {C_ID},
+					C_ID + "==" + egg.getId(),
+					null, // No selection args
+					null, // No GROUP BY
+					null, // No HAVING
+					null, // No ORDER BY
+					"1"); // LIMIT 1
+			if(result.getCount() > 0) {
+				insertNew = false;
+			}
+		}
+		
+		
 		long rowid;
-		if(result.getCount() > 0) {
+		if(!insertNew) {
 			// Update existing
 			rowid = db.replace(TABLE, null, values);
 			
