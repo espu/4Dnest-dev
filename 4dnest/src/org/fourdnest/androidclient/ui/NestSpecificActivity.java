@@ -72,6 +72,7 @@ public abstract class NestSpecificActivity extends Activity {
 	 */
 	private void inflateNestView() {
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
+		nestView.removeAllViews();
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
 		
 		if (((FourDNestApplication)getApplication()).getKioskModeEnabled()) {
@@ -80,6 +81,12 @@ public abstract class NestSpecificActivity extends Activity {
 			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
 		}
 //		nestView.addView(child);
+	}
+	
+	@Override
+	protected void onResume() {
+		inflateNestView();
+		super.onResume();
 	}
 
 }
