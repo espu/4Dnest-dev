@@ -48,10 +48,11 @@ public class httpTest extends AndroidTestCase {
 		tags.add(new Tag("Programming"));
 		tags.add(new Tag("Video Games"));
 		MemoryCardInitializer.initialize(this.getContext());
-		Uri uri = Uri.parse("/sdcard/kuva.jpg");
+		Uri uri = Uri.parse("/sdcard/test.jpg");
 		Log.v("Path", uri.getPath());
 
-		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "tägei tulee", tags, 100);
+		Egg egg = new Egg(5, 10, "user", uri, null, "with settings", tags, 100);
+
         /* SELECT to use local or web server */
 
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
@@ -70,13 +71,13 @@ public class httpTest extends AndroidTestCase {
 	}
 	/*
 	@Test
+
 	public void testOverwriteEgg() throws Exception {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		tags.add(new Tag("Programming"));
 		tags.add(new Tag("Video Games"));
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
-
 		Egg egg = new Egg(5, 10, "Old author", uri, null, "Before overwrite, should not be seen", tags, 100);
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();

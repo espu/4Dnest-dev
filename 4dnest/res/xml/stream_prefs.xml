@@ -22,14 +22,14 @@
     	android:title="@string/prefs_nest_password_title">
     </EditTextPreference>
     
-    <!--
-    No implementation for this, hide for now
+
     <CheckBoxPreference
 		android:key="nest_accept_all_certs"
 		android:title="@string/prefs_nest_accept_all_certs_title"
-		android:summary="@string/prefs_nest_accept_all_certs_descr" />
-    -->
-    
+		android:summary="@string/prefs_nest_accept_all_certs_descr">
+	</CheckBoxPreference>
+
     </PreferenceCategory>
+
 
 </PreferenceScreen>

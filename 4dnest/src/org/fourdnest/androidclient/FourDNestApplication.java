@@ -9,7 +9,6 @@ import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -46,8 +45,7 @@ public class FourDNestApplication extends Application
 	public void onCreate() {
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-	  
+	  this.prefs.registerOnSharedPreferenceChangeListener(this);	  
 	  // For debugging, insert default Nest and settings
 	  Nest nest = this.getNestManager().getNest(NEST_ID);
 	  if(nest == null) {
@@ -159,6 +157,8 @@ public class FourDNestApplication extends Application
 	public synchronized int getCurrentNestId() {
 		return this.prefs.getInt("currentNestId", 0);
 	}
+	
+
 	/**
 	 * Sets the currently active Nest. The setting is persisted between
 	 * restarts of the application.
@@ -242,5 +242,23 @@ public class FourDNestApplication extends Application
 		}
 	
 	}
+	
+	/**
+	 * Are all certificates valid without checking?
+	 * @return boolean setting value, default true
+	 */
+	public synchronized boolean getAllowAllCerts() {
+		return this.prefs.getBoolean("nest_accept_all_certs", true);
+	}
+	
+	/**
+	 * Set value of allow_all_certs setting. Used in testing.
+	 * @param val
+	 */
+	public synchronized void setAllowAllCerts(Boolean val) {
+		SharedPreferences.Editor prefEditor = this.prefs.edit();
+		prefEditor.putBoolean("nest_accept_all_certs", val);
+	}
+	
 
 }
