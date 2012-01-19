@@ -4,13 +4,11 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -22,11 +20,14 @@ import android.widget.TextView;
 public abstract class NestSpecificActivity extends Activity {
 
 	protected ViewGroup contentView;
+	private FourDNestApplication application;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		this.application = ((FourDNestApplication)getApplication());
 		setContentView(R.layout.nest_specific_view);
 		
 		inflateNestView();
@@ -78,16 +79,23 @@ public abstract class NestSpecificActivity extends Activity {
 	 * depending on kiosk settings.
 	 */
 	private void inflateNestView() {
+		
+		String nestName = this.application.getCurrentNest().getName();
+		TextView nestLabel;
+		
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
 		nestView.removeAllViews();
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
 		
-		if (((FourDNestApplication)getApplication()).getKioskModeEnabled()) {
+		if (this.application.getKioskModeEnabled()) {
 			inflater.inflate(R.layout.nest_view_kiosk_enabled, nestView);
+			nestLabel = (TextView)nestView.findViewById(R.id.nest_label);
 		} else {
 			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
+			nestLabel = (TextView)nestView.findViewById(R.id.nest_label);
+//			((Button)view.findViewById(R.id.nest_button)).setText(nestName);
 		}
-//		nestView.addView(child);
+		nestLabel.setText(nestName);
 	}
 
 }
