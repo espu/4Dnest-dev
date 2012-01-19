@@ -72,7 +72,7 @@ public class httpTest extends AndroidTestCase {
 		assertTrue(protResult.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED);
 
 	}
-	/*
+	
 	@Test
 
 	public void testOverwriteEgg() throws Exception {
@@ -88,13 +88,17 @@ public class httpTest extends AndroidTestCase {
 		ProtocolResult protResult = protocol.sendEgg(egg);
 		String[] parts = protResult.getUrl().split("/");
 		egg.setExternalId(parts[parts.length-1]);
-		egg.setCaption("New Caption, this should be seen");
+		egg.setCaption("Now the tags should have changed");
 		egg.setAuthor("New Author");
+		ArrayList<Tag> newtags = new ArrayList<Tag>();
+        newtags.add(new Tag("newTag"));
+        newtags.add(new Tag("Singing"));
+        egg.setTags(newtags);
 		protResult = protocol.overwriteEgg(egg);
 		Log.d("OVERWRITERESULT", String.valueOf(protResult.getStatusCode()));
 		Egg got = protocol.getEgg(egg.getExternalId());
-		assertTrue(got.getCaption() == egg.getCaption());
-	}*/
+		assertTrue(got.getCaption().equals(egg.getCaption()));
+	}
 	
 	@Test
 	public void testGetEgg() throws Exception{

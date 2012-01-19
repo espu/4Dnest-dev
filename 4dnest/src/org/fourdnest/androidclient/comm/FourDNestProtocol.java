@@ -19,6 +19,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -135,9 +136,10 @@ public class FourDNestProtocol implements Protocol {
     		 return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
     	}
     	 HttpClient client = createHttpClient();
-         HttpPut request = new HttpPut(this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + egg.getExternalId());
+         HttpPut request = new HttpPut(this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + egg.getExternalId() + "/");
          Log.d("OVERURI", request.getURI().getPath());
          String metadata = eggToJSONstring(egg);
+         Log.d("OVERMETA", metadata);
 
          // Create list of NameValuePairs
          List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -147,7 +149,9 @@ public class FourDNestProtocol implements Protocol {
          multipartMd5String = new String(Base64.encodeBase64(multipartMd5String.getBytes()));
          int status = 0;
          try {
-        	 request.setEntity(this.createEntity(pairs));
+             StringEntity se = new StringEntity(metadata, UNICODE);
+        	 request.setEntity(se);
+        	 request.setHeader("Content-type", "application/json");
 			 addAuthentication(request, multipartMd5String);
 	         HttpResponse response = client.execute(request);
 	         status = response.getStatusLine().getStatusCode();
