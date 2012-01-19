@@ -86,20 +86,20 @@ public class TagSuggestionService extends IntentService {
 			this.remoteTags = new HashMap<Integer, String[]>();
 			this.app = FourDNestApplication.getApplication();
 			this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-		}
 
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
-        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
-        		FIRST_INTERVAL,								
-        		AlarmManager.INTERVAL_HOUR,		// Update frequency
-        		PendingIntent.getService(
-        				app,					// The context
-        				0,
-        				new Intent(app, TagSuggestionService.class),
-        				0
-        		)
-        );
+			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+	        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
+	        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
+	        		FIRST_INTERVAL,								
+	        		AlarmManager.INTERVAL_HOUR,		// Update frequency
+	        		PendingIntent.getService(
+	        				app,					// The context
+	        				0,
+	        				new Intent(app, TagSuggestionService.class),
+	        				0
+	        		)
+	        );
+		}
 	}
 	
     @Override
