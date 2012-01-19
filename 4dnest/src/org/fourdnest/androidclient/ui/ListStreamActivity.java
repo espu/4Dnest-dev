@@ -10,6 +10,7 @@ import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,10 +29,11 @@ import android.widget.ToggleButton;
  * toggling route tracking.
  */
 public class ListStreamActivity extends NestSpecificActivity {
+	public static final String PREFS_NAME = "ourPrefsFile";
 
+	
 	@Override
 	public View getContentLayout(View view) {
-
 		FourDNestApplication application = (FourDNestApplication) getApplication();
 		EggManager manager = application.getStreamEggManager();
 
@@ -92,6 +94,22 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public int getLayoutId() {
+		
+		/*
+		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,  
+		 * start new egg activity and FINISH this one (prevents the back button
+		 * problem). 
+		 */
+		
+	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+	    boolean kioskMode = settings.getBoolean("kioskMode", false);
+	       
+		if(kioskMode){
+			Intent intent = new Intent(this, NewEggActivity.class);
+			this.startActivity(intent);
+			 finish();
+		}
+		
 		return R.layout.list_stream_view;
 	}
 	

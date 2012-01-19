@@ -41,7 +41,7 @@ public abstract class NestSpecificActivity extends Activity {
 		View view = inflater.inflate(getLayoutId(), contentView, false);
 		contentView.addView(getContentLayout(view));
 	}
-
+	
 	/**
 	 * Initializes the main content view. The main content view is the entire
 	 * area under the Nest display.

@@ -112,7 +112,6 @@ public class NewEggActivity extends NestSpecificActivity{
             	}
             	else if(currentMediaItem==mediaItemType.video){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
-
             	}
             	startActivity(i);
             }
