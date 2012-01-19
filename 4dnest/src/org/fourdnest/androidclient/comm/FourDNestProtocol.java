@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.comm;
 
+import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
 
