@@ -64,6 +64,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String UNICODE = "UTF-8";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
+	private static final int HTTP_STATUSCODE_UPDATED = 204;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 	private static final int CONNECTION_TIMEOUT = 15000;
@@ -131,6 +132,12 @@ public class FourDNestProtocol implements Protocol {
         }
     }
     
+    /**
+     * Overwrites the metadata on the server with the data from the egg given as a parameter.
+     * @param egg The egg containing the new metadata
+     * 
+     * @return ProtocolResult detailing if the update was successful
+     */
     public ProtocolResult overwriteEgg(Egg egg) {
     	if (egg.getExternalId() == null) {
     		 return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
@@ -184,7 +191,9 @@ public class FourDNestProtocol implements Protocol {
         }
         else if (statusCode == HTTP_STATUSCODE_SERVER_ERROR) {
             return new ProtocolResult(null, ProtocolResult.SERVER_INTERNAL_ERROR);
-        }else {
+        }else if (statusCode == HTTP_STATUSCODE_UPDATED) {
+           return new ProtocolResult(null, ProtocolResult.RESOURCE_UPDATED);
+        } else {
             Log.d("sendEgg: UNKNOWN_RESULT", String.valueOf(statusCode));
             return new ProtocolResult(null, ProtocolResult.UNKNOWN_REASON);
         }
