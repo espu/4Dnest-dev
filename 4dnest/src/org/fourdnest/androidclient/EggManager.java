@@ -19,24 +19,25 @@ public class EggManager {
 	
 	private static final String TAG = EggManager.class.getSimpleName();
 	
-	static final int DB_VERSION = 3;
+	private static final int DB_VERSION = 4;
 	
 	// Table columns
-	static final String TABLE = "egg";
-	static final String C_ID = BaseColumns._ID;
-	static final String C_NESTID = "nest_id";
-	static final String C_AUTHOR = "author";
-	static final String C_LOCALFILEURI = "local_file_uri";
-	static final String C_REMOTEFILEURI = "remote_file_uri";
-	static final String C_CAPTION = "caption";
-	static final String C_LASTUPLOAD = "last_upload";
+	private static final String TABLE = "egg";
+	private static final String C_ID = BaseColumns._ID;
+	private static final String C_NESTID = "nest_id";
+	private static final String C_AUTHOR = "author";
+	private static final String C_LOCALFILEURI = "local_file_uri";
+	private static final String C_REMOTEFILEURI = "remote_file_uri";
+	private static final String C_CAPTION = "caption";
+	private static final String C_LASTUPLOAD = "last_upload";
+	private static final String C_TAGS = "tags";
+	
+	private static final String TAG_LIST_SEPARATOR = ",";
 	
 	private static final String[] ALL_COLUMNS = new String[]{
 		C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI,
-		C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD
+		C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD, C_TAGS
 	};
-	
-	// TODO: Add tag relation table when we have tag manager
 		
 	private final EggDatabase eggDb;
 	private String dbName;
@@ -178,10 +179,23 @@ public class EggManager {
 		}
 		
 		String caption = cursor.getString(5);
-		List<Tag> tags = new ArrayList<Tag>();
 		long lastUpload = cursor.getLong(6);
 		
-		Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tags, lastUpload);
+		// Extract tags from comma separated list
+		String tags = cursor.getString(7);
+		String[] tagArr = tags.split(TAG_LIST_SEPARATOR);
+		List<Tag> tagList = new ArrayList<Tag>();
+		
+		for(int i = 0; i < tagArr.length; i++) {
+			String tagName = tagArr[i];
+			if(tagName != "") {
+				Tag t = new Tag(tagName);
+				tagList.add(t);
+			}
+		}
+		
+		
+		Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tagList, lastUpload);
 		
 		
 		return egg;
@@ -210,6 +224,14 @@ public class EggManager {
 		
 		values.put(C_CAPTION, egg.getCaption());
 		values.put(C_LASTUPLOAD, egg.getLastUpload());
+		
+		// Serialize tags to a separated string
+		String tagString = "";
+		for(Tag t : egg.getTags()) {
+			tagString += t.getName();
+			tagString += TAG_LIST_SEPARATOR;
+		}
+		values.put(C_TAGS, tagString);
 		
 		// API level 8 would have insertWithOnConflict, have to work around it
 		// and check for conflict and then either insert or update
@@ -297,7 +319,8 @@ public class EggManager {
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
 						"%s text DEFAULT NULL," +
-						"%s long DEFAULT NULL)",
+						"%s long DEFAULT NULL," +
+						"%s text DEFAULT NULL)",
 						TABLE,
 						C_ID,
 						C_NESTID,
@@ -305,7 +328,8 @@ public class EggManager {
 						C_LOCALFILEURI,
 						C_REMOTEFILEURI,
 						C_CAPTION,
-						C_LASTUPLOAD
+						C_LASTUPLOAD,
+						C_TAGS
 			);
 			
 			db.execSQL(tableCreateQuery);
