@@ -254,6 +254,14 @@ public class FourDNestApplication extends Application
 	}
 	
 	/**
+	 * Is kiosk mode enabled?
+	 * @return boolean setting value, default true
+	 */
+	public synchronized boolean getKioskModeEnabled() {
+		return this.prefs.getBoolean("kiosk_mode", true);
+	}
+	
+	/**
 	 * Set value of allow_all_certs setting. Used in testing.
 	 * @param val
 	 */
