@@ -35,13 +35,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 		FourDNestApplication application = (FourDNestApplication) getApplication();
 		EggManager manager = application.getStreamEggManager();
 
-		ArrayList<Egg> eggs = (ArrayList<Egg>) application.getCurrentNest()
-				.getProtocol().getStream();
-		Log.d("EGGAMOUNT", String.valueOf(eggs.size()));
-		for (Egg egg : eggs) {
-			manager.saveEgg(egg);
-		}
-
 		ToggleButton trackButton = (ToggleButton) view
 				.findViewById(R.id.route_tracker_button);
 		trackButton.setChecked(Util.isServiceRunning(view.getContext(),
@@ -73,7 +66,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		ListView streamList = (ListView) view.findViewById(R.id.egg_list);
 		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
-		adapter.setEggs(eggs);
+		adapter.setEggs(manager.listEggs());
 		streamList.setAdapter(adapter);
 		streamList.setOnItemClickListener(new OnItemClickListener() {
 

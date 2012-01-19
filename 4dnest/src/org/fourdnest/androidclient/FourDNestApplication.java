@@ -2,6 +2,8 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.TagSuggestionService;
@@ -110,6 +112,17 @@ public class FourDNestApplication extends Application
 	public EggManager getStreamEggManager() {
 		if(this.streamEggManager == null) {
 			this.streamEggManager = new EggManager(this, this.streamEggManagerRole);
+			this.streamEggManager.deleteAllEggs();
+			//TODO: Remove when proper StreamReaderService is implemented.
+			//For now, just load eggs from stream when manager is first created
+			List<Egg> eggs = this.getCurrentNest().getProtocol().getStream();
+			
+			for(int i = 0; i < eggs.size() && i < 4; i++) {
+				Egg e = eggs.get(i);
+				if(e != null) {
+					this.streamEggManager.saveEgg(e);
+				}
+			}
 		}
 		return this.streamEggManager;
 	}
