@@ -199,12 +199,13 @@ public class TagSuggestionService extends IntentService {
 		}
 		String[] rt = this.remoteTags.get(currentNestId);
 		if(rt != null) {
-			for(String tag : rt)
-			out.add(tag);
+			for(String tag : rt) {
+				out.add(tag);
+			}
 		}
 		Intent broadcastIntent = new Intent(ACTION_AUTOCOMPLETE_TAGS);
 		broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
-		broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[0]));
+		broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[out.size()]));
 		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 
 		// Then broadcast the last used tags
@@ -213,7 +214,7 @@ public class TagSuggestionService extends IntentService {
 		String[] tags = this.lastUsedTags.get(currentNestId);
 		if(tags == null) {
 			tags = new String[0];
-		};
+		}
 		broadcastIntent.putExtra(BUNDLE_TAG_LIST, tags);
 		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 	}

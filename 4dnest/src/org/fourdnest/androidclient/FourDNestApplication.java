@@ -32,9 +32,9 @@ public class FourDNestApplication extends Application
 	private SharedPreferences prefs;
 	private NestManager nestManager;
 	
-	private final String draftEggManagerRole = "draft";
+	private static final String draftEggManagerRole = "draft";
 	private EggManager draftEggManager;
-	private final String streamEggManagerRole = "stream";
+	private static final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
 	private Handler handler;
