@@ -10,12 +10,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/nest_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="NestButton" />
-
     <FrameLayout
         android:id="@+id/content_view"
         android:layout_width="fill_parent"

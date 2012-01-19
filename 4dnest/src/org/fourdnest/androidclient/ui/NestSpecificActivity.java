@@ -31,15 +31,15 @@ public abstract class NestSpecificActivity extends Activity {
 		
 		inflateNestView();
 
-		findViewById(R.id.nest_button).setOnClickListener(
-				new OnClickListener() {
-
-					public void onClick(View v) {
-						Intent intent = new Intent(v.getContext(),
-								ListStreamActivity.class);
-						v.getContext().startActivity(intent);
-					}
-				});
+//		findViewById(R.id.nest_button).setOnClickListener(
+//				new OnClickListener() {
+//
+//					public void onClick(View v) {
+//						Intent intent = new Intent(v.getContext(),
+//								ListStreamActivity.class);
+//						v.getContext().startActivity(intent);
+//					}
+//				});
 
 		this.contentView = (FrameLayout) findViewById(R.id.content_view);
 
@@ -75,7 +75,7 @@ public abstract class NestSpecificActivity extends Activity {
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
 		
 		if (((FourDNestApplication)getApplication()).getKioskModeEnabled()) {
-			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
+			inflater.inflate(R.layout.nest_view_kiosk_enabled, nestView);
 		} else {
 			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
 		}
