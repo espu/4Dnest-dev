@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -56,6 +57,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
+	private static final String TAG_DOWNLOAD_PATH = "fourdnest/api/v1/tag/";
 	private static final String JSON_FORMAT = "?format=json";
 	private static final String UNICODE = "UTF-8";
 	private static final int HTTP_STATUSCODE_OK = 200;
@@ -104,8 +106,6 @@ public class FourDNestProtocol implements Protocol {
             }
         }
         
-        // FIXME: Add tags later
-        
         String multipartMd5String = md5FromString(concatedMd5);
         multipartMd5String = new String(Base64.encodeBase64(multipartMd5String.getBytes()));
         
@@ -127,6 +127,39 @@ public class FourDNestProtocol implements Protocol {
             Log.e(TAG, "IOException, egg not sent " + e.getMessage());
             return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
         }
+    }
+    
+    public ProtocolResult overwriteEgg(Egg egg) {
+    	if (egg.getExternalId() == null) {
+    		 return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
+    	}
+    	 HttpClient client = createHttpClient();
+         HttpPut request = new HttpPut(this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + egg.getExternalId());
+         Log.d("OVERURI", request.getURI().getPath());
+         String metadata = eggToJSONstring(egg);
+
+         // Create list of NameValuePairs
+         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+         pairs.add(new BasicNameValuePair("data", metadata));
+         String metadataMd5 = md5FromString(metadata);
+         String multipartMd5String = md5FromString(metadataMd5);
+         multipartMd5String = new String(Base64.encodeBase64(multipartMd5String.getBytes()));
+         int status = 0;
+         try {
+        	 request.setEntity(this.createEntity(pairs));
+			 addAuthentication(request, multipartMd5String);
+	         HttpResponse response = client.execute(request);
+	         status = response.getStatusLine().getStatusCode();
+	         Log.d("OVERSTATUS", String.valueOf(status));
+	         return this.parseResult(status, response);
+         } catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
     }
     
     /**
@@ -208,10 +241,41 @@ public class FourDNestProtocol implements Protocol {
         ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         return new DefaultHttpClient(cm, params);
     }
-
+    
+    //FIXME: Count not yet implemented here, because no implementation server side
     public List<Tag> topTags(int count) {
-        // TODO Auto-generated method stub
-        return null;
+    	ArrayList<Tag> tags = new ArrayList<Tag>();
+        HttpClient client = createHttpClient();
+        HttpGet request = new HttpGet();
+        String uriPath = this.nest.getBaseURI() + TAG_DOWNLOAD_PATH + JSON_FORMAT;
+        Log.d("TAGURI", uriPath);
+        
+        try {
+			request.setURI(new URI(uriPath));
+			addAuthentication(request, "");
+			String jsonStr = responseToString(client.execute(request));
+			JSONObject outer = new JSONObject(jsonStr);
+			JSONArray jsonTags = outer.getJSONArray("objects");
+			for (int i = 0; i < jsonTags.length(); i++) {
+				JSONObject current = jsonTags.getJSONObject(i);
+				tags.add(new Tag(current.getString("name")));
+				Log.d(("TAG" + i), tags.get(i).getName());
+			}
+			return tags;
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return new ArrayList<Tag>();
     }
 
 
@@ -237,6 +301,7 @@ public class FourDNestProtocol implements Protocol {
        
     	try {
     		request.setURI(new URI(uriPath));
+    		addAuthentication(request, "");
     		String jsonStr = responseToString(client.execute(request));
 	    	JSONObject js = new JSONObject(jsonStr);
 	    	return jSONObjectToEgg(js);
@@ -279,8 +344,10 @@ public class FourDNestProtocol implements Protocol {
 			JSONArray jsonArr = outer.getJSONArray("objects");
 			for (int i = 0; i < jsonArr.length(); i++) {
 				current = jSONObjectToEgg(jsonArr.getJSONObject(i));
-				Log.d("CURRENTEGG", current.getExternalId());
-				eggList.add(current);
+				if (current != null) {
+					Log.d("CURRENTEGG", current.getExternalId());
+					eggList.add(current);
+				}
 			}
 			return eggList;
 		} catch (URISyntaxException e) {
@@ -292,7 +359,7 @@ public class FourDNestProtocol implements Protocol {
 		} catch (JSONException e) {
 			Log.d(TAG, "JSONstring formatted incorrectly");
 		}
-        return null;
+        return eggList;
     }
     
     /**
@@ -352,7 +419,16 @@ public class FourDNestProtocol implements Protocol {
 			String caption = js.getString("caption");
 			String externalFileUri = js.getString("resource_uri");
 			String author = js.getString("author");
-			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, null, 0);
+			ArrayList<Tag> tags = new ArrayList<Tag>();
+			try {
+				JSONArray tagar = js.getJSONArray("tags");
+				for (int i = 0; i < tagar.length(); i++) {
+					tags.add(new Tag(tagar.getString(i)));
+				}
+			} catch (JSONException e) {
+				// No tags
+			}
+			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, tags, 0);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			return egg;
@@ -372,6 +448,11 @@ public class FourDNestProtocol implements Protocol {
     	try {
 			temp.put("author", egg.getAuthor());
 			temp.put("caption", egg.getCaption());
+			JSONArray tags = new JSONArray();
+            for (int i = 0; i<egg.getTags().size(); i++) {
+                tags.put(new String(egg.getTags().get(i).getName()));
+            }
+            temp.put("tags", tags);
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

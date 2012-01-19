@@ -12,6 +12,7 @@ import android.content.Context;
 public interface Protocol {
     
     ProtocolResult sendEgg(Egg egg);
+    ProtocolResult overwriteEgg(Egg egg);
     Egg getEgg(String uid);
     boolean getMediaFile(String uri, String localPath);
     List<Egg> getStream();
