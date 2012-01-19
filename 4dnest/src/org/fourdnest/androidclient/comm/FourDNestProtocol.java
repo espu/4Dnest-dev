@@ -219,7 +219,7 @@ public class FourDNestProtocol implements Protocol {
         // http scheme
         schemeRegistry.register(new Scheme("http", PlainSocketFactory
                 .getSocketFactory(), 80));
-        FourDNestApplication app = FourDNestApplication.getApp();
+        FourDNestApplication app = FourDNestApplication.getApplication();
         boolean aac;
         if (app == null) {
         	Log.d(TAG, "app was null");
@@ -335,7 +335,7 @@ public class FourDNestProtocol implements Protocol {
     	ArrayList<Egg> eggList = new ArrayList<Egg>();
     	HttpClient client = createHttpClient();
         HttpGet request = new HttpGet();
-        String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + JSON_FORMAT;
+        String uriPath = "http://test42.4dnest.org/fourdnest/api/v1/egg/?format=json"; //this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + JSON_FORMAT;
         Log.d("URIStream", uriPath);
         try {
 			request.setURI(new URI(uriPath));

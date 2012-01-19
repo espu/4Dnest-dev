@@ -4,12 +4,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
+import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Manages shared resources, including the preferences and singletons like
@@ -31,30 +34,40 @@ public class FourDNestApplication extends Application
 	private final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
-	private static FourDNestApplication APP;
+	private static FourDNestApplication app;
+
 	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
+
 	  this.setUpTestValues();
-	  FourDNestApplication.APP = (FourDNestApplication)this.getApplicationContext();
+
+	  app = this;
+
 	  Log.i(TAG, "onCreated");
+	  //warm start TagSuggestionService
+	  startService(new Intent(this, TagSuggestionService.class));
 	}
 	
+	public static FourDNestApplication getApplication() {
+		return app;
+	}
 	/**
-	 * Checks if Nest with ID 0 exists and creates it if not. Temporary debug-helper method.
+	 * Checks if Nest with ID 0 exists and creates it if not.
+	 * Temporary debug-helper method.
 	 */
 	private void setUpTestValues() {
 		try {
 			NestManager m = this.getNestManager();
-			m.deleteNest(0);
-
-			Nest n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-			m.saveNest(n);
-
+			Nest n = m.getNest(0);
 			
+			if(n == null) {
+				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+				m.saveNest(n);
+			}
 			this.setCurrentNestId(n.getId());
 		} catch(URISyntaxException urie) {	
 		} catch(UnknownProtocolException upe) {
@@ -106,7 +119,34 @@ public class FourDNestApplication extends Application
 	public synchronized void onSharedPreferenceChanged(
 			SharedPreferences sharedPreferences, String key) {
 		this.getApplicationContext();
-		// TODO Auto-generated method stub
+		
+		Log.d(TAG, "pref " + key + " changed");
+		// Dummy implementation: When nest base URI pref changes,
+		// drop all existing nests and create a new Fourdnest with
+		// the base uri
+		if(key.equals("nest_base_uri")) {
+			String newVal = this.prefs.getString("nest_base_uri", "");
+			
+			URI newURI = null;
+			URI defaultURI = null;
+			try {
+				newURI = new URI(newVal);
+				new URI("");
+			} catch(URISyntaxException e) {
+				Toast.makeText(this, "Invalid URI, using default", Toast.LENGTH_SHORT);
+				newURI = defaultURI;
+			}
+			NestManager m = this.getNestManager();
+			m.deleteAllNests();
+
+			Nest n = null;
+			try {
+				n = new Nest(0, "testNest", "testNest", newURI, ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+				m.saveNest(n);
+				this.setCurrentNestId(n.getId());
+			} catch(UnknownProtocolException upe) {	}
+
+		}
 	}
 	
 	public synchronized Nest getCurrentNest() {
@@ -148,10 +188,6 @@ public class FourDNestApplication extends Application
 	public synchronized void setAllowAllCerts(Boolean val) {
 		SharedPreferences.Editor prefEditor = this.prefs.edit();
 		prefEditor.putBoolean("allow_all_certs", val);
-	}
-	
-	public static FourDNestApplication getApp() {
-		return APP;
 	}
 
 }
