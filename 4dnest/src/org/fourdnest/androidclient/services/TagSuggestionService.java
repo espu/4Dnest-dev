@@ -80,25 +80,26 @@ public class TagSuggestionService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
-		this.lastUsedTags = new HashMap<Integer, String[]>();
-		this.localTags = new HashMap<Integer, Set<String>>();
-		this.remoteTags = new HashMap<Integer, String[]>();
-		this.app = FourDNestApplication.getApplication();
-		this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+		synchronized(this) {
+			this.lastUsedTags = new HashMap<Integer, String[]>();
+			this.localTags = new HashMap<Integer, Set<String>>();
+			this.remoteTags = new HashMap<Integer, String[]>();
+			this.app = FourDNestApplication.getApplication();
+			this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 
-
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
-        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
-        		FIRST_INTERVAL,								
-        		AlarmManager.INTERVAL_HOUR,		// Update frequency
-        		PendingIntent.getService(
-        				app,					// The context
-        				0,
-        				new Intent(app, TagSuggestionService.class),
-        				0
-        		)
-        );
+			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+	        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
+	        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
+	        		FIRST_INTERVAL,								
+	        		AlarmManager.INTERVAL_HOUR,		// Update frequency
+	        		PendingIntent.getService(
+	        				app,					// The context
+	        				0,
+	        				new Intent(app, TagSuggestionService.class),
+	        				0
+	        		)
+	        );
+		}
 	}
 	
     @Override
@@ -198,12 +199,13 @@ public class TagSuggestionService extends IntentService {
 		}
 		String[] rt = this.remoteTags.get(currentNestId);
 		if(rt != null) {
-			for(String tag : rt)
-			out.add(tag);
+			for(String tag : rt) {
+				out.add(tag);
+			}
 		}
 		Intent broadcastIntent = new Intent(ACTION_AUTOCOMPLETE_TAGS);
 		broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
-		broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[0]));
+		broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[out.size()]));
 		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 
 		// Then broadcast the last used tags
@@ -212,7 +214,7 @@ public class TagSuggestionService extends IntentService {
 		String[] tags = this.lastUsedTags.get(currentNestId);
 		if(tags == null) {
 			tags = new String[0];
-		};
+		}
 		broadcastIntent.putExtra(BUNDLE_TAG_LIST, tags);
 		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 	}
