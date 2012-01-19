@@ -43,27 +43,29 @@ public class FourDNestApplication extends Application
 	
 	@Override
 	public void onCreate() {
-	  super.onCreate();
-	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	  this.prefs.registerOnSharedPreferenceChangeListener(this);	  
-	  // For debugging, insert default Nest and settings
-	  Nest nest = this.getNestManager().getNest(NEST_ID);
-	  if(nest == null) {
-		  Nest defaultNest = this.getDefaultNest();
-		  this.getNestManager().saveNest(defaultNest);
-		  this.setCurrentNestId(defaultNest.getId());
-		  
-		  this.prefs.edit()
-		  	.putString("nest_base_uri", defaultNest.getBaseURI().toString())
-		  	.putString("nest_username", defaultNest.getUserName())
-		  	.putString("nest_password", defaultNest.getSecretKey())
-		  	.commit();
-	  } else {
-		  this.setCurrentNestId(nest.getId());
+		super.onCreate();
+		synchronized(this) {
+			this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			this.prefs.registerOnSharedPreferenceChangeListener(this);	  
+			// For debugging, insert default Nest and settings
+			Nest nest = this.getNestManager().getNest(NEST_ID);
+			if(nest == null) {
+				Nest defaultNest = this.getDefaultNest();
+				this.getNestManager().saveNest(defaultNest);
+				this.setCurrentNestId(defaultNest.getId());
+
+				this.prefs.edit()
+				.putString("nest_base_uri", defaultNest.getBaseURI().toString())
+				.putString("nest_username", defaultNest.getUserName())
+				.putString("nest_password", defaultNest.getSecretKey())
+				.commit();
+			} else {
+				this.setCurrentNestId(nest.getId());
+			}
+
+			// Init handler
+			this.handler = new Handler();
 	  }
-	  
-	  // Init handler
-	  this.handler = new Handler();
 	  
 	  app = this;
 	  Log.i(TAG, "onCreated");
