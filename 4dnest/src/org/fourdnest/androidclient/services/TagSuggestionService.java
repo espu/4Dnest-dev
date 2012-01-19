@@ -80,12 +80,13 @@ public class TagSuggestionService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
-		this.lastUsedTags = new HashMap<Integer, String[]>();
-		this.localTags = new HashMap<Integer, Set<String>>();
-		this.remoteTags = new HashMap<Integer, String[]>();
-		this.app = FourDNestApplication.getApplication();
-		this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-
+		synchronized(this) {
+			this.lastUsedTags = new HashMap<Integer, String[]>();
+			this.localTags = new HashMap<Integer, Set<String>>();
+			this.remoteTags = new HashMap<Integer, String[]>();
+			this.app = FourDNestApplication.getApplication();
+			this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+		}
 
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(	//Be power efficient: we don't need exact timing
