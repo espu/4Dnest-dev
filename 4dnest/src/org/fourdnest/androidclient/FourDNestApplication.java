@@ -7,9 +7,11 @@ import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,25 +26,45 @@ import android.widget.Toast;
 public class FourDNestApplication extends Application
 	implements OnSharedPreferenceChangeListener {
 	private static final String TAG = FourDNestApplication.class.getSimpleName();
+	private static final int NEST_ID = 1;
 	
 	private SharedPreferences prefs;
 	private NestManager nestManager;
 	
 	private final String draftEggManagerRole = "draft";
 	private EggManager draftEggManager;
-	
 	private final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
+	
+	private Handler handler;
 	
 	private static FourDNestApplication app;
 	
 	@Override
-	public void onCreate() { //
+	public void onCreate() {
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
-
-	  this.setUpTestValues();
+	  
+	  // For debugging, insert default Nest and settings
+	  Nest nest = this.getNestManager().getNest(NEST_ID);
+	  if(nest == null) {
+		  Nest defaultNest = this.getDefaultNest();
+		  this.getNestManager().saveNest(defaultNest);
+		  this.setCurrentNestId(defaultNest.getId());
+		  
+		  this.prefs.edit()
+		  	.putString("nest_base_uri", defaultNest.getBaseURI().toString())
+		  	.putString("nest_username", defaultNest.getUserName())
+		  	.putString("nest_password", defaultNest.getSecretKey())
+		  	.commit();
+	  } else {
+		  this.setCurrentNestId(nest.getId());
+	  }
+	  
+	  // Init handler
+	  this.handler = new Handler();
+	  
 	  app = this;
 	  Log.i(TAG, "onCreated");
 	  //warm start TagSuggestionService
@@ -51,24 +73,6 @@ public class FourDNestApplication extends Application
 	
 	public static FourDNestApplication getApplication() {
 		return app;
-	}
-	/**
-	 * Checks if Nest with ID 0 exists and creates it if not.
-	 * Temporary debug-helper method.
-	 */
-	private void setUpTestValues() {
-		try {
-			NestManager m = this.getNestManager();
-			Nest n = m.getNest(0);
-			
-			if(n == null) {
-				n = new Nest(0, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-				m.saveNest(n);
-			}
-			this.setCurrentNestId(n.getId());
-		} catch(URISyntaxException urie) {	
-		} catch(UnknownProtocolException upe) {
-		}
 	}
 
 	/**
@@ -111,41 +115,26 @@ public class FourDNestApplication extends Application
 	}
 	
 	
-
-
+	/**
+	 * Handler for OnSharedPreferenceChangeListener
+	 * Called when preferences change
+	 */
 	public synchronized void onSharedPreferenceChanged(
 			SharedPreferences sharedPreferences, String key) {
 		this.getApplicationContext();
 		
 		Log.d(TAG, "pref " + key + " changed");
-		// Dummy implementation: When nest base URI pref changes,
-		// drop all existing nests and create a new Fourdnest with
-		// the base uri
-		if(key.equals("nest_base_uri")) {
-			String newVal = this.prefs.getString("nest_base_uri", "");
-			
-			URI newURI = null;
-			URI defaultURI = null;
-			try {
-				newURI = new URI(newVal);
-				new URI("");
-			} catch(URISyntaxException e) {
-				Toast.makeText(this, "Invalid URI, using default", Toast.LENGTH_SHORT);
-				newURI = defaultURI;
-			}
-			NestManager m = this.getNestManager();
-			m.deleteAllNests();
 
-			Nest n = null;
-			try {
-				n = new Nest(0, "testNest", "testNest", newURI, ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
-				m.saveNest(n);
-				this.setCurrentNestId(n.getId());
-			} catch(UnknownProtocolException upe) {	}
-
+		// When a nest_ preference changes, call relevant handler
+		if(key.startsWith("nest_")) {
+			this.handleNestPrefChanges();
 		}
 	}
 	
+	/**
+	 * Returns current active nest from nest manager
+	 * @return currently active Nest
+	 */
 	public synchronized Nest getCurrentNest() {
 		return this.nestManager.getNest(this.getCurrentNestId());
 	}
@@ -163,9 +152,82 @@ public class FourDNestApplication extends Application
 	 * @param newNestId Id of the new active Nest. Must be a valid Nest id.
 	 */
 	public synchronized void setCurrentNestId(int newNestId) {
-		//FIXME check that newNestId is valid?
-		SharedPreferences.Editor prefEditor = this.prefs.edit();
-		prefEditor.putInt("currentNestId", newNestId);
+		this.prefs.edit()
+			.putInt("currentNestId", newNestId)
+			.commit();
+	}
+	
+	/**
+	 * Called when onSharedPreferenceChanged detects nest_ -prefixed
+	 * preference change.
+	 * 
+	 * Creates new active nest with extracted URL, user name and password
+	 */
+	private synchronized void handleNestPrefChanges() {
+		String baseUri = this.prefs.getString("nest_base_uri", "");
+		String user = this.prefs.getString("nest_username", "");
+		String pass = this.prefs.getString("nest_password", "");
+		
+		URI newURI = null;
+		URI defaultURI = null;
+		try {
+			newURI = new URI(baseUri);
+			new URI("");
+		} catch(URISyntaxException e) {
+			this.handler.post(new ToastDisplay("Invalid URI setting", Toast.LENGTH_SHORT));
+			newURI = defaultURI;
+		}
+		NestManager m = this.getNestManager();
+		m.deleteAllNests();
+
+		Nest n = null;
+		try {
+			n = new Nest(NEST_ID, "Active Nest", "Active Nest", newURI, ProtocolFactory.PROTOCOL_4DNEST, user, pass);
+			m.saveNest(n);
+			this.setCurrentNestId(n.getId());
+		} catch(UnknownProtocolException upe) {	}
+	}
+	
+	/**
+	 * Returns a Nest with default dev server properties. Debug use.
+	 */
+	private Nest getDefaultNest() {
+		Nest n = null;
+		try {
+			n = new Nest(NEST_ID, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
+		} catch(URISyntaxException urie) {	
+		} catch(UnknownProtocolException upe) {
+		}
+		
+		return n;
+	}
+	
+	/**
+	 * Internal class for showing messages from background threads (e.g. pref changes)
+	 */
+	private class ToastDisplay implements Runnable {
+		private String message;
+		private int duration;
+		
+		/**
+		 * Runnable ToastDisplayer, added to a Handler to be run at a later time or
+		 * in a different thread
+		 * @param context Target context to display Toast in
+		 * @param message Message content
+		 * @param duration Toast.LENGTH_SHORT or Toast.LENGTH_LONG
+		 */
+		public ToastDisplay(String message, int duration) {
+			this.message = message;
+			this.duration = duration;
+		}
+		
+		/**
+		 * Called when Runnable is executed. displays Toast as specified when object was created
+		 */
+		public void run() {
+			Toast.makeText(app, this.message, this.duration).show();
+		}
+	
 	}
 
 }
