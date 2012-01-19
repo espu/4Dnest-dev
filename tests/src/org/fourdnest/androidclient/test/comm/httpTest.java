@@ -12,6 +12,7 @@ import org.junit.Test;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class httpTest extends AndroidTestCase {
 		Log.v("Path", uri.getPath());
 
 		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "tägei tulee", tags, 100);
+		Log.d("EGGTYPE", egg.getMimeType().toString());
         /* SELECT to use local or web server */
 
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
