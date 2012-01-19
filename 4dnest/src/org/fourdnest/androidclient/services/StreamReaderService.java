@@ -26,6 +26,8 @@ public class StreamReaderService extends IntentService {
     /** Thumbnails on the server are in jpg format*/
     private static final String THUMBNAIL_FILETYPE = "jpg";
     
+    private static final String THUMBNAIL_DEFAULT_SIZE = "-100x100.";
+    
     private FourDNestApplication app;
     
     public StreamReaderService() {
@@ -63,6 +65,11 @@ public class StreamReaderService extends IntentService {
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream();
             for (int i = 0; i < eggList.size(); i++) {
                 em.saveEgg(eggList.get(i));
+                String thumbnailUri = app.getCurrentNest().getBaseURI()
+                        + THUMBNAIL_PATH + eggList.get(i).getExternalId()
+                        + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
+                String saveLocation = "";
+                //app.getCurrentNest().getProtocol().getMediaFile(thumbnailUri, saveLocation);
             }
             //FIXME get thumbnails and save them to an disclosed location
         }
