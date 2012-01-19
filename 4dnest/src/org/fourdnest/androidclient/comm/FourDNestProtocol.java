@@ -16,8 +16,7 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.Header;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -31,9 +30,9 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.util.EntityUtils;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 import org.json.JSONArray;
@@ -186,10 +185,23 @@ public class FourDNestProtocol implements Protocol {
         // http scheme
         schemeRegistry.register(new Scheme("http", PlainSocketFactory
                 .getSocketFactory(), 80));
-        // https scheme
-        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
-                443));
-        HttpParams params = new BasicHttpParams();
+        FourDNestApplication app = FourDNestApplication.getApp();
+        boolean aac;
+        if (app == null) {
+        	Log.d(TAG, "app was null");
+        	aac = true;
+        } else {
+			aac = app.getAllowAllCerts();
+		}
+        if (aac) {
+			// https scheme, all certs allowed
+			schemeRegistry.register(new Scheme("https",
+					new EasySSLSocketFactory(), 443));
+		}else {
+			// doesn't allow all certs
+			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		}
+		HttpParams params = new BasicHttpParams();
         params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
         HttpProtocolParams.setContentCharset(params, UNICODE);
         HttpProtocolParams.setHttpElementCharset(params, UNICODE);

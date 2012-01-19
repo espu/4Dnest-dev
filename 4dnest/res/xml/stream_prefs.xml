@@ -6,5 +6,12 @@
         android:summary="Temporary Nest Base URI"
         android:title="Nest Base URI" >
     </EditTextPreference>
+    
+    <CheckBoxPreference
+        android:key="allow_all_certs"
+        android:summaryOn="All certificates are allowed"
+        android:summaryOff="Only valid certificates are allowed"
+        android:title="Allow all certificates" >
+    </CheckBoxPreference>
 
 </PreferenceScreen>

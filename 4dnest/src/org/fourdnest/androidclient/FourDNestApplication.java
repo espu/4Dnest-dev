@@ -31,12 +31,15 @@ public class FourDNestApplication extends Application
 	private final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
+	private static FourDNestApplication APP;
+	
 	@Override
 	public void onCreate() { //
 	  super.onCreate();
 	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	  this.prefs.registerOnSharedPreferenceChangeListener(this);
 	  this.setUpTestValues();
+	  FourDNestApplication.APP = (FourDNestApplication)this.getApplicationContext();
 	  Log.i(TAG, "onCreated");
 	}
 	
@@ -117,6 +120,8 @@ public class FourDNestApplication extends Application
 	public synchronized int getCurrentNestId() {
 		return this.prefs.getInt("currentNestId", 0);
 	}
+	
+
 	/**
 	 * Sets the currently active Nest. The setting is persisted between
 	 * restarts of the application.
@@ -126,6 +131,27 @@ public class FourDNestApplication extends Application
 		//FIXME check that newNestId is valid?
 		SharedPreferences.Editor prefEditor = this.prefs.edit();
 		prefEditor.putInt("currentNestId", newNestId);
+	}
+	
+	/**
+	 * Are all certificates valid without checking?
+	 * @return boolean setting value, default true
+	 */
+	public synchronized boolean getAllowAllCerts() {
+		return this.prefs.getBoolean("allow_all_certs", true);
+	}
+	
+	/**
+	 * Set value of allow_all_certs setting. Used in testing.
+	 * @param val
+	 */
+	public synchronized void setAllowAllCerts(Boolean val) {
+		SharedPreferences.Editor prefEditor = this.prefs.edit();
+		prefEditor.putBoolean("allow_all_certs", val);
+	}
+	
+	public static FourDNestApplication getApp() {
+		return APP;
 	}
 
 }

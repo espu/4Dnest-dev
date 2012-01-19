@@ -6,6 +6,8 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 
+import android.content.Context;
+
 
 public interface Protocol {
     
@@ -16,5 +18,4 @@ public interface Protocol {
     List<Tag> topTags(int count);
     void setNest(Nest nest);
 	int getProtocolId();
-
 }
