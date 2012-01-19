@@ -47,6 +47,13 @@ public abstract class NestSpecificActivity extends Activity {
 		View view = inflater.inflate(getLayoutId(), contentView, false);
 		contentView.addView(getContentLayout(view));
 	}
+	
+	/** Called when the activity is resumed. */
+	@Override
+	protected void onResume() {
+		inflateNestView();
+		super.onResume();
+	}
 
 	/**
 	 * Initializes the main content view. The main content view is the entire
@@ -81,12 +88,6 @@ public abstract class NestSpecificActivity extends Activity {
 			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
 		}
 //		nestView.addView(child);
-	}
-	
-	@Override
-	protected void onResume() {
-		inflateNestView();
-		super.onResume();
 	}
 
 }
