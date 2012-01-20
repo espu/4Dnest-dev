@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -98,18 +100,16 @@ public abstract class NestSpecificActivity extends Activity {
 			if (nests.size() > 1) {
 				initializeNestSpinner(nestSpinner, nests);
 				nestSpinner.setVisibility(View.VISIBLE);
-			} else {
 			}
 		}
 	}
 
-	private void setNestSpecificOnClickListener(Button nestButton) {
+	public void setNestSpecificOnClickListener(Button nestButton) {
 		nestButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(v.getContext(),
 						ListStreamActivity.class);
 				v.getContext().startActivity(intent);
-				finish();
 			}
 		});
 	}
@@ -117,12 +117,14 @@ public abstract class NestSpecificActivity extends Activity {
 	private void initializeNestSpinner(Spinner nestSpinner, List<Nest> nests) {
 		NestAdapter nestAdapter = new NestAdapter(nestSpinner, nests);
 		nestSpinner.setAdapter(nestAdapter);
+		nestSpinner
+				.setOnItemSelectedListener(new nestSpinnerOnItemSelectedListener(
+						this.application, nestAdapter));
 	}
 
 	/**
-	 * 
-	 * @author Chalise
-	 * 
+	 * A simple ArrayAdapter implementation for displaying a spinner list of
+	 * configured Nests.
 	 */
 	private class NestAdapter extends ArrayAdapter<Nest> {
 
@@ -149,8 +151,9 @@ public abstract class NestSpecificActivity extends Activity {
 
 			return convertView;
 		}
-		
-		public View getDropDownView(int position, View convertView, ViewGroup parent) {
+
+		public View getDropDownView(int position, View convertView,
+				ViewGroup parent) {
 			convertView = findViewById(R.layout.nest_spinner_element);
 			if (convertView == null) {
 				LayoutInflater inflater = LayoutInflater.from(this.spinner
@@ -164,6 +167,30 @@ public abstract class NestSpecificActivity extends Activity {
 
 			return convertView;
 		}
+	}
+
+	private class nestSpinnerOnItemSelectedListener implements
+			OnItemSelectedListener {
+
+		private FourDNestApplication application;
+		private NestAdapter adapter;
+
+		public nestSpinnerOnItemSelectedListener(
+				FourDNestApplication application, NestAdapter adapter) {
+			this.application = application;
+			this.adapter = adapter;
+		}
+
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			application.setCurrentNestId(adapter.getItem(arg2).getId());
+		}
+
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 }

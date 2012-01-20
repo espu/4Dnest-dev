@@ -31,7 +31,6 @@ import android.widget.ToggleButton;
 public class ListStreamActivity extends NestSpecificActivity {
 	public static final String PREFS_NAME = "ourPrefsFile";
 
-	
 	@Override
 	public View getContentLayout(View view) {
 		FourDNestApplication application = (FourDNestApplication) getApplication();
@@ -87,29 +86,30 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public int getLayoutId() {
-		
+
 		/*
-		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,  
+		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
 		 * start new egg activity and FINISH this one (prevents the back button
-		 * problem). 
+		 * problem).
 		 */
-		
-	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-	    boolean kioskMode = settings.getBoolean("kioskMode", false);
-	       
-		if(kioskMode){
+
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		boolean kioskMode = settings.getBoolean("kioskMode", false);
+
+		if (kioskMode) {
 			Intent intent = new Intent(this, NewEggActivity.class);
 			this.startActivity(intent);
-			 finish();
+			finish();
 		}
-		
+
 		return R.layout.list_stream_view;
 	}
-	
+
 	/**
 	 * Creates the options menu on the press of the Menu button.
 	 * 
-	 * @param menu The menu to inflate
+	 * @param menu
+	 *            The menu to inflate
 	 * @return Boolean indicating success of creating the menu
 	 */
 	@Override
@@ -118,11 +118,12 @@ public class ListStreamActivity extends NestSpecificActivity {
 		inflater.inflate(R.menu.stream_menu, menu);
 		return true;
 	}
-	
+
 	/**
 	 * Specifies the action to perform when a menu item is pressed.
 	 * 
-	 * @param item The MenuItem that was pressed
+	 * @param item
+	 *            The MenuItem that was pressed
 	 * @return Boolean indicating success of identifying the item
 	 */
 	@Override
@@ -139,6 +140,11 @@ public class ListStreamActivity extends NestSpecificActivity {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void setNestSpecificOnClickListener(Button nestButton) {
+		return;
 	}
 
 }
