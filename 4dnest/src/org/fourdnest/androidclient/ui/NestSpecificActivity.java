@@ -137,7 +137,21 @@ public abstract class NestSpecificActivity extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			convertView = findViewById(R.layout.nest_spinner_element);
-			parent = this.spinner;
+			if (convertView == null) {
+				LayoutInflater inflater = LayoutInflater.from(this.spinner
+						.getContext());
+				convertView = inflater.inflate(R.layout.nest_spinner_element,
+						parent, false);
+			}
+			TextView nameField = (TextView) convertView
+					.findViewById(R.id.nest_name);
+			nameField.setText(getString(R.string.change_nest_prompt));
+
+			return convertView;
+		}
+		
+		public View getDropDownView(int position, View convertView, ViewGroup parent) {
+			convertView = findViewById(R.layout.nest_spinner_element);
 			if (convertView == null) {
 				LayoutInflater inflater = LayoutInflater.from(this.spinner
 						.getContext());
