@@ -8,15 +8,16 @@
         android:id="@+id/nest_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Nest"
-        android:layout_weight="0.5"/>
+        android:layout_weight="0.5"
+        android:text="Nest" />
 
     <Spinner
         android:id="@+id/nest_spinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:drawSelectorOnTop="true"
         android:prompt="@string/change_nest_prompt"
-        android:layout_weight="1"/>
+        android:visibility="gone" />
 
 </LinearLayout>

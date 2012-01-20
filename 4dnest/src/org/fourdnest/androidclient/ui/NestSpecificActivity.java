@@ -97,8 +97,8 @@ public abstract class NestSpecificActivity extends Activity {
 			Spinner nestSpinner = (Spinner) findViewById(R.id.nest_spinner);
 			if (nests.size() > 1) {
 				initializeNestSpinner(nestSpinner, nests);
+				nestSpinner.setVisibility(View.VISIBLE);
 			} else {
-				nestSpinner.setVisibility(View.GONE);
 			}
 		}
 	}
