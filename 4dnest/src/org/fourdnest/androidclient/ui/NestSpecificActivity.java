@@ -1,15 +1,24 @@
 package org.fourdnest.androidclient.ui;
 
+import java.util.List;
+
 import org.fourdnest.androidclient.FourDNestApplication;
+import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 /**
@@ -26,21 +35,11 @@ public abstract class NestSpecificActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		this.application = ((FourDNestApplication)getApplication());
-		setContentView(R.layout.nest_specific_view);
-		
-		inflateNestView();
 
-//		findViewById(R.id.nest_button).setOnClickListener(
-//				new OnClickListener() {
-//
-//					public void onClick(View v) {
-//						Intent intent = new Intent(v.getContext(),
-//								ListStreamActivity.class);
-//						v.getContext().startActivity(intent);
-//					}
-//				});
+		this.application = ((FourDNestApplication) getApplication());
+		setContentView(R.layout.nest_specific_view);
+
+		inflateNestView();
 
 		this.contentView = (FrameLayout) findViewById(R.id.content_view);
 
@@ -48,7 +47,7 @@ public abstract class NestSpecificActivity extends Activity {
 		View view = inflater.inflate(getLayoutId(), contentView, false);
 		contentView.addView(getContentLayout(view));
 	}
-	
+
 	/** Called when the activity is resumed. */
 	@Override
 	protected void onResume() {
@@ -79,23 +78,78 @@ public abstract class NestSpecificActivity extends Activity {
 	 * depending on kiosk settings.
 	 */
 	private void inflateNestView() {
-		
+
 		String nestName = this.application.getCurrentNest().getName();
-		TextView nestLabel;
-		
+		Button nestButton;
+
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
 		nestView.removeAllViews();
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
-		
+		inflater.inflate(R.layout.nest_buttons_view, nestView);
+		nestButton = (Button) nestView.findViewById(R.id.nest_button);
+		nestButton.setText(nestName);
+
 		if (this.application.getKioskModeEnabled()) {
-			inflater.inflate(R.layout.nest_view_kiosk_enabled, nestView);
-			nestLabel = (TextView)nestView.findViewById(R.id.nest_label);
+			nestButton.setClickable(false);
 		} else {
-			inflater.inflate(R.layout.nest_view_kiosk_disabled, nestView);
-			nestLabel = (TextView)nestView.findViewById(R.id.nest_label);
-//			((Button)view.findViewById(R.id.nest_button)).setText(nestName);
+			setNestSpecificOnClickListener(nestButton);
+			List<Nest> nests = this.application.getNestManager().listNests();
+			Spinner nestSpinner = (Spinner) findViewById(R.id.nest_spinner);
+			if (nests.size() > 1) {
+				initializeNestSpinner(nestSpinner, nests);
+			} else {
+				nestSpinner.setVisibility(View.GONE);
+			}
 		}
-		nestLabel.setText(nestName);
+	}
+
+	private void setNestSpecificOnClickListener(Button nestButton) {
+		nestButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(),
+						ListStreamActivity.class);
+				v.getContext().startActivity(intent);
+				finish();
+			}
+		});
+	}
+
+	private void initializeNestSpinner(Spinner nestSpinner, List<Nest> nests) {
+		NestAdapter nestAdapter = new NestAdapter(nestSpinner, nests);
+		nestSpinner.setAdapter(nestAdapter);
+	}
+
+	/**
+	 * 
+	 * @author Chalise
+	 * 
+	 */
+	private class NestAdapter extends ArrayAdapter<Nest> {
+
+		private Spinner spinner;
+
+		public NestAdapter(Spinner spinner, List<Nest> objects) {
+			super(spinner.getContext(), R.layout.nest_spinner_element,
+					R.id.nest_name, objects);
+			this.spinner = spinner;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			convertView = findViewById(R.layout.nest_spinner_element);
+			parent = this.spinner;
+			if (convertView == null) {
+				LayoutInflater inflater = LayoutInflater.from(this.spinner
+						.getContext());
+				convertView = inflater.inflate(R.layout.nest_spinner_element,
+						parent, false);
+			}
+			TextView nameField = (TextView) convertView
+					.findViewById(R.id.nest_name);
+			nameField.setText(this.getItem(position).getName());
+
+			return convertView;
+		}
 	}
 
 }
