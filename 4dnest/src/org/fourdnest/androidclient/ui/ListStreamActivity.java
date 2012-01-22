@@ -1,8 +1,5 @@
 package org.fourdnest.androidclient.ui;
 
-import java.util.ArrayList;
-
-import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -11,7 +8,7 @@ import org.fourdnest.androidclient.services.RouteTrackService;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,14 +27,85 @@ import android.widget.ToggleButton;
  */
 public class ListStreamActivity extends NestSpecificActivity {
 	public static final String PREFS_NAME = "ourPrefsFile";
+	private EggManager streamManager;
+
+	/** Called when this Activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		this.streamManager = ((FourDNestApplication) getApplication())
+				.getStreamEggManager();
+		super.onCreate(savedInstanceState);
+	}
 
 	@Override
 	public View getContentLayout(View view) {
-		FourDNestApplication application = (FourDNestApplication) getApplication();
-		EggManager manager = application.getStreamEggManager();
 
-		ToggleButton trackButton = (ToggleButton) view
-				.findViewById(R.id.route_tracker_button);
+		initializeTrackButton(view,
+				(ToggleButton) view.findViewById(R.id.route_tracker_button));
+
+		initializeCreateButton((Button) view.findViewById(R.id.create_button));
+
+		initializeStreamList(this.streamManager,
+				(ListView) view.findViewById(R.id.egg_list));
+
+		return view;
+
+	}
+
+	/**
+	 * Initializes the listing of Eggs appearing in egg_list
+	 * 
+	 * @param manager
+	 *            The Egg manager responsible for fetching the right Eggs
+	 * @param streamList
+	 *            Reference to the ListView that is responsible for displaying
+	 *            the Stream Listing
+	 */
+	private void initializeStreamList(EggManager manager, ListView streamList) {
+		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
+		adapter.setEggs(manager.listEggs());
+		streamList.setAdapter(adapter);
+		streamList.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Intent intent = new Intent(arg1.getContext(),
+						ViewEggActivity.class);
+				arg0.getContext().startActivity(intent);
+
+			}
+		});
+	}
+
+	/**
+	 * Initializes the Create Button. The Create Button switches the active
+	 * activity to (i.e. moves to) NewEggActivity.
+	 * 
+	 * @param createButton
+	 *            The Create button
+	 * @see NewEggActivity
+	 */
+	private void initializeCreateButton(Button createButton) {
+		createButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), NewEggActivity.class);
+				v.getContext().startActivity(intent);
+
+			}
+		});
+	}
+
+	/**
+	 * Initializes the Track Button that toggles GPS tracking.
+	 * 
+	 * @param view
+	 *            The view which the Track Button belongs in.
+	 * @param trackButton
+	 *            The ToggleButton responsible for toggling GPS tracking on and
+	 *            off.
+	 */
+	private void initializeTrackButton(View view, ToggleButton trackButton) {
 		trackButton.setChecked(Util.isServiceRunning(view.getContext(),
 				RouteTrackService.class));
 
@@ -54,34 +122,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 				}
 			}
 		});
-
-		Button createButton = (Button) view.findViewById(R.id.create_button);
-		createButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), NewEggActivity.class);
-				v.getContext().startActivity(intent);
-
-			}
-		});
-
-		ListView streamList = (ListView) view.findViewById(R.id.egg_list);
-		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
-		adapter.setEggs(manager.listEggs());
-		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(arg1.getContext(),
-						ViewEggActivity.class);
-				arg0.getContext().startActivity(intent);
-
-			}
-		});
-
-		return view;
-
 	}
 
 	@Override
