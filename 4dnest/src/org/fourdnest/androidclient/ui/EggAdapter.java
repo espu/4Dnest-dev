@@ -126,6 +126,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
+		//TODO: Value binding
 		Egg egg = (Egg) this.getItem(arg0);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView date = (TextView) view.findViewById(R.id.date);
