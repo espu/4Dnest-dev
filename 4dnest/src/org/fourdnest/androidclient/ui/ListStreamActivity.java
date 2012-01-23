@@ -61,8 +61,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 *            the Stream Listing
 	 */
 	private void initializeStreamList(EggManager manager, ListView streamList) {
-		EggReaderAdapter adapter = new EggReaderAdapter(streamList);
-		adapter.setEggs(manager.listEggs());
+		EggAdapter adapter = new EggAdapter(streamList, R.layout.egg_element_large, manager.listEggs());
 		streamList.setAdapter(adapter);
 		streamList.setOnItemClickListener(new OnItemClickListener() {
 
