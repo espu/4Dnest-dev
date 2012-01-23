@@ -135,7 +135,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		super.application.getKioskModeEnabled();
 
-		if (super.application.getKioskModeEnabled();) {
+		if (super.application.getKioskModeEnabled()) {
 			Intent intent = new Intent(this, NewEggActivity.class);
 			this.startActivity(intent);
 			finish();
