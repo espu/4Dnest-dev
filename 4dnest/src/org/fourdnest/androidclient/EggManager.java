@@ -13,8 +13,14 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-
-
+/**
+ * A manager class for Egg databases.
+ * There are two known instances of this manager, one for the stream cache
+ * (the cached contents of the streams fetched from Nests) and one for draft eggs
+ * (explicitly saved drafts, and eggs in the send queue)
+ * To access these instances, use the following methods in FourDNestApplication:
+ * getStreamEggManager(), getDraftEggManager() 
+ */
 public class EggManager {
 	
 	private static final String TAG = EggManager.class.getSimpleName();
