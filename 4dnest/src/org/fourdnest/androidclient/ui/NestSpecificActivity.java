@@ -31,7 +31,7 @@ import android.widget.TextView;
 public abstract class NestSpecificActivity extends Activity {
 
 	protected ViewGroup contentView;
-	private FourDNestApplication application;
+	protected FourDNestApplication application;
 
 	/** Called when the activity is first created. */
 	@Override

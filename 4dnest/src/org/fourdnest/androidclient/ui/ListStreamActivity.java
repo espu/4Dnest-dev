@@ -133,10 +133,9 @@ public class ListStreamActivity extends NestSpecificActivity {
 		 * problem).
 		 */
 
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-		boolean kioskMode = settings.getBoolean("kioskMode", false);
+		super.application.getKioskModeEnabled();
 
-		if (kioskMode) {
+		if (super.application.getKioskModeEnabled();) {
 			Intent intent = new Intent(this, NewEggActivity.class);
 			this.startActivity(intent);
 			finish();
