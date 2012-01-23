@@ -103,6 +103,9 @@ public class TagSuggestionService extends IntentService {
 	}
 	
     @Override
+    /**
+     * FIXME, only for logging purposes
+     */
     public void onDestroy() {
     	Log.d(TAG, "onDestroy");
     }
@@ -219,6 +222,9 @@ public class TagSuggestionService extends IntentService {
 		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 	}
 
+	/**
+	 * Stores the last used tags 
+	 */
 	private synchronized void handleLastUsedTags(Intent intent) {
 		Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
 		String[] tags = intent.getStringArrayExtra(BUNDLE_TAG_LIST);
@@ -233,6 +239,9 @@ public class TagSuggestionService extends IntentService {
 		}
 	}
 
+	/**
+	 * Helper function to convert between List<Tag> and String[] 
+	 */
 	private static String[] tagListToStringArray(List<Tag> tags) {
 		String[] out = new String[tags.size()];
 		int i = 0;
