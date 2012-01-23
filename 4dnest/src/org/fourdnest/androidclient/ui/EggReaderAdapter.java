@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -40,12 +41,17 @@ public class EggReaderAdapter extends EggListAdapter {
 		// TODO: thumbnail implementation after thumbnail fetching
 		// functionality.
 		ImageView thumbnail = (ImageView) arg1t.findViewById(R.id.thumbnail);
+		
+		TextView author = (TextView) arg1t.findViewById(R.id.author);
 		TextView message = (TextView) arg1t.findViewById(R.id.message);
 		TextView date = (TextView) arg1t.findViewById(R.id.date);
+		TextView time = (TextView) arg1t.findViewById(R.id.time);
 		TextView tags = (TextView) arg1t.findViewById(R.id.tags);
 
+		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
 		date.setText(new Date(egg.getLastUpload()).toString());
+		time.setText(new Time(egg.getLastUpload()).toString());
 
 		if (egg.getTags().size() > 0) {
 			String eggTags = "";
