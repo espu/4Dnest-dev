@@ -148,6 +148,12 @@ public class NewEggActivity extends NestSpecificActivity{
 				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
+				
+				
+				// Go to ListStreamActivity after finishing
+				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+				v.getContext();
+				
 			}
 		});
         
