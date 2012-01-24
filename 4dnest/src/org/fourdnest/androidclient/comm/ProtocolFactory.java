@@ -5,8 +5,14 @@ import java.util.Map;
 
 import android.util.Log;
 
+/**
+ * Creates Protocol instances.
+ * It is unlikely that this class needs changing:
+ * New protocols can be added by registering them using the registerProtocol method.
+ * Make sure that the protocol id is unique.
+ */
 public final class ProtocolFactory {
-	/** The 4DNest protocol */
+	/** Id for the 4DNest protocol */
 	public static final int PROTOCOL_4DNEST = 0;
 	private static final String TAG = "ProtocolFactory";
 	
