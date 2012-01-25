@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -61,18 +62,10 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 *            the Stream Listing
 	 */
 	private void initializeStreamList(EggManager manager, ListView streamList) {
-		EggAdapter adapter = new EggAdapter(streamList, R.layout.egg_element_large, manager.listEggs());
+		EggAdapter adapter = new EggAdapter(streamList,
+				R.layout.egg_element_large, manager.listEggs());
 		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(arg1.getContext(),
-						ViewEggActivity.class);
-				arg0.getContext().startActivity(intent);
-
-			}
-		});
+		streamList.setOnItemClickListener(new StreamListOnClickListener(streamList));
 	}
 
 	/**
@@ -182,6 +175,27 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public void setNestSpecificOnClickListener(Button nestButton) {
 		return;
+	}
+
+	private class StreamListOnClickListener implements OnItemClickListener {
+
+		/** Key for Egg id in Intent extras */
+		public static final String BUNDLE_EGG_ID = "BUNDLE_EGG_ID";
+
+		private ListView streamList;
+
+		public StreamListOnClickListener(ListView streamList) {
+			this.streamList = streamList;
+		}
+
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			Intent intent = new Intent(arg1.getContext(), ViewEggActivity.class);
+			intent.putExtra(BUNDLE_EGG_ID, ((EggAdapter)streamList.getAdapter()).getItem(arg2).getId());
+			arg0.getContext().startActivity(intent);
+
+		}
+
 	}
 
 }
