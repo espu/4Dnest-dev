@@ -75,13 +75,9 @@ public class NewEggActivity extends NestSpecificActivity{
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.fourdnest.androidclient.ui.NestSpecificActivity#getContentLayout(android.view.View)
-	 *
+	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
 	 * to layout and requirements of NewEggActivity. Called in mother classes OnCreate method.
-	 *
 	 */
 	
 	@Override
@@ -220,9 +216,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
+	/**
 	 * 
 	 * Destroys the activity. Over-riden so we get rid of the tagging tool
 	 */
@@ -234,12 +228,11 @@ public class NewEggActivity extends NestSpecificActivity{
     	this.taggingTool = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.fourdnest.androidclient.ui.NestSpecificActivity#getLayoutId()
-     *
+    /**
+     * 
      * A method used by the onCreate in NestSpesificActivity to recover the correct layout to use (used to initially
      * create the view which is then populated by getContentLayout). 
+     *
      */
     
 	
@@ -248,7 +241,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 	
-	/*
+	/**
 	 * Used to refresh the elements displayed when an media item is selected / unselected
 	 */
 	
@@ -292,9 +285,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreateDialog(int)
+	/**
 	 * 
 	 * This method creates the dialogues that the user uses to make selections on what ever 
 	 * to use the capture device or browse existing items.
@@ -352,21 +343,10 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
 	    	    	if(item==0){ //video camera requested
-	    	    		//String fileName = "dpic.jpg";
-	    	    		//create parameters for Intent with filename
 	    	    		ContentValues values = new ContentValues();
-	    	    		//values.put(MediaStore.Images.Media.TITLE, fileName);
 	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Video captured for 4D Nest");
-	    	    		/*
-	    	    		 * We are going to save the Uri to the image before actually taking the picture.
-	    	    		 * This was the way used in the example, so far I haven't been able to find a better
-	    	    		 * way (but there has to be one, this cant be good)
-	    	    		 */
-	    	    		/*capturedImageURI = getContentResolver().insert(
-	    	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); */
 	    	    		//create new Intent
 	    	    		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE );
-	    	    		//intent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageURI); //tell the intent where to store the file
 	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 	    	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
 	    	    	}
@@ -394,142 +374,33 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 
-	/*
+	/**
 	 * This method is used once media item has been selected or captured. Request code determines
-	 * what ever a picture, audio or video was received
+	 * what ever a picture, audio or video was received. The method sets the fileURL to point at the correct file
+	 * and sets the type of currentMediaItem . Automatically called after intent finishes succesfully.
 	 */
 	
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && (requestCode == SELECT_PICTURE || requestCode == SELECT_AUDIO || requestCode == SELECT_VIDEO)) {
-		
-			/*
-			 * This part is common as recovering the file url is the same for all  
-			 */
+		if (resultCode == RESULT_OK) {
 			
-			Uri selectedImageUri = data.getData();
-			// OI FILE Manager
-			filemanagerstring = selectedImageUri.getPath();
-
-			// MEDIA GALLERY
-			selectedFilePath = getPath(selectedImageUri);
-			
-			// NOW WE HAVE OUR WANTED STRING
-			String filePath = "";
-			if (selectedFilePath != null) {
-				filePath = selectedFilePath;
-				System.out
-						.println("selectedImagePath is the right one for you!");
-			} else {
-				filePath = filemanagerstring;
-				System.out
-						.println("filemanagerstring is the right one for you!");
-			}
-			
-
-			/*
-			 * Next lines set the class variable currentMediaItem that determines what
-			 * media item is currently selected
-			 */
-			
-			if(requestCode == SELECT_PICTURE){
+			String filePath = this.recoverMediaFileURL(requestCode, data);
+			if(requestCode == SELECT_PICTURE || requestCode == CAMERA_PIC_REQUEST){ //is there a neater way to format that?
 			this.currentMediaItem = mediaItemType.image;
 			}
-			else if(requestCode == SELECT_AUDIO){
+			else if(requestCode == SELECT_AUDIO){ //Audio always comes with SELECT_AUDIO code
 				this.currentMediaItem = mediaItemType.audio;
 			}
-			else if(requestCode == SELECT_VIDEO){
-				this.currentMediaItem = mediaItemType.video;
+			else if(requestCode == SELECT_VIDEO || requestCode==CAMERA_VIDEO_REQUEST){
+				this.currentMediaItem = mediaItemType.video; 
 			}
 			this.fileURL = filePath;
-			this.refreshElements();
-			//Intent myIntent = new Intent(this.getApplicationContext(),
-			//		NewEggActivity.class);
-			//myIntent.putExtra("pictureURL", imagePath);
-			//startActivityForResult(myIntent, 0);
-		}
-		else if(requestCode==CAMERA_PIC_REQUEST){
-			if (resultCode == RESULT_OK) {
-				
-				/*
-				 * Its essentially the same code again. I think I should move this over to some nice
-				 * cosy private help method some where.
-				 */
-				
-				filemanagerstring = capturedImageURI.getPath();
-
-				// MEDIA GALLERY
-				selectedFilePath = getPath(capturedImageURI);
-				
-				// NOW WE HAVE OUR WANTED STRING
-				String filePath = "";
-				if (selectedFilePath != null) {
-					filePath = selectedFilePath;
-					System.out
-							.println("selectedImagePath is the right one for you!");
-				} else {
-					filePath = filemanagerstring;
-					System.out
-							.println("filemanagerstring is the right one for you!");
-				}
-				this.fileURL = filePath;
-				this.currentMediaItem = mediaItemType.image;
-				this.refreshElements();
-				
-				
-				
-			} else if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
-			}
-			else {
-				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
-			}
-		}
-		
-		else if(requestCode==CAMERA_VIDEO_REQUEST){
-			Uri selectedImageUri = data.getData();
-
-			// OI FILE Manager
-			filemanagerstring = selectedImageUri.getPath();
-
-			// MEDIA GALLERY
-			selectedFilePath = getPath(selectedImageUri);
-			
-			// NOW WE HAVE OUR WANTED STRING
-			String filePath = "";
-			if (selectedFilePath != null) {
-				filePath = selectedFilePath;
-				System.out
-						.println("selectedImagePath is the right one for you!");
-			} else {
-				filePath = filemanagerstring;
-				System.out
-						.println("filemanagerstring is the right one for you!");
-			}
-			this.fileURL = filePath;
-			this.currentMediaItem = mediaItemType.video;
 			this.refreshElements();
 		}
 	}
 
-	// UPDATED!
-	public String getPath(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
+	
 
-		CursorLoader loader = new CursorLoader(this.getApplicationContext(), uri,
-				projection, null, null, null);
-		Cursor cursor = loader.loadInBackground();
-		if (cursor != null) {
-			// HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-			// THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-			int columnIndex = cursor
-					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-			cursor.moveToFirst();
-			return cursor.getString(columnIndex);
-		} else {
-			return null;
-		}
-	}
 	
 	/**
 	 * Creates the options menu on the press of the Menu button.
@@ -564,6 +435,60 @@ public class NewEggActivity extends NestSpecificActivity{
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Private method for recovering the file url from selected or captured media file.
+	 */
+	
+	private String recoverMediaFileURL(int requestCode, Intent data){
+		Uri selectedImageUri = null;
+		if(requestCode==this.CAMERA_PIC_REQUEST){
+
+					filemanagerstring = capturedImageURI.getPath();
+
+					// MEDIA GALLERY
+					selectedFilePath = getPath(capturedImageURI);
+		}
+		else{
+		selectedImageUri = data.getData();
+		// OI FILE Manager
+		filemanagerstring = selectedImageUri.getPath();
+		selectedFilePath = getPath(selectedImageUri);
+
+		}
+		// MEDIA GALLERY
+		
+		// NOW WE HAVE OUR WANTED STRING
+		String filePath = "";
+		if (selectedFilePath != null) {
+			filePath = selectedFilePath; //filepath is the right one
+		} else {
+			filePath = filemanagerstring; //filemanagerstring is the right one
+		}
+		return filePath;
+	}
+	
+	/**
+	 * Internal help method for recovering a correct string representation of the URI of a file
+	 */
+	
+	private String getPath(Uri uri) {
+		String[] projection = { MediaStore.Images.Media.DATA };
+
+		CursorLoader loader = new CursorLoader(this.getApplicationContext(), uri,
+				projection, null, null, null);
+		Cursor cursor = loader.loadInBackground();
+		if (cursor != null) {
+			// HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+			// THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+			int columnIndex = cursor
+					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(columnIndex);
+		} else {
+			return null;
+		}
 	}
 	
 	
