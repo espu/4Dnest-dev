@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
@@ -34,14 +35,15 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		FourDNestApplication application = (FourDNestApplication) getApplication();
 		EggManager manager = application.getStreamEggManager();
-
+		/*
 		ArrayList<Egg> eggs = (ArrayList<Egg>) application.getCurrentNest()
 				.getProtocol().getStream();
 		Log.d("EGGAMOUNT", String.valueOf(eggs.size()));
 		for (Egg egg : eggs) {
 			manager.saveEgg(egg);
-		}
-
+		}*/
+		ArrayList<Egg> eggs = (ArrayList<Egg>)manager.listEggs();
+		Log.d("EGGAMOUNT", String.valueOf(eggs.size()));
 		ToggleButton trackButton = (ToggleButton) view
 				.findViewById(R.id.route_tracker_button);
 		trackButton.setChecked(Util.isServiceRunning(view.getContext(),

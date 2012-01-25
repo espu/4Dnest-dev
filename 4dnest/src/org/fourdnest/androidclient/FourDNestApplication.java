@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
+import org.fourdnest.androidclient.services.StreamReaderService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.Application;
@@ -50,6 +51,7 @@ public class FourDNestApplication extends Application
 	  Log.i(TAG, "onCreated");
 	  //warm start TagSuggestionService
 	  startService(new Intent(this, TagSuggestionService.class));
+	  startService(new Intent(this, StreamReaderService.class));
 	}
 	
 	public static FourDNestApplication getApplication() {
