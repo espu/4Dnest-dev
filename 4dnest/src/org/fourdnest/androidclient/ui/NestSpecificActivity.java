@@ -81,7 +81,6 @@ public abstract class NestSpecificActivity extends Activity {
 
 		String nestName = this.application.getCurrentNest().getName();
 		Button nestButton;
-
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
 		nestView.removeAllViews();
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
