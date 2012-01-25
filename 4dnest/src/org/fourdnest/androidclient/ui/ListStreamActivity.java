@@ -1,12 +1,10 @@
 package org.fourdnest.androidclient.ui;
 
-import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
-import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -189,7 +187,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			Intent intent = new Intent(arg1.getContext(), EggViewActivity.class);
+			Intent intent = new Intent(arg1.getContext(), ViewEggActivity.class);
 			intent.putExtra(INTENT_EGG_ID, ((EggAdapter)streamList.getAdapter()).getItem(arg2).getId());
 			arg0.getContext().startActivity(intent);
 
