@@ -1,10 +1,12 @@
 package org.fourdnest.androidclient.ui;
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
+import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.widget.ToggleButton;
  * toggling route tracking.
  */
 public class ListStreamActivity extends NestSpecificActivity {
+	public static final String INTENT_EGG_ID = "INTENT_EGG_ID";
 	public static final String PREFS_NAME = "ourPrefsFile";
 	private EggManager streamManager;
 
@@ -61,18 +64,10 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 *            the Stream Listing
 	 */
 	private void initializeStreamList(EggManager manager, ListView streamList) {
-		EggAdapter adapter = new EggAdapter(streamList, R.layout.egg_element_large, manager.listEggs());
+		EggAdapter adapter = new EggAdapter(streamList,
+				R.layout.egg_element_large, manager.listEggs());
 		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(arg1.getContext(),
-						ViewEggActivity.class);
-				arg0.getContext().startActivity(intent);
-
-			}
-		});
+		streamList.setOnItemClickListener(new StreamListOnClickListener(streamList));
 	}
 
 	/**
@@ -182,6 +177,24 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public void setNestSpecificOnClickListener(Button nestButton) {
 		return;
+	}
+
+	private class StreamListOnClickListener implements OnItemClickListener {
+
+		private ListView streamList;
+
+		public StreamListOnClickListener(ListView streamList) {
+			this.streamList = streamList;
+		}
+
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			Intent intent = new Intent(arg1.getContext(), EggViewActivity.class);
+			intent.putExtra(INTENT_EGG_ID, ((EggAdapter)streamList.getAdapter()).getItem(arg2).getId());
+			arg0.getContext().startActivity(intent);
+
+		}
+
 	}
 
 }
