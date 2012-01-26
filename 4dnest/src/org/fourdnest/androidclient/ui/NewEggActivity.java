@@ -184,7 +184,12 @@ public class NewEggActivity extends NestSpecificActivity{
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
-    				startIntent(SELECT_AUDIO);
+    				if(kioskMode){
+    					startIntent(AUDIO_RECORER_REQUEST);
+    				}
+    				else{
+    					startIntent(SELECT_AUDIO);
+    				}
     			}
     		});
        	
@@ -349,7 +354,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			if(requestCode == SELECT_PICTURE || requestCode == CAMERA_PIC_REQUEST){ //is there a neater way to format that?
 			this.currentMediaItem = mediaItemType.image;
 			}
-			else if(requestCode == SELECT_AUDIO){ //Audio always comes with SELECT_AUDIO code
+			else if(requestCode == SELECT_AUDIO || requestCode == AUDIO_RECORER_REQUEST){ //Audio always comes with SELECT_AUDIO code
 				this.currentMediaItem = mediaItemType.audio;
 			}
 			else if(requestCode == SELECT_VIDEO || requestCode==CAMERA_VIDEO_REQUEST){
@@ -404,7 +409,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	
 	private String recoverMediaFileURL(int requestCode, Intent data){
 		Uri selectedImageUri = null;
-		if(requestCode==this.CAMERA_PIC_REQUEST){
+		if(requestCode==CAMERA_PIC_REQUEST){
 
 					filemanagerstring = capturedImageURI.getPath();
 
@@ -516,19 +521,12 @@ public class NewEggActivity extends NestSpecificActivity{
 	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
 			}
 			if (intentType == AUDIO_RECORER_REQUEST){
-				
+				intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+				startActivityForResult(intent, AUDIO_RECORER_REQUEST);
+
 			}
 		
 		}
 	
 	
 	}
-/*
- * 	private static final int SELECT_PICTURE = 1; //this is needed for selecting picture
-	private static final int SELECT_AUDIO = 2;
-	private static final int SELECT_VIDEO = 3;
-	protected static final int CAMERA_PIC_REQUEST = 4;
-	protected static final int CAMERA_VIDEO_REQUEST = 5;	
- */
-
-
