@@ -12,6 +12,7 @@ import android.app.AlarmManager;
 import android.app.Application;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class StreamReaderService extends IntentService {
     private static final long TWO_MINUTE = 120000;
     
     private FourDNestApplication app;
+    private int interval;
+    private int amount;
     
     public StreamReaderService() {
         super(StreamReaderService.class.getName());
@@ -48,6 +51,7 @@ public class StreamReaderService extends IntentService {
         super(name);
     }
     
+    //FIXME: Add the values on create and then make an intent to listen to them.
     @Override
     public void onCreate() {
     	super.onCreate();
@@ -104,5 +108,12 @@ public class StreamReaderService extends IntentService {
             Log.d("EGGAMOUNT2", String.valueOf(eggs.size()));
         }
     }
+    
+    public static void update(Context context) {
+        Intent intent = new Intent(context, StreamReaderService.class);
+        intent.addCategory(READ_STREAM);
+        context.startService(intent);
+    }
+   
 
 }
