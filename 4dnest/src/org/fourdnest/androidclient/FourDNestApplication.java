@@ -257,8 +257,8 @@ public class FourDNestApplication extends Application
 	 * Is kiosk mode enabled?
 	 * @return boolean setting value, default true
 	 */
-	public synchronized boolean getKioskModeEnabled() {
-		return this.prefs.getBoolean("kiosk_mode", true);
+	public synchronized boolean getKioskModeEnabled() {		
+		return this.prefs.getBoolean("kiosk_mode", false);
 	}
 	
 	/**
