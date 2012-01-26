@@ -69,7 +69,7 @@ public class LocationHelper {
 			json.put(JSON_LATITUDE, loc.getLatitude());
 			json.put(JSON_LONGITUDE, loc.getLongitude());
 			json.put(JSON_SPEED, loc.getSpeed());
-			json.put(JSON_TIME, loc.getTime());
+			json.put(JSON_TIME, loc.getTime()); // TODO: Change to proper time stamp instead of system time
 			
 			return json;
 		} catch(JSONException e) {

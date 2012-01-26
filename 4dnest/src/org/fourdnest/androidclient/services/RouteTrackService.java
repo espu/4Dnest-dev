@@ -169,6 +169,7 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * @return success
 	 */
 	private boolean writeLocationCache(File outFile) throws IOException, JSONException {
+		if(this.locationCache.size() < 1) return false;
 		JSONObject o = LocationHelper.listToJSON(this.locationCache);
 
 		FileWriter fw = new FileWriter(outFile);
