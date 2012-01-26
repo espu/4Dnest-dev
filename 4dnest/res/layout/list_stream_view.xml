@@ -15,7 +15,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/read_stream_create_button"/>
+            android:textOn="@string/stream_reader_gps_button_tracking"
+        	android:textOff="@string/stream_reader_gps_button_nottracking"/>
 
         <Button
             android:id="@+id/create_button"
