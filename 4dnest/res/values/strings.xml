@@ -36,6 +36,8 @@
     <string name="gps_statusbar_title">4DNest</string>
     <string name="gps_statusbar_tracking_active">Route tracking active</string>
     <string name="gps_error_gps_disabled">GPS disabled, please enable to track</string>
+    <string name="gps_file_save_success">Route saved to file</string>
+    <string name="gps_file_save_failure">Route saving failed</string>
     <string name="add_tag_button">Add tag</string>
     <string name="new_egg_intent_select_picture">Select Picture</string>
     <string name="new_egg_intent_image_description">Image captured for 4D Nest</string>

@@ -2,16 +2,14 @@ package org.fourdnest.androidclient.services;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,9 +29,6 @@ import android.widget.Toast;
 
 public class RouteTrackService extends Service implements LocationListener {
 	
-	
-	public static boolean isTracking = false;
-	
 	/**
 	 * Location cache for received locations
 	 */
@@ -43,7 +38,6 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * Location manager to access location info
 	 */
 	private LocationManager locationManager;
-	
 
 	/**
 	 * Task bar notification
@@ -61,23 +55,6 @@ public class RouteTrackService extends Service implements LocationListener {
 	private final float LOCATION_MIN_DISTANCE = 5; // m
 	private final int LATEST_LOC_MAX_DELAY = 1000 * 60; // 60 sec 
 	
-	public static final String JSON_ACCURACY = "accuracy";
-	public static final String JSON_ALTITUDE = "altitude";
-	public static final String JSON_BEARING = "bearing";
-	public static final String JSON_LATITUDE = "latitude";
-	public static final String JSON_LONGITUDE = "longitude";
-	public static final String JSON_SPEED = "speed";
-	public static final String JSON_TIME = "time";
-	public static final String JSON_LOCATIONARRAY = "locations";
-
-	/**
-	 * JSONification keywords
-	 */
-	private final String JSON_LOCATION_PROVIDER = "json";
-	private final String JSON_WRAPPER = "locations";
-	private final int JSON_INDENT_FACTOR = 1;
-	
-
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -113,7 +90,7 @@ public class RouteTrackService extends Service implements LocationListener {
 		
 		// Check last known location, if it's more recent than max delay specifies, add it as first point
 		Location lastKnownLocation = this.locationManager.getLastKnownLocation(this.provider);
-		if(lastKnownLocation.getTime() < LATEST_LOC_MAX_DELAY) {
+		if(lastKnownLocation != null && lastKnownLocation.getTime() < LATEST_LOC_MAX_DELAY) {
 			this.locationCache.add(lastKnownLocation);
 		}
 
@@ -126,8 +103,10 @@ public class RouteTrackService extends Service implements LocationListener {
         // Set status bar info
         notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_statusbar_tracking_active), contentIntent);
 
-        // Start service in foreground
-        this.startForeground(R.string.gps_notification_on, notification);
+        // Start service in foreground, checking for null to avoid Android testing bug
+        if(getSystemService(ACTIVITY_SERVICE) != null) {
+        	this.startForeground(R.string.gps_notification_on, notification);
+        }
         
         // Run until explicitly stopped
         return START_STICKY;
@@ -139,27 +118,31 @@ public class RouteTrackService extends Service implements LocationListener {
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
 		
-	    // Cancel the persistent notification.
-		this.stopForeground(true);
+	    // Cancel the persistent notification
+		if(getSystemService(ACTIVITY_SERVICE) != null) {
+			this.stopForeground(true);
+		}
 		
 		String message = "Tracking stopped. ";
 		message += this.locationCache.size() + " Locations received.";
 		
 		// Trigger file write
-		this.writeLocationsToFile();
+		try {
+			this.writeLocationCache(this.getOutputFile());
+			Toast.makeText(this, getText(R.string.gps_file_save_success), Toast.LENGTH_LONG);
+		} catch(Exception e) {
+			Toast.makeText(this, getText(R.string.gps_file_save_failure) + ": " + e.getMessage(), Toast.LENGTH_LONG);
+		}
 		
 		// Empty the cache
 		this.locationCache = new ArrayList<Location>();
 		
-		// Tell the user we stopped.
-	    //Toast.makeText(this, this.NOTE_OFF, Toast.LENGTH_SHORT).show();	    
+		// Tell the user we stopped    
 		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-		
-		RouteTrackService.isTracking = false;
 	}
 
 	public void onLocationChanged(Location location) {
-		Log.d(TAG, "onLocationChanged: " + RouteTrackService.locationToJSON(location).toString());
+		Log.d(TAG, "onLocationChanged: " + LocationHelper.locationToJSON(location).toString());
 		Toast.makeText(this, "New location: " + location.getLongitude(), Toast.LENGTH_SHORT);
 		
 		// Add some sanity checks, for now just cache it
@@ -185,188 +168,58 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * @param outFile target file
 	 * @return success
 	 */
-	private boolean writeLocationCache(FileWriter outFile) {
-		if(this.locationCache.size() < 1) return false;
-		
-		JSONObject o = this.locationCacheToJSON();
+	private boolean writeLocationCache(File outFile) throws IOException, JSONException {
+		JSONObject o = LocationHelper.listToJSON(this.locationCache);
 
-		if(o == null) return false;
-		
-		try {
-			outFile.write(o.toString(JSON_INDENT_FACTOR));
-		} catch(JSONException jsone) {
-			Log.e(TAG, "Failed stringifying JSON: " + jsone.getMessage());
-			return false;
-		} catch(IOException ioe) {
-			Log.e(TAG, "Failed writing file: " + ioe.getMessage());
-			return false;
-		}
+		FileWriter fw = new FileWriter(outFile);
+		fw.write(o.toString());
+		fw.close();
 		
 		return true;
 	}
 	
 	/**
-	 * Serializes local locationCache to a JSON object
-	 * @return JSONObject representation of location cache or null on failure
+	 * Gets output file handle
+	 * @return Output file handle
+	 * @throws IOException
 	 */
-	private JSONObject locationCacheToJSON() {
-		try {
-			// Create location array
-			JSONArray arr = new JSONArray();
-			for(Location loc : this.locationCache) {
-				JSONObject json = RouteTrackService.locationToJSON(loc);
-				if(json != null) {
-					arr.put(json);
-				}
-			}
-					
-			JSONObject wrapper = new JSONObject();
-			wrapper.put(JSON_WRAPPER, arr);
-			
-			return wrapper;
-		} catch(JSONException e) {
-			Log.e(TAG, e.getMessage());
-			return null;
-		}
-	}
-	
-	
-	
-	/**
-	 * Compares two locations for equality. They are equal if
-	 * accuracy, altitude, bearing, latitude, longitude, speed and time
-	 * are equal
-	 * 
-	 * @param loc1
-	 * @param loc2
-	 * @return the two are equal
-	 */
-	public boolean locationsEqual(Location loc1, Location loc2) {
-		if(loc1 == null || loc2 == null) return false;
+	private File getOutputFile() throws IOException {
+		// Get file name, check that it can be created. If not,
+		// get a file name with added seq number and try a few times
+		File outputFile = new File(FILE_BASE_PATH + File.separator + FILE_DIRECTORY, getFileName());
 		
-		if(!(loc1.getAccuracy() == loc2.getAccuracy())) return false;
-		if(!(loc1.getAltitude() == loc2.getAltitude())) return false;
-		if(!(loc1.getBearing() == loc2.getBearing())) return false;
-		if(!(loc1.getLatitude() == loc2.getLatitude())) return false;
-		if(!(loc1.getLongitude() == loc2.getLongitude())) return false;
-		if(!(loc1.getSpeed() == loc2.getSpeed())) return false;
-		if(!(loc1.getTime() == loc2.getTime())) return false;
-		 
-		return true;
+		int tryCounter = 0;
+		while(!outputFile.createNewFile()) {
+			tryCounter++;
+			if(tryCounter > 9) {
+				Log.e(TAG, "Unable to open file for writing. Gave up after 10 tries");
+				return null;
+			}
+			outputFile = new File(FILE_BASE_PATH, getFileName(tryCounter));
+		}
+		
+		return outputFile;		
 	}
 	
 	/**
-	 * Converts a Location object to JSON object with relevant information
-	 * @param loc Location ot serialize
-	 * @return JSON representation of Location or null on failure
+	 * Get file name for a file that is saved "now". Calls getFileName(0);
+	 * @return string filename
 	 */
-	public static JSONObject locationToJSON(Location loc) {
-		try {
-	    	JSONObject json = new JSONObject();
-	    	
-			json.put(JSON_ACCURACY, loc.getAccuracy());
-			json.put(JSON_ALTITUDE, loc.getAltitude());
-			json.put(JSON_BEARING, loc.getBearing());
-			json.put(JSON_LATITUDE, loc.getLatitude());
-			json.put(JSON_LONGITUDE, loc.getLongitude());
-			json.put(JSON_SPEED, loc.getSpeed());
-			json.put(JSON_TIME, loc.getTime());
-			
-			return json;
-		} catch(JSONException e) {
-			Log.e(TAG, e.getMessage());
-			return null;
-		}
-    }
-	
-	/*
-	 * @param json object containing relevant location information
-	 * @return Location object
-	 * @throws JSONException
+	private String getFileName() {
+		return this.getFileName(0);
+	}
+	/***
+	 * Get file name for a file. Takes optional parameter that adds _duplicateNum after
+	 * timestamp
+	 * @param duplicateNum
+	 * @return string filename
 	 */
-	public static Location locationFromJSON(JSONObject json) {
-		Location loc = new Location("gps");
-				
-		try {
-			if(!json.isNull(JSON_ACCURACY)) {
-				loc.setAccuracy(Float.parseFloat(json.getString(JSON_ACCURACY)));
-			}
-			if(!json.isNull(JSON_ALTITUDE)) {
-				loc.setAltitude(Double.parseDouble(json.getString(JSON_ALTITUDE)));
-			}
-			if(!json.isNull(JSON_BEARING)) {
-				loc.setBearing(Float.parseFloat(json.getString(JSON_BEARING)));
-			}
-			if(!json.isNull(JSON_LATITUDE)) {
-				loc.setLatitude(Double.parseDouble(json.getString(JSON_LATITUDE)));
-			}
-			if(!json.isNull(JSON_LONGITUDE)) {
-				loc.setLongitude(Double.parseDouble(json.getString(JSON_LONGITUDE)));
-			}
-			if(!json.isNull(JSON_SPEED)) {
-				loc.setSpeed(Float.parseFloat(json.getString(JSON_SPEED)));
-			}
-			if(!json.isNull(JSON_TIME)) {
-				loc.setTime(json.getLong(JSON_TIME));
-			}
-		} catch(JSONException exc) {
-			Log.e(TAG, "JSONException extracting Location from JSON: " + exc.getMessage());
-		}
+	private String getFileName(int duplicateNum) {
+		String f = DateFormat.format("yyyy-MM-dd_hhmmss", new Date()).toString();
+		if(duplicateNum > 0) f += "_" + duplicateNum;
 		
-		return loc; 
+		f += FILE_EXTENSION;
+		return f;
 	}
 	
-	private void writeLocationsToFile() {
-		if(this.locationCache.size() < 1) return;
-		
-		FileOutputStream output = null;
-		try {
-			File outputDir = new File(FILE_BASE_PATH, FILE_DIRECTORY);
-			outputDir.mkdirs();
-	
-			File outputFile = new File(outputDir, DateFormat.format("yyyy-MM-dd_HH:mm:ss", new Date()) + FILE_EXTENSION);
-			//File outputFile = new File("/sdcard/test.json");
-			
-			int tryCounter = 0;
-			while(!outputFile.createNewFile()) {
-				tryCounter++;
-				outputFile = new File(FILE_BASE_PATH, DateFormat.format("yyyy-MM-dd_HH:mm:ss", new Date()) + "_" + tryCounter + FILE_EXTENSION);
-				if(tryCounter > 9) {
-					Log.e(TAG, "Unable to open file for writing. Gave up after 10 tries");
-					return;
-				}
-			}
-			
-        	output = new FileOutputStream(outputFile);
-        	
-        	// Create JSON Object out of all objects in given list
-	        JSONArray arr = new JSONArray();
-	        for(Location loc : this.locationCache) {
-	        	JSONObject o = RouteTrackService.locationToJSON(loc);
-	        	arr.put(o);
-	        }
-        
-	        JSONObject container = new JSONObject();
-	        container.put(JSON_LOCATIONARRAY, arr);
-        
-	        // Output to file
-	        output.write(container.toString().getBytes());	        
-        }
-        catch(JSONException jsonE) {
-        	Log.e(TAG, jsonE.getMessage());
-        }
-        catch(Exception e) {
-        	Log.e(TAG, e.getMessage());
-        } finally {
-        	// Close the output
-        	if(output != null) {
-        		try {
-        			output.close();
-        		} catch(IOException e) {
-        			// File closing fails -> probably already closed
-        		}
-        	}
-        }
-	}
-
 }
