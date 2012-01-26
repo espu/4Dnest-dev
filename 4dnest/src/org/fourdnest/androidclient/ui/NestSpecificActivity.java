@@ -89,8 +89,9 @@ public abstract class NestSpecificActivity extends Activity {
 		nestButton.setText(nestName);
 
 		if (this.application.getKioskModeEnabled()) {
-			nestButton.setClickable(false);
+			nestButton.setVisibility(View.GONE);
 		} else {
+			nestButton.setVisibility(View.GONE);		//Remove this to show Nest Button when kiosk mode is disabled.
 			setNestSpecificOnClickListener(nestButton);
 			List<Nest> nests = this.application.getNestManager().listNests();
 			Spinner nestSpinner = (Spinner) findViewById(R.id.nest_spinner);
