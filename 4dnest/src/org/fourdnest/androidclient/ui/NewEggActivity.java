@@ -48,12 +48,13 @@ public class NewEggActivity extends NestSpecificActivity{
 	private enum mediaItemType{
 		none, image, video, audio, multiple //note that multiple is currently not used
 	}
-	private mediaItemType currentMediaItem = mediaItemType.none;
-	private static final int SELECT_PICTURE = 1; //this is needed for selecting picture
-	private static final int SELECT_AUDIO = 2;
-	private static final int SELECT_VIDEO = 3;
+	protected mediaItemType currentMediaItem = mediaItemType.none;
+	protected static final int SELECT_PICTURE = 1; //this is needed for selecting picture
+	protected static final int SELECT_AUDIO = 2;
+	protected static final int SELECT_VIDEO = 3;
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
+	protected static final int AUDIO_RECORER_REQUEST = 6;
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -513,6 +514,9 @@ public class NewEggActivity extends NestSpecificActivity{
 	    		intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE );
 	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
+			}
+			if (intentType == AUDIO_RECORER_REQUEST){
+				
 			}
 		
 		}
