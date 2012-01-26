@@ -45,7 +45,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 			
 			public void onClick(View v) {
 				while (!ListDraftEggsActivity.this.draftManager.listEggs().isEmpty()) {
-					
+					//TODO: Send all the things!
 				}
 				
 			}
