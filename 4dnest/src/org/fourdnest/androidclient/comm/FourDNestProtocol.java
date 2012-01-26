@@ -166,10 +166,10 @@ public class FourDNestProtocol implements Protocol {
 	         return this.parseResult(status, response);
          } catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Failed to overwrite egg: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to overwrite egg: IOException");
 		}
          return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
     }
