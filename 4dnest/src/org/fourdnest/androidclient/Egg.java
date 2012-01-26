@@ -18,7 +18,7 @@ import android.webkit.MimeTypeMap;
 public class Egg {
     
     public enum fileType {
-        IMAGE, AUDIO, VIDEO, TEXT, NOT_SUPPORTED;
+        IMAGE, AUDIO, VIDEO, TEXT, ROUTE, NOT_SUPPORTED;
     }
 	//private static final String TAG = Egg.class.getSimpleName();
 
@@ -269,7 +269,8 @@ public class Egg {
                     MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI()
                             .toString()));
             if (mime != null) {
-                String fileT = mime.split("/")[0];
+                String[] fileTArray = mime.split("/");
+                String fileT = fileTArray[0];
                 if (fileT.equals("image")) {
                     return fileType.IMAGE;
                 }else if (fileT.equals("audio")) {
@@ -278,6 +279,8 @@ public class Egg {
                     return fileType.VIDEO;
                 }else if (fileT.equals("text")) {
                     return fileType.TEXT;
+                }else if (fileTArray[2].equals("json")) { // string is application/json
+                	return fileType.ROUTE;
                 }else {
                     return fileType.NOT_SUPPORTED;
                 }
