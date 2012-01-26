@@ -18,8 +18,7 @@ public class RouteTrackServiceTest extends ServiceTestCase<RouteTrackService> {
 	
 	@Override
 	public void setUp() throws Exception {
-		super.setUp();
-	
+		//super.setUp();	
 	}
 	
 	public void testStartable() {
@@ -32,35 +31,39 @@ public class RouteTrackServiceTest extends ServiceTestCase<RouteTrackService> {
 	
 	public void testBindable() {
 		Intent startIntent = new Intent();
-        startIntent.setClass(getContext(), SendQueueService.class);
+        startIntent.setClass(getContext(), RouteTrackService.class);
         IBinder service = bindService(startIntent);
         
         assertNull(service);
 	}
 	
-	public void testJSONification() {
-		RouteTrackService s = new RouteTrackService();
-		
-		Location loc1 = this.getTestLocation();
-		
-		JSONObject json = s.locationToJSON(loc1);
-		assertTrue(json != null);
-		
-		Location loc2 = s.locationFromJSON(json);
-		assertTrue(s.locationsEqual(loc1,  loc2));
-	}
+	public void testLocationJSON() {
 	
-	private Location getTestLocation() {
-		Location loc = new Location("gps");
-		loc.setAltitude(100);
-		loc.setAccuracy((float) 0.1);
-		loc.setBearing(5);
-		loc.setLatitude(60);
-		loc.setLongitude(25);
-		loc.setSpeed((float) 5);
-		loc.setTime(System.currentTimeMillis());
+		try {
+			
+			Location loc1 = new Location("gps");
+			loc1.setAccuracy(1);
+			loc1.setAltitude(22);
+			loc1.setBearing(0);
+			loc1.setLatitude(60);
+			loc1.setLongitude(25);
+			loc1.setSpeed(3);
+			loc1.setTime(System.currentTimeMillis());
+			
+			// Convert to JSON
+			JSONObject o1 = RouteTrackService.locationToJSON(loc1);
+			
+			// Convert back to Location
+			Location loc2 = RouteTrackService.locationFromJSON(o1);
+			
+			// Convert new location to JSON again, compare string representations
+			JSONObject o2 = RouteTrackService.locationToJSON(loc2);
+			
+			assertTrue(o1.toString().equals(o2.toString()));	
 		
-		return loc;
+		} catch(Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 }
