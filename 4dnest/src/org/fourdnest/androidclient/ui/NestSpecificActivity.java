@@ -9,6 +9,7 @@ import org.fourdnest.androidclient.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,7 +79,6 @@ public abstract class NestSpecificActivity extends Activity {
 	 * depending on kiosk settings.
 	 */
 	private void inflateNestView() {
-
 		String nestName = this.application.getCurrentNest().getName();
 		Button nestButton;
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
@@ -89,8 +89,9 @@ public abstract class NestSpecificActivity extends Activity {
 		nestButton.setText(nestName);
 
 		if (this.application.getKioskModeEnabled()) {
-			nestButton.setClickable(false);
+			nestButton.setVisibility(View.GONE);
 		} else {
+			nestButton.setVisibility(View.GONE);		//Remove this to show Nest Button when kiosk mode is disabled.
 			setNestSpecificOnClickListener(nestButton);
 			List<Nest> nests = this.application.getNestManager().listNests();
 			Spinner nestSpinner = (Spinner) findViewById(R.id.nest_spinner);

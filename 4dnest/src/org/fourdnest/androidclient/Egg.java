@@ -2,7 +2,11 @@ package org.fourdnest.androidclient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.entity.mime.MIME;
+
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
 /**
  * Represents one Egg, which is the unit of content in the system.
  * The Egg can be a local stored Egg or a temporary copy of an Egg from the
@@ -11,6 +15,10 @@ import android.net.Uri;
  * For storing the Eggs, @see EggDatabase
  */
 public class Egg {
+    
+    public enum fileType {
+        IMAGE, AUDIO, VIDEO, TEXT, NOT_SUPPORTED;
+    }
 	//private static final String TAG = Egg.class.getSimpleName();
 
 
@@ -244,6 +252,33 @@ public class Egg {
 	 */
 	public String getExternalId() {
 		return this.externalId;
+	}
+	
+	/**
+	 * Returns MIME type for Egg's local file URI
+	 * @return
+	 */
+    public fileType getMimeType() {
+        if (this.getLocalFileURI() != null) {
+            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI()
+                            .toString()));
+            if (mime != null) {
+                String fileT = mime.split("/")[0];
+                if (fileT.equals("image")) {
+                    return fileType.IMAGE;
+                }else if (fileT.equals("audio")) {
+                    return fileType.AUDIO;
+                }else if (fileT.equals("video")) {
+                    return fileType.VIDEO;
+                }else if (fileT.equals("text")) {
+                    return fileType.TEXT;
+                }else {
+                    return fileType.NOT_SUPPORTED;
+                }
+            }
+	   }
+        return fileType.NOT_SUPPORTED;
 	}
 	
 }
