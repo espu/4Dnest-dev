@@ -59,7 +59,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
-	protected String currentEggID = "0"; //0 if new egg
+	protected String currentEggID = "0"; //0 if new egg, string as its received as String
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -185,7 +185,7 @@ public class NewEggActivity extends NestSpecificActivity{
 					startIntent(CAMERA_PIC_REQUEST);
 				}
 				else{
-				showDialog(DIALOG_ASK_IMAGE);
+					showDialog(DIALOG_ASK_IMAGE);
 				}
 			}
 		});
@@ -221,9 +221,9 @@ public class NewEggActivity extends NestSpecificActivity{
     				if(kioskMode){
     					startIntent(CAMERA_VIDEO_REQUEST);
     				}
-    				// in onCreate or any event where your want the user to
-    				// select a file
-    				showDialog(DIALOG_ASK_VIDEO);
+    				else{
+    					showDialog(DIALOG_ASK_VIDEO);
+    				}
     			}
     		});	
        	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_egg_inputs_linearlayout);
