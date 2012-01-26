@@ -3,15 +3,15 @@ package org.fourdnest.androidclient.ui;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
-public class EggListOnClickListener implements OnItemClickListener {
+public class EggItemOnClickListener implements OnItemClickListener {
 
 	public static final String INTENT_EGG_ID = "INTENT_EGG_ID";
 	private ListView streamList;
 
-	public EggListOnClickListener(ListView streamList) {
+	public EggItemOnClickListener(ListView streamList) {
 		this.streamList = streamList;
 	}
 
