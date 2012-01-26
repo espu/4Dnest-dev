@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.entity.mime.MIME;
@@ -50,6 +51,9 @@ public class Egg {
 	/** ID used by the server for this particular egg*/
 	private String externalId;
 	
+	/**Time the egg was created in the server */
+	private Date creationDate;
+	
 	// FIXME: automatic metadata.
 	
 	
@@ -68,7 +72,7 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload, Date date) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
@@ -77,6 +81,7 @@ public class Egg {
 		this.caption = caption;
 		this.tags = tags;
 		this.lastUpload = lastUpload;
+		this.setCreationDate(date);
 	}
 	
 	@Override
@@ -283,5 +288,13 @@ public class Egg {
 	   }
         return fileType.NOT_SUPPORTED;
 	}
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
 	
 }
