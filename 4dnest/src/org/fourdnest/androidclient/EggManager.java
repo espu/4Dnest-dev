@@ -1,6 +1,9 @@
 package org.fourdnest.androidclient;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -11,6 +14,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
@@ -25,7 +29,7 @@ public class EggManager {
     
     private static final String TAG = EggManager.class.getSimpleName();
     
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
     
     // Table columns
     private static final String TABLE = "egg";
@@ -37,12 +41,13 @@ public class EggManager {
     private static final String C_CAPTION = "caption";
     private static final String C_LASTUPLOAD = "last_upload";
     private static final String C_TAGS = "tags";
+    private static final String C_DATE = "date";
     
     private static final String TAG_LIST_SEPARATOR = ",";
     
     private static final String[] ALL_COLUMNS = new String[]{
         C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI,
-        C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD, C_TAGS
+        C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD, C_TAGS, C_DATE
     };
         
     private final EggDatabase eggDb;
@@ -200,8 +205,16 @@ public class EggManager {
             }
         }
         
-        
-        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tagList, lastUpload);
+        String dateStr = cursor.getString(8);
+        java.text.DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd hh:mm:ss"));
+        Date date;
+        try {
+            date = (Date) formatter.parse(dateStr);
+        } catch (ParseException e) {
+           Log.e(TAG, "Failed to parse date");
+           date = null;
+        }
+        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tagList, lastUpload, date);
         
         
         return egg;
@@ -238,6 +251,12 @@ public class EggManager {
             tagString += TAG_LIST_SEPARATOR;
         }
         values.put(C_TAGS, tagString);
+        
+        if (egg.getCreationDate() != null) {
+            values.put(C_DATE, DateFormat.format("yyyy-MM-dd hh:mm:ss", egg.getCreationDate()).toString());
+        }else {
+            values.put(C_DATE, "");
+        }
         
         // API level 8 would have insertWithOnConflict, have to work around it
         // and check for conflict and then either insert or update
@@ -326,7 +345,8 @@ public class EggManager {
                         "%s text DEFAULT NULL," +
                         "%s text DEFAULT NULL," +
                         "%s long DEFAULT NULL," +
-                        "%s text DEFAULT NULL)",
+                        "%s text DEFAULT NULL," +
+                        "%s datetime DEFAULT NULL)",
                         TABLE,
                         C_ID,
                         C_NESTID,
@@ -335,7 +355,8 @@ public class EggManager {
                         C_REMOTEFILEURI,
                         C_CAPTION,
                         C_LASTUPLOAD,
-                        C_TAGS
+                        C_TAGS,
+                        C_DATE
             );
             
             db.execSQL(tableCreateQuery);
