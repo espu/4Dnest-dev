@@ -1,9 +1,13 @@
 package org.fourdnest.androidclient.services;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
 import org.json.JSONArray;
@@ -11,18 +15,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class RouteTrackService extends Service implements LocationListener {
 	
 	
 	public static boolean isTracking = false;
+	
 	/**
 	 * Location cache for received locations
 	 */
@@ -50,6 +52,24 @@ public class RouteTrackService extends Service implements LocationListener {
 	private final String TAG = RouteTrackService.class.getSimpleName();
 	private final int LOCATION_MIN_DELAY = 1000; // ms
 	private final float LOCATION_MIN_DISTANCE = 5; // m
+	
+	/**
+	 * JSONification keywords
+	 */
+	private final String JSON_LOCATION_PROVIDER = "json";
+	private final String JSON_WRAPPER = "locations";
+	private final String JSON_ACCURACY = "accurary";
+	private final String JSON_ALTITUDE = "altitude";
+	private final String JSON_BEARING = "bearing";
+	private final String JSON_LATITUDE = "latitude";
+	private final String JSON_LONGITUDE = "longitude";
+	private final String JSON_SPEED = "speed";
+	private final String JSON_TIME = "time";
+	private final int JSON_INDENT_FACTOR = 1;
+	
+	private final String JSON_FILE_OUTPUT_DIR = "4dnest/routes/";
+	private final String JSON_FILE_PREFIX = "route_";
+	private final String JSON_FILE_EXTENSION = ".json";
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -147,24 +167,158 @@ public class RouteTrackService extends Service implements LocationListener {
 	}
 	
 	/**
-	 * Converts a Location object to JSON object with relevant information
-	 * @param loc
-	 * @return JSON representation of Location
-	 * @throws JSONException
+	 * Gets output file for whatever moment
+	 * @return FileWriter for valid output file or null
 	 */
-	private JSONObject locationToJSON(Location loc) throws JSONException {
-    	JSONObject json = new JSONObject();
-    	
-		json.put("accuracy", loc.getAccuracy());
-		json.put("altitude", loc.getAltitude());
-		json.put("bearing", loc.getBearing());
-		json.put("latitude", loc.getLatitude());
-		json.put("longitude", loc.getLongitude());
-		json.put("speed", loc.getSpeed());
-		json.put("time", loc.getTime());
+	private FileWriter getOutputFile() {
+		String timestamp = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")).format(new Date());
+		String fileName = JSON_FILE_PREFIX + timestamp + JSON_FILE_EXTENSION;
 		
-		return json;    	
+		return null;
+	}
+	
+	/**
+	 * Writes locationCache to given file as JSON string
+	 * @param outFile target file
+	 * @return success
+	 */
+	private boolean writeLocationCache(FileWriter outFile) {
+		if(this.locationCache.size() < 1) return false;
+		
+		JSONObject o = this.locationCacheToJSON();
+
+		if(o == null) return false;
+		
+		try {
+			outFile.write(o.toString(JSON_INDENT_FACTOR));
+		} catch(JSONException jsone) {
+			Log.e(TAG, "Failed stringifying JSON: " + jsone.getMessage());
+			return false;
+		} catch(IOException ioe) {
+			Log.e(TAG, "Failed writing file: " + ioe.getMessage());
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Serializes local locationCache to a JSON object
+	 * @return JSONObject representation of location cache or null on failure
+	 */
+	private JSONObject locationCacheToJSON() {
+		try {
+			// Create location array
+			JSONArray arr = new JSONArray();
+			for(Location loc : this.locationCache) {
+				JSONObject json = this.locationToJSON(loc);
+				if(json != null) {
+					arr.put(json);
+				}
+			}
+					
+			JSONObject wrapper = new JSONObject();
+			wrapper.put(JSON_WRAPPER, arr);
+			
+			return wrapper;
+		} catch(JSONException e) {
+			Log.e(TAG, e.getMessage());
+			return null;
+		}
+	}
+	
+	/**
+	 * Converts a Location object to JSON object with relevant information
+	 * @param loc Location ot serialize
+	 * @return JSON representation of Location or null on failure
+	 */
+	public JSONObject locationToJSON(Location loc) {
+		try {
+	    	JSONObject json = new JSONObject();
+	    	
+			json.put(JSON_ACCURACY, loc.getAccuracy());
+			json.put(JSON_ALTITUDE, loc.getAltitude());
+			json.put(JSON_BEARING, loc.getBearing());
+			json.put(JSON_LATITUDE, loc.getLatitude());
+			json.put(JSON_LONGITUDE, loc.getLongitude());
+			json.put(JSON_SPEED, loc.getSpeed());
+			json.put(JSON_TIME, loc.getTime());
+			
+			return json;
+		} catch(JSONException e) {
+			Log.e(TAG, e.getMessage());
+			return null;
+		}
     }
 	
+	/**
+	 * Extracts a Location object from given JSON object
+	 * @param json object containing info
+	 * @return Location or null on failure
+	 */
+	public Location locationFromJSON(JSONObject json) {		
+		try {
+			Location loc = new Location(JSON_LOCATION_PROVIDER);
+			
+			if(!json.isNull(JSON_ACCURACY)) {
+				loc.setAccuracy((float) json.getDouble(JSON_ACCURACY));
+			}
+			
+			if(!json.isNull(JSON_ALTITUDE)) {
+				loc.setAltitude(json.getDouble(JSON_ALTITUDE));
+			}
+			
+			if(!json.isNull(JSON_BEARING)) {
+				loc.setBearing((float) json.getDouble(JSON_BEARING));
+			}
+			
+			if(!json.isNull(JSON_LATITUDE)) {
+				loc.setLatitude(json.getDouble(JSON_LATITUDE));
+			}
+			
+			if(!json.isNull(JSON_LONGITUDE)) {
+				loc.setLongitude(json.getDouble(JSON_LONGITUDE));
+			}
+			
+			if(!json.isNull(JSON_SPEED)) {
+				loc.setSpeed((float) json.getDouble(JSON_SPEED));
+			}
+			
+			if(!json.isNull(JSON_TIME)) {
+				loc.setTime(json.getLong(JSON_TIME));
+			}
+			
+			return loc;
+		
+		} catch(JSONException e) {
+			Log.e(TAG, e.getMessage());
+			return null;
+		}
+	}
+	
+	/**
+	 * Compares two locations for equality. They are equal if
+	 * accuracy, altitude, bearing, latitude, longitude, speed and time
+	 * are equal
+	 * 
+	 * @param loc1
+	 * @param loc2
+	 * @return the two are equal
+	 */
+	public boolean locationsEqual(Location loc1, Location loc2) {
+		if(loc1 == null || loc2 == null) return false;
+		
+		if(!(loc1.getAccuracy() == loc2.getAccuracy())) return false;
+		if(!(loc1.getAltitude() == loc2.getAltitude())) return false;
+		if(!(loc1.getBearing() == loc2.getBearing())) return false;
+		if(!(loc1.getLatitude() == loc2.getLatitude())) return false;
+		if(!(loc1.getLongitude() == loc2.getLongitude())) return false;
+		if(!(loc1.getSpeed() == loc2.getSpeed())) return false;
+		if(!(loc1.getTime() == loc2.getTime())) return false;
+		 
+		return true;
+	}
+	
+
 
 }
