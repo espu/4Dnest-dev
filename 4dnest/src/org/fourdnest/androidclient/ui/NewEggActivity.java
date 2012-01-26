@@ -1,9 +1,11 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
@@ -12,6 +14,7 @@ import org.fourdnest.androidclient.services.TagSuggestionService;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -55,6 +59,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
+	protected String currentEggID = "0"; //0 if new egg
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -90,8 +95,21 @@ public class NewEggActivity extends NestSpecificActivity{
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
 		{
-		fileURL = extras.getString("pictureURL");
+			/*
+			 * I really don't want NULL pointer exceptions. 
+			 */
+			if(extras.containsKey("eggID")){
+				currentEggID = extras.getString("eggID");
+				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
+			}
+			if(extras.containsKey("pictureURL")){
+				fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
+			}
 		}
+		if (!currentEggID.equals("0")){
+			
+		}
+		
 		this.kioskMode = super.application.getKioskModeEnabled();
 		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
 		this.thumbNailView = (ImageView) view.findViewById(R.id.new_photo_egg_thumbnail_view);
@@ -114,10 +132,9 @@ public class NewEggActivity extends NestSpecificActivity{
             	
             	if(currentMediaItem==mediaItemType.image){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "image/*");
-
             	}
             	else if(currentMediaItem==mediaItemType.audio){
-            	i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
+            		i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
             	}
             	else if(currentMediaItem==mediaItemType.video){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
@@ -135,7 +152,7 @@ public class NewEggActivity extends NestSpecificActivity{
         Button sendButton = (Button) view.findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
-			public void onClick(View v) {				
+			public void onClick(View v) {		
 				//TODO: Proper implementation
 				Egg egg = new Egg();
 				egg.setAuthor("Saruman_The_White_42");
@@ -145,7 +162,6 @@ public class NewEggActivity extends NestSpecificActivity{
 				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
-				
 				
 				// Go to ListStreamActivity after finishing
 				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
@@ -296,15 +312,15 @@ public class NewEggActivity extends NestSpecificActivity{
 	    Dialog dialog = null;
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE: //determines that this dialogue is used to determine what ever to open image camera or image gallery
-	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_photo_camera), getString(R.string.new_egg_dialogue_open_image_callery)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
+	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	builder.setTitle("Select Source");
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
-	    	    	if(item==1){ //this one means that user wants to open the image gallery
+	    	    	if(item==0){ //this one means that user wants to open the image gallery
 	    	    		startIntent(SELECT_PICTURE);
 	    	    	}
-	    	    	else if(item==0){ //this one means  that user wants to open the image camera
+	    	    	else if(item==1){ //this one means  that user wants to open the image camera
 	    	    		//define the file-name to save photo taken by Camera activity
 	    	    		startIntent(CAMERA_PIC_REQUEST);
 	    	    	}
@@ -314,15 +330,15 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	break;
 	    
 	    case DIALOG_ASK_VIDEO: //this one is used to determine what ever to open a video camera or video gallery
-	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_camera), getString(R.string.new_egg_dialogue_open_video_callery)};
+	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_callery), getString(R.string.new_egg_dialogue_open_video_camera)};
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
 	    	videoBuilder.setTitle("Select Source");
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
-	    	    	if(item==0){ //video camera requested
+	    	    	if(item==1){ //video camera requested
 	    	    		startIntent(CAMERA_VIDEO_REQUEST);
 	    	    	}
-	    	    	if(item==1){ //video gallery requested.
+	    	    	if(item==0){ //video gallery requested.
 	    	    		startIntent(SELECT_VIDEO);
 	    	    	}
 	    	    }
@@ -527,6 +543,38 @@ public class NewEggActivity extends NestSpecificActivity{
 			}
 		
 		}
+	
+	/**
+	 * A local method for recovering data from an existing egg. Used when 
+	 * a draft is loaded for editing
+	 */
+	
+	private void recoverDataFromExistingEGG(){
+		int eggIDInt = Integer.valueOf(currentEggID);
+		EggManager draftManager = super.application.getDraftEggManager();
+		Egg existingEgg = draftManager.getEgg(eggIDInt);
+		Uri uri = existingEgg.getLocalFileURI();	
+		if (uri == null){
+			currentMediaItem = mediaItemType.none;
+		}
+		else {
+			ContentResolver cR = this.getContentResolver();
+			MimeTypeMap mime = MimeTypeMap.getSingleton();
+			String type = mime.getExtensionFromMimeType(cR.getType(uri));	
+			if (type.startsWith("image")){
+				this.currentMediaItem = mediaItemType.image;
+			}
+			else if (type.startsWith("audio")){
+				this.currentMediaItem = mediaItemType.audio;
+			}
+			else if (type.startsWith("video")){
+				this.currentMediaItem = mediaItemType.video;
+			}
+			fileURL = uri.toString();
+			this.refreshElements();
+		}
+		
+	}
 	
 	
 	}
