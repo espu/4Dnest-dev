@@ -1,37 +1,40 @@
 package org.fourdnest.androidclient.ui;
 
-import org.fourdnest.androidclient.R;
-import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapView;
 
-import android.app.Activity;
+import java.util.Date;
+
+import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.Tag;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 
-public class ViewEggActivity extends Activity {
+public class ViewEggActivity extends NestSpecificActivity {
+	
+	private int eggID;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
+		Bundle startingExtras = getIntent().getExtras();
+		this.eggID = (Integer) startingExtras
+				.get(EggListOnClickListener.INTENT_EGG_ID);
+		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.egg_view);
-		
-		FrameLayout mediaView = (FrameLayout) findViewById(R.id.media_view);
-		
-		LayoutInflater inflater = LayoutInflater.from(mediaView.getContext());
 		
 		//TODO: Inflate based on egg type
-		View view = inflater.inflate(R.layout.egg_element_large, mediaView, false);
 
-		mediaView.addView(view);
-		
-		
+//		FrameLayout mediaView = (FrameLayout) findViewById(R.id.media_view);
+//		LayoutInflater inflater = LayoutInflater.from(mediaView.getContext());
+//		View view = inflater.inflate(R.layout.egg_element_large, mediaView, false);
+//		mediaView.addView(view);
 
 	}
 	
@@ -68,6 +71,32 @@ public class ViewEggActivity extends Activity {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public View getContentLayout(View view) {
+		Egg egg = super.application.getStreamEggManager().getEgg(eggID);
+
+		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
+		TextView message = (TextView) view.findViewById(R.id.message);
+		TextView tags = (TextView) view.findViewById(R.id.tags);
+
+		timestamp.setText(new Date(egg.getLastUpload()).toString());
+		message.setText(egg.getCaption());
+		if (!egg.getTags().isEmpty()) {
+			String tagList = "";
+			for (Tag current : egg.getTags()) {
+				tagList += current.toString();
+			}
+			tags.setText(tagList);
+		}
+
+		return view;
+	}
+
+	@Override
+	public int getLayoutId() {
+		return R.layout.egg_view;
 	}
 
 }

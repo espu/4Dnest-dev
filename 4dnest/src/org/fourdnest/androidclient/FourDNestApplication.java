@@ -2,6 +2,8 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.TagSuggestionService;
@@ -30,9 +32,9 @@ public class FourDNestApplication extends Application
 	private SharedPreferences prefs;
 	private NestManager nestManager;
 	
-	private final String draftEggManagerRole = "draft";
+	private static final String draftEggManagerRole = "draft";
 	private EggManager draftEggManager;
-	private final String streamEggManagerRole = "stream";
+	private static final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
 	private Handler handler;
@@ -41,27 +43,29 @@ public class FourDNestApplication extends Application
 	
 	@Override
 	public void onCreate() {
-	  super.onCreate();
-	  this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	  this.prefs.registerOnSharedPreferenceChangeListener(this);	  
-	  // For debugging, insert default Nest and settings
-	  Nest nest = this.getNestManager().getNest(NEST_ID);
-	  if(nest == null) {
-		  Nest defaultNest = this.getDefaultNest();
-		  this.getNestManager().saveNest(defaultNest);
-		  this.setCurrentNestId(defaultNest.getId());
-		  
-		  this.prefs.edit()
-		  	.putString("nest_base_uri", defaultNest.getBaseURI().toString())
-		  	.putString("nest_username", defaultNest.getUserName())
-		  	.putString("nest_password", defaultNest.getSecretKey())
-		  	.commit();
-	  } else {
-		  this.setCurrentNestId(nest.getId());
+		super.onCreate();
+		synchronized(this) {
+			this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			this.prefs.registerOnSharedPreferenceChangeListener(this);	  
+			// For debugging, insert default Nest and settings
+			Nest nest = this.getNestManager().getNest(NEST_ID);
+			if(nest == null) {
+				Nest defaultNest = this.getDefaultNest();
+				this.getNestManager().saveNest(defaultNest);
+				this.setCurrentNestId(defaultNest.getId());
+
+				this.prefs.edit()
+				.putString("nest_base_uri", defaultNest.getBaseURI().toString())
+				.putString("nest_username", defaultNest.getUserName())
+				.putString("nest_password", defaultNest.getSecretKey())
+				.commit();
+			} else {
+				this.setCurrentNestId(nest.getId());
+			}
+
+			// Init handler
+			this.handler = new Handler();
 	  }
-	  
-	  // Init handler
-	  this.handler = new Handler();
 	  
 	  app = this;
 	  Log.i(TAG, "onCreated");
@@ -108,6 +112,17 @@ public class FourDNestApplication extends Application
 	public EggManager getStreamEggManager() {
 		if(this.streamEggManager == null) {
 			this.streamEggManager = new EggManager(this, this.streamEggManagerRole);
+			this.streamEggManager.deleteAllEggs();
+			//TODO: Remove when proper StreamReaderService is implemented.
+			//For now, just load eggs from stream when manager is first created
+			List<Egg> eggs = this.getCurrentNest().getProtocol().getStream();
+			
+			for(int i = 0; i < eggs.size() && i < 4; i++) {
+				Egg e = eggs.get(i);
+				if(e != null) {
+					this.streamEggManager.saveEgg(e);
+				}
+			}
 		}
 		return this.streamEggManager;
 	}
@@ -236,6 +251,14 @@ public class FourDNestApplication extends Application
 	 */
 	public synchronized boolean getAllowAllCerts() {
 		return this.prefs.getBoolean("nest_accept_all_certs", true);
+	}
+	
+	/**
+	 * Is kiosk mode enabled?
+	 * @return boolean setting value, default true
+	 */
+	public synchronized boolean getKioskModeEnabled() {		
+		return this.prefs.getBoolean("kiosk_mode", false);
 	}
 	
 	/**

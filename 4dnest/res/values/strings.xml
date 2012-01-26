@@ -31,11 +31,11 @@
     <string name="setup_manual">Fill in by Hand</string>
     <string name="egg_queued">Egg queued</string>
     <string name="egg_send_complete">Send completed</string>
-    <string name="gps_track_on">GPS tracking started</string>
-    <string name="gps_track_off">GPS tracking disabled</string>
-    <string name="gps_track_statusbar_title">4DNest</string>
-    <string name="gps_track_statusbar_text">Route tracking active</string>
-    <string name="gps_track_gps_disabled">GPS disable, please enable to track</string>
+    <string name="gps_notification_on">GPS tracking started</string>
+    <string name="gps_notification_off">GPS tracking disabled</string>
+    <string name="gps_statusbar_title">4DNest</string>
+    <string name="gps_statusbar_tracking_active">Route tracking active</string>
+    <string name="gps_error_gps_disabled">GPS disabled, please enable to track</string>
     <string name="add_tag_button">Add tag</string>
     <string name="new_egg_intent_select_picture">Select Picture</string>
     <string name="new_egg_intent_image_description">Image captured for 4D Nest</string>
@@ -53,5 +53,6 @@
 	<string name="prefs_nest_password_descr">Password</string>
 	<string name="prefs_nest_accept_all_certs_title">Accept all SSL certs</string>
 	<string name="prefs_nest_accept_all_certs_descr">Accept all SSL certificates even if they have been self-signed</string>
-	
+	<string name="pref_kiosk_title">Kiosk Mode</string>
+	<string name="change_nest_prompt">Change</string>
 </resources>

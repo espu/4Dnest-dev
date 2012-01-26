@@ -36,6 +36,13 @@ public class TaggingTool extends LinearLayout {
 	/** Tag string used to indicate source in logging */	
 	public static final String TAG = TaggingTool.class.getSimpleName();
 	
+	/** Text size for tag checkboxes */
+	public static final float TEXT_SIZE = 12;
+	/** Color to multiply the old background color with, when checkbox is selected */
+	public static final int COLOR_SELECTED_MUL = 0xFF000000; // set to zero/black
+	/** Color to add to the multiplied old background color, when checkbox is selected */ 
+	public static final int COLOR_SELECTED_ADD = 0xFF00FF00; // add green 
+	
 	private static final InputFilter[] tagFilter = { new Tag.TagFilter() };
 	
 	private List<TagCheckBox> buttons;
@@ -142,6 +149,7 @@ public class TaggingTool extends LinearLayout {
 	}
 
 	/**
+	 * Returns a list of only those tags that have been selected by the user.
 	 * @return a list of all checked tags.
 	 */
 	public List<Tag> getCheckedTags() {
@@ -164,16 +172,18 @@ public class TaggingTool extends LinearLayout {
 			this.tag = tag;
 			this.setBackgroundResource(R.drawable.tagcheckbox);
 			this.setTextColor(Color.BLACK);
-			this.setTextSize(12);
+			this.setTextSize(TEXT_SIZE);
 			this.setSingleLine(true);
 			this.setEllipsize(TruncateAt.END);
 			this.setText(tag.getName());
-			this.setHeight(60);
+			this.setHeight(60);	//FIXME these are raw pixels. Find a way to use density invariant pixels (dp) instead
 			this.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
 					if(isChecked) {
 						//FIXME define colors
-						button.getBackground().setColorFilter(new LightingColorFilter(0xFF000000, 0xFF00FF00));
+						button.getBackground().setColorFilter(
+								new LightingColorFilter(COLOR_SELECTED_MUL, COLOR_SELECTED_ADD)
+						);
 					} else {
 						button.getBackground().setColorFilter(null);
 					}
