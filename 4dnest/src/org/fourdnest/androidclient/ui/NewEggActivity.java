@@ -95,8 +95,19 @@ public class NewEggActivity extends NestSpecificActivity{
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
 		{
-		currentEggID = extras.getString("eggID");
-		fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
+			/*
+			 * I really don't want NULL pointer exceptions. 
+			 */
+			if(extras.containsKey("eggID")){
+				currentEggID = extras.getString("eggID");
+				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
+			}
+			if(extras.containsKey("pictureURL")){
+				fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
+			}
+		}
+		if (!currentEggID.equals("0")){
+			
 		}
 		
 		this.kioskMode = super.application.getKioskModeEnabled();
@@ -121,10 +132,9 @@ public class NewEggActivity extends NestSpecificActivity{
             	
             	if(currentMediaItem==mediaItemType.image){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "image/*");
-
             	}
             	else if(currentMediaItem==mediaItemType.audio){
-            	i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
+            		i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
             	}
             	else if(currentMediaItem==mediaItemType.video){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
@@ -152,7 +162,6 @@ public class NewEggActivity extends NestSpecificActivity{
 				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
-				
 				
 				// Go to ListStreamActivity after finishing
 				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
