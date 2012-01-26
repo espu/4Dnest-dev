@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -36,7 +37,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public View getContentLayout(View view) {
-
 		initializeTrackButton(view,
 				(ToggleButton) view.findViewById(R.id.route_tracker_button));
 
