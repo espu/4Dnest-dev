@@ -32,5 +32,9 @@ public class SendQueueTestProtocol implements Protocol {
 	public boolean getMediaFile(String uri, String localPath) {
 		return false;
 	}
+	
+	public ProtocolResult overwriteEgg(Egg egg) {
+		return new ProtocolResult(null, 200);
+	}
 }
 

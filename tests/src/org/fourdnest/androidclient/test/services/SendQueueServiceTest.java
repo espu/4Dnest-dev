@@ -21,7 +21,6 @@ import android.test.ServiceTestCase;
 
 /**
  * Tests the send queue service.
- * @author gronsti
  */
 public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
 	
@@ -29,7 +28,7 @@ public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
 	public SendQueueServiceTest() {
 		super(SendQueueService.class);
 	}
-	
+	/*
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -60,7 +59,7 @@ public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
         startIntent.setClass(getContext(), SendQueueService.class);
         IBinder service = bindService(startIntent);
     }
-
+	*/
 	/*
 	private NestManager testNestManager;
 	private SendQueueService service;

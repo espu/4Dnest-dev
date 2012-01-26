@@ -6,13 +6,9 @@
     android:orientation="vertical" >
 
     <FrameLayout
-        android:id="@+id/nest_view"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-    <FrameLayout
-        android:id="@+id/content_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent" 
+        android:id="@+id/setup_view">
+    </FrameLayout>
 
 </LinearLayout>
