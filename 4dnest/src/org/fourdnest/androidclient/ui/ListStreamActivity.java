@@ -44,7 +44,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		initializeStreamList(this.streamManager,
 				(ListView) view.findViewById(R.id.egg_list));
-
 		return view;
 
 	}
@@ -54,15 +53,15 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 * 
 	 * @param manager
 	 *            The Egg manager responsible for fetching the right Eggs
-	 * @param streamList
+	 * @param streamListView
 	 *            Reference to the ListView that is responsible for displaying
 	 *            the Stream Listing
 	 */
-	private void initializeStreamList(EggManager manager, ListView streamList) {
-		EggAdapter adapter = new EggAdapter(streamList,
+	private void initializeStreamList(EggManager manager, ListView streamListView) {
+		EggAdapter adapter = new EggAdapter(streamListView,
 				R.layout.egg_element_large, manager.listEggs());
-		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new EggListOnClickListener(streamList));
+		streamListView.setAdapter(adapter);
+		streamListView.setOnItemClickListener(new EggItemOnClickListener(streamListView));
 	}
 
 	/**
