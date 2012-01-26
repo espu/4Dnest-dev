@@ -62,6 +62,8 @@
 	<string name="prefs_nest_accept_all_certs_offdescr">Only valid certificates are allowed</string>
 	<string name="prefs_nest_accept_all_certs_ondescr">All certificates are allowed</string>
 	<string name="pref_kiosk_title">Kiosk Mode</string>
+	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
+	<string name="pref_kiosk_descr_off">Kiosk mode off</string>
 	<string name="change_nest_prompt">Change</string>
 	<string name="send_all_drafts_button_text">Send All Drafts</string>
 	<string name="default_no_date">No Date</string>
