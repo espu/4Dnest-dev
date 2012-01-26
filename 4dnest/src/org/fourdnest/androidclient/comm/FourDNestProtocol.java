@@ -24,6 +24,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
@@ -34,10 +35,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.lang.Character.UnicodeBlock;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -130,20 +135,19 @@ public class FourDNestProtocol implements Protocol {
 		}
 		HttpClient client = CommUtils.createHttpClient();
 		HttpPut request = new HttpPut(this.nest.getBaseURI()
-				+ EGG_DOWNLOAD_PATH + egg.getExternalId());
+				+ EGG_DOWNLOAD_PATH + egg.getExternalId() +"/");
 		Log.d("OVERURI", request.getURI().getPath());
 		String metadata = eggToJSONstring(egg);
 
-		// Create list of NameValuePairs
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("data", metadata));
 		String metadataMd5 = CommUtils.md5FromString(metadata);
 		String multipartMd5String = CommUtils.md5FromString(metadataMd5);
 		multipartMd5String = new String(Base64.encodeBase64(multipartMd5String
 				.getBytes()));
 		int status = 0;
 		try {
-			request.setEntity(CommUtils.createEntity(pairs));
+		    StringEntity se = new StringEntity(metadata, HTTP.UTF_8);
+			request.addHeader("Content-Type", "application/json");
+			request.setEntity(se);
 			addAuthentication(request, multipartMd5String);
 			HttpResponse response = client.execute(request);
 			status = response.getStatusLine().getStatusCode();
@@ -456,7 +460,17 @@ public class FourDNestProtocol implements Protocol {
 			} catch (JSONException e) {
 				// No tags
 			}
-			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, tags, 0);
+			String dateStr = js.getString("created");
+			Log.d("DATESTR", dateStr);
+			DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss"));
+			Date date;
+            try {
+                date = (Date) formatter.parse(dateStr);
+            } catch (ParseException e) {
+               Log.e(TAG, "Failed to parse date");
+               date = null;
+            }
+			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, tags, 0, date);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			return egg;

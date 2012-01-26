@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -44,7 +45,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		
 		e = this.eggManager.saveEgg(e);
@@ -66,7 +68,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		Egg e2 = e;
 		
@@ -92,7 +95,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionForEgg",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e1 = this.eggManager.saveEgg(e1);
 		
@@ -104,7 +108,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionToo!",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		
@@ -116,7 +121,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			null,
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e3 = this.eggManager.saveEgg(e3);
 		
@@ -140,7 +146,8 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now
+				now,
+				new Date()
 		);
 		e1 = this.eggManager.saveEgg(e1);
 		
@@ -165,7 +172,8 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now
+				now,
+				new Date()
 		);
 		e1 = this.eggManager.saveEgg(e1);
 			
@@ -177,7 +185,8 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionToo!",
 				tags,
-				now
+				now,
+				new Date()
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		
