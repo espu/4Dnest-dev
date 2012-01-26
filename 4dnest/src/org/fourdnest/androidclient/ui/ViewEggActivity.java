@@ -24,7 +24,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		
 		Bundle startingExtras = getIntent().getExtras();
 		this.eggID = (Integer) startingExtras
-				.get(ListStreamActivity.INTENT_EGG_ID);
+				.get(EggListOnClickListener.INTENT_EGG_ID);
 		
 		super.onCreate(savedInstanceState);
 		

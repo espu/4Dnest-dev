@@ -14,8 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ToggleButton;
@@ -26,7 +24,6 @@ import android.widget.ToggleButton;
  * toggling route tracking.
  */
 public class ListStreamActivity extends NestSpecificActivity {
-	public static final String INTENT_EGG_ID = "INTENT_EGG_ID";
 	public static final String PREFS_NAME = "ourPrefsFile";
 	private EggManager streamManager;
 
@@ -65,7 +62,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 		EggAdapter adapter = new EggAdapter(streamList,
 				R.layout.egg_element_large, manager.listEggs());
 		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new StreamListOnClickListener(streamList));
+		streamList.setOnItemClickListener(new EggListOnClickListener(streamList));
 	}
 
 	/**
@@ -175,24 +172,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public void setNestSpecificOnClickListener(Button nestButton) {
 		return;
-	}
-
-	private class StreamListOnClickListener implements OnItemClickListener {
-
-		private ListView streamList;
-
-		public StreamListOnClickListener(ListView streamList) {
-			this.streamList = streamList;
-		}
-
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			Intent intent = new Intent(arg1.getContext(), ViewEggActivity.class);
-			intent.putExtra(INTENT_EGG_ID, ((EggAdapter)streamList.getAdapter()).getItem(arg2).getId());
-			arg0.getContext().startActivity(intent);
-
-		}
-
 	}
 
 }
