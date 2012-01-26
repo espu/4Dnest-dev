@@ -22,7 +22,7 @@ public class MapTest extends AndroidTestCase {
 
 	@Test
 	public void testGetMediaFile() throws Exception {
-		boolean val = (new OsmStaticMapGetter().getStaticMap(Uri.parse("/sdcard/test2.png"), null));
+		boolean val = (new OsmStaticMapGetter().getStaticMap(null));
 		assertTrue(val);
 	}
 
