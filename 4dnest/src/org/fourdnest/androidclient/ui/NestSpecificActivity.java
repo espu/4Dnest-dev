@@ -9,6 +9,7 @@ import org.fourdnest.androidclient.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +29,7 @@ import android.widget.TextView;
  */
 public abstract class NestSpecificActivity extends Activity {
 
-	protected ViewGroup contentView;
+	protected ViewGroup contentLayout;
 	protected FourDNestApplication application;
 
 	/** Called when the activity is first created. */
@@ -41,11 +42,11 @@ public abstract class NestSpecificActivity extends Activity {
 
 		inflateNestView();
 
-		this.contentView = (FrameLayout) findViewById(R.id.content_view);
+		this.contentLayout = (FrameLayout) findViewById(R.id.content_view);
 
-		LayoutInflater inflater = LayoutInflater.from(contentView.getContext());
-		View view = inflater.inflate(getLayoutId(), contentView, false);
-		contentView.addView(getContentLayout(view));
+		LayoutInflater inflater = LayoutInflater.from(contentLayout.getContext());
+		View view = inflater.inflate(getLayoutId(), contentLayout, false);
+		contentLayout.addView(getContentLayout(view));
 	}
 
 	/** Called when the activity is resumed. */
@@ -78,10 +79,8 @@ public abstract class NestSpecificActivity extends Activity {
 	 * depending on kiosk settings.
 	 */
 	private void inflateNestView() {
-
 		String nestName = this.application.getCurrentNest().getName();
 		Button nestButton;
-
 		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
 		nestView.removeAllViews();
 		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
@@ -90,7 +89,7 @@ public abstract class NestSpecificActivity extends Activity {
 		nestButton.setText(nestName);
 
 		if (this.application.getKioskModeEnabled()) {
-			nestButton.setClickable(false);
+			nestButton.setVisibility(View.GONE);
 		} else {
 			setNestSpecificOnClickListener(nestButton);
 			List<Nest> nests = this.application.getNestManager().listNests();

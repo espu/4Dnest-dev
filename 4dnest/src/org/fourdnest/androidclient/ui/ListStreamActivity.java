@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -13,8 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ToggleButton;
@@ -38,7 +37,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	@Override
 	public View getContentLayout(View view) {
-
 		initializeTrackButton(view,
 				(ToggleButton) view.findViewById(R.id.route_tracker_button));
 
@@ -46,7 +44,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		initializeStreamList(this.streamManager,
 				(ListView) view.findViewById(R.id.egg_list));
-
 		return view;
 
 	}
@@ -56,23 +53,15 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 * 
 	 * @param manager
 	 *            The Egg manager responsible for fetching the right Eggs
-	 * @param streamList
+	 * @param streamListView
 	 *            Reference to the ListView that is responsible for displaying
 	 *            the Stream Listing
 	 */
-	private void initializeStreamList(EggManager manager, ListView streamList) {
-		EggAdapter adapter = new EggAdapter(streamList, R.layout.egg_element_large, manager.listEggs());
-		streamList.setAdapter(adapter);
-		streamList.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(arg1.getContext(),
-						ViewEggActivity.class);
-				arg0.getContext().startActivity(intent);
-
-			}
-		});
+	private void initializeStreamList(EggManager manager, ListView streamListView) {
+		EggAdapter adapter = new EggAdapter(streamListView,
+				R.layout.egg_element_large, manager.listEggs());
+		streamListView.setAdapter(adapter);
+		streamListView.setOnItemClickListener(new EggItemOnClickListener(streamListView));
 	}
 
 	/**

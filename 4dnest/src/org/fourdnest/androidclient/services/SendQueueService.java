@@ -4,12 +4,17 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.comm.ProtocolResult;
+import org.fourdnest.androidclient.ui.ListStreamActivity;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 /**
@@ -29,6 +34,7 @@ public class SendQueueService extends IntentService {
 	
 	/** Internal Handler for displaying Toast after job completes */
 	private Handler handler;
+	private NotificationManager notificationManager;
 	
 	/**
 	 * Constructor, simply calls super. Never used explicitly in user code.
@@ -51,6 +57,8 @@ public class SendQueueService extends IntentService {
 	@Override
 	public void onCreate() {
 		this.handler = new Handler();
+		this.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		
 		super.onCreate();
 	}
 	
@@ -94,6 +102,21 @@ public class SendQueueService extends IntentService {
 		// If Intent it categorized as egg-sending intent, act accordingly 
 		if(intent.hasCategory(SEND_EGG)) {			
 			FourDNestApplication app = (FourDNestApplication) this.getApplication();
+			
+			Notification notification = new Notification(R.drawable.icon, getText(R.string.egg_queued), System.currentTimeMillis());
+
+			// Prepare intent to start desired activity when notification is clicked
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
+
+	        // Set status bar info
+	        notification.setLatestEventInfo(this, getText(R.string.sendqueue_statusbar_title), getText(R.string.egg_queued), contentIntent);
+
+	        // Start service in foreground, checking for null to avoid Android testing bug
+	        if(getSystemService(ACTIVITY_SERVICE) != null) {
+	        	this.startForeground(R.string.egg_queued, notification);
+	        }
+			
+			
 			
 			// Get Egg id from Intent, fetch the Egg from db
 			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
