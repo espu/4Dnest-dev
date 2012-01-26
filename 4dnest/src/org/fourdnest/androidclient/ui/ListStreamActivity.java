@@ -163,7 +163,10 @@ public class ListStreamActivity extends NestSpecificActivity {
 		case R.id.menu_stream_nests:
 			return true;
 		case R.id.menu_stream_drafts:
+            startActivity(new Intent(this, ListDraftEggsActivity.class));
 			return true;
+        case R.id.menu_stream_refresh:
+            return true;
 		}
 		return false;
 	}
