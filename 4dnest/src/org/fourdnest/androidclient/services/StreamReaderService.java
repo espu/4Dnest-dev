@@ -81,7 +81,7 @@ public class StreamReaderService extends IntentService {
         if (intent.hasCategory(READ_STREAM)) {
             EggManager em = app.getStreamEggManager();
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream();
-            Log.d(TAG, "Loaded eggs");
+            Log.d(TAG, "Egglist size: " + eggList.size());
             for (int i = 0; i < eggList.size(); i++) {
                 em.saveEgg(eggList.get(i));
                 String thumbnailUri = app.getCurrentNest().getBaseURI()
@@ -93,7 +93,11 @@ public class StreamReaderService extends IntentService {
                 }
                 String saveLocation = thumbnail_dir + "/" + eggList.get(i).getExternalId() + ".jpg";
                 Log.d("SAVELOC", saveLocation);
-                app.getCurrentNest().getProtocol().getMediaFile(thumbnailUri, saveLocation);
+                if (app.getCurrentNest().getProtocol().getMediaFile(thumbnailUri, saveLocation)) {
+                    Log.d(TAG, "Egg written succesfully");
+                }else {
+                    Log.d(TAG, "Egg failed to write");
+                }
             }
             Log.d(TAG, "Saved eggs");
             List<Egg> eggs = em.listEggs();
