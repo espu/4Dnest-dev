@@ -65,4 +65,5 @@
 	<string name="default_no_date">No Date</string>
 	<string name="default_no_message">No Message</string>
 	<string name="default_no_tags">No Tags</string>
+    <string name="menu_refresh">Refresh</string>
 </resources>
