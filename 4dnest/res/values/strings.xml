@@ -55,4 +55,8 @@
 	<string name="prefs_nest_accept_all_certs_descr">Accept all SSL certificates even if they have been self-signed</string>
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="change_nest_prompt">Change</string>
+	<string name="send_all_drafts_button_text">Send All Drafts</string>
+	<string name="default_no_date">No Date</string>
+	<string name="default_no_message">No Message</string>
+	<string name="default_no_tags">No Tags</string>
 </resources>

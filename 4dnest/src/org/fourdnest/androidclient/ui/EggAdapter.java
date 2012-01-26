@@ -53,6 +53,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		super(parent.getContext(), resourceId, objects);
 		this.resourceId = resourceId;
 		this.parent = parent;
+		this.setNotifyOnChange(true);
 	}
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
