@@ -1,6 +1,8 @@
 package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.R;
+import org.mapsforge.android.maps.MapActivity;
+import org.mapsforge.android.maps.MapView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,6 +30,8 @@ public class ViewEggActivity extends Activity {
 		View view = inflater.inflate(R.layout.egg_element_large, mediaView, false);
 
 		mediaView.addView(view);
+		
+		
 
 	}
 	

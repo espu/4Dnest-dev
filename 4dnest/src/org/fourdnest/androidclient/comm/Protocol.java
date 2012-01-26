@@ -6,8 +6,6 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 
-import android.content.Context;
-
 
 public interface Protocol {
     
