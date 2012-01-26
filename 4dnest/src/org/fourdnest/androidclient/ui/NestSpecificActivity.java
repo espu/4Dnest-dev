@@ -89,7 +89,7 @@ public abstract class NestSpecificActivity extends Activity {
 		nestButton.setText(nestName);
 
 		if (this.application.getKioskModeEnabled()) {
-			nestButton.setClickable(false);
+			nestButton.setVisibility(View.GONE);
 		} else {
 			setNestSpecificOnClickListener(nestButton);
 			List<Nest> nests = this.application.getNestManager().listNests();
