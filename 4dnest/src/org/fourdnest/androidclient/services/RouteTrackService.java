@@ -24,12 +24,24 @@ import android.widget.Toast;
 
 public class RouteTrackService extends Service implements LocationListener {
 	
-	private List<Location> locationCache;
-	private LocationManager locationManager;
-	private String provider = "gps"; // Fixed provider
 	
-	private int NOTE_ON = R.string.gps_track_on;
-	private int NOTE_OFF = R.string.gps_track_off;
+	public static boolean isTracking = false;
+	/**
+	 * Location cache for received locations
+	 */
+	private List<Location> locationCache;
+	
+	/**
+	 * Location manager to access location info
+	 */
+	private LocationManager locationManager;
+	
+	/**
+	 * Task bar notification
+	 */
+	private Notification notification;
+	
+	private String provider = "gps"; // Fixed provider
 	
 	private final String TAG = RouteTrackService.class.getSimpleName();
 	private final int LOCATION_MIN_DELAY = 1000; // ms
@@ -43,7 +55,6 @@ public class RouteTrackService extends Service implements LocationListener {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
-		
 		
 		this.locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         this.locationManager.requestLocationUpdates(
@@ -63,24 +74,23 @@ public class RouteTrackService extends Service implements LocationListener {
 		if(this.locationManager.getProvider(this.provider) == null ||
 			!this.locationManager.getProviders(true).contains(this.provider)) {
 
-			Toast.makeText(this.getApplicationContext(), getText(R.string.gps_track_gps_disabled), Toast.LENGTH_LONG);
+			Toast.makeText(this.getApplicationContext(), getText(R.string.gps_notification_on), Toast.LENGTH_LONG);
 			Log.d(TAG, "No location provider, stopping");
 			
 			stopSelf();
 		}
 		
-		
 		// Prepare notification message for status bar
-		Notification notification = new Notification(R.drawable.icon, getText(this.NOTE_ON), System.currentTimeMillis());
+		this.notification = new Notification(R.drawable.icon, getText(R.string.gps_notification_on), System.currentTimeMillis());
 
 		// Prepare intent to start desired activity when notification is clicked
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
 
         // Set status bar info
-        notification.setLatestEventInfo(this, getText(R.string.gps_track_statusbar_title), getText(R.string.gps_track_statusbar_text), contentIntent);
+        notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_statusbar_tracking_active), contentIntent);
 
         // Start service in foreground
-        this.startForeground(this.NOTE_ON, notification);
+        this.startForeground(R.string.gps_notification_on, notification);
         
         // Run until explicitly stopped
         return START_STICKY;
@@ -104,6 +114,8 @@ public class RouteTrackService extends Service implements LocationListener {
 		// Tell the user we stopped.
 	    //Toast.makeText(this, this.NOTE_OFF, Toast.LENGTH_SHORT).show();	    
 		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+		
+		RouteTrackService.isTracking = false;
 	}
 
 	public void onLocationChanged(Location location) {
@@ -129,6 +141,5 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onStatusChanged");
 		Toast.makeText(this, "onStatusChanged: " + provider, Toast.LENGTH_SHORT);
 	}
-	
 
 }

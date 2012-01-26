@@ -29,10 +29,10 @@ public class FourDNestApplication extends Application
 	private SharedPreferences prefs;
 	private NestManager nestManager;
 	
-	private final String draftEggManagerRole = "draft";
+	private static final String draftEggManagerRole = "draft";
 	private EggManager draftEggManager;
-	
-	private final String streamEggManagerRole = "stream";
+
+	private static final String streamEggManagerRole = "stream";
 	private EggManager streamEggManager;
 	
 	private static FourDNestApplication app;
@@ -181,6 +181,14 @@ public class FourDNestApplication extends Application
 	 */
 	public synchronized boolean getAllowAllCerts() {
 		return this.prefs.getBoolean("allow_all_certs", true);
+	}
+	
+	/**
+	 * Is kiosk mode enabled?
+	 * @return boolean setting value, default true
+	 */
+	public synchronized boolean getKioskModeEnabled() {		
+		return this.prefs.getBoolean("kiosk_mode", false);
 	}
 	
 	/**

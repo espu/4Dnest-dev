@@ -34,6 +34,8 @@ public class EggManagerTest extends AndroidTestCase {
 	public void testSaveAndGetEgg() {
 		long now = System.currentTimeMillis();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag("tag1"));
+		tags.add(new Tag("tagi toinen"));
 		Egg e = new Egg(
 			null,
 			1,
@@ -140,14 +142,14 @@ public class EggManagerTest extends AndroidTestCase {
 				tags,
 				now
 		);
-		this.eggManager.saveEgg(e1);
+		e1 = this.eggManager.saveEgg(e1);
 		
 		// Check that 1 nest is deleted
-		int result = this.eggManager.deleteEgg(0);
+		int result = this.eggManager.deleteEgg(e1.getId());
 		assertEquals(1, result);
 		
 		// Check that nest with that id no longer exists
-		Egg e = this.eggManager.getEgg(0);
+		Egg e = this.eggManager.getEgg(e1.getId());
 		assertNull(e);
 	}
 	

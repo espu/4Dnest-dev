@@ -68,6 +68,8 @@ public class FourDNestProtocol implements Protocol {
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 	private static final int CONNECTION_TIMEOUT = 15000;
+	private static final int HTTP_PORT = 80;
+	private static final int HTTPS_PORT = 443;
 	private Nest nest;
 
 	public FourDNestProtocol() {
@@ -231,7 +233,7 @@ public class FourDNestProtocol implements Protocol {
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         // http scheme
         schemeRegistry.register(new Scheme("http", PlainSocketFactory
-                .getSocketFactory(), 80));
+                .getSocketFactory(), HTTP_PORT));
         FourDNestApplication app = FourDNestApplication.getApplication();
         boolean aac;
         if (app == null) {
@@ -243,10 +245,10 @@ public class FourDNestProtocol implements Protocol {
         if (aac) {
 			// https scheme, all certs allowed
 			schemeRegistry.register(new Scheme("https",
-					new EasySSLSocketFactory(), 443));
+					new EasySSLSocketFactory(), HTTPS_PORT));
 		}else {
 			// doesn't allow all certs
-			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT));
 		}
 		HttpParams params = new BasicHttpParams();
         params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
@@ -278,16 +280,16 @@ public class FourDNestProtocol implements Protocol {
 			return tags;
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch tags: UriSyntaxException");
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch tags: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch tags: IoException");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch tags: JSONException");
 		}
         return new ArrayList<Tag>();
     }
@@ -321,19 +323,19 @@ public class FourDNestProtocol implements Protocol {
 	    	return jSONObjectToEgg(js);
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Failed to fetch egg: IllegalStateException");
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch egg: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch egg: IOException");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch egg: JSONException");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Log.e(TAG, "Failed to fetch egg: UriSyntaxException");
 		}
     	return null;
     }
@@ -464,13 +466,12 @@ public class FourDNestProtocol implements Protocol {
 			temp.put("caption", egg.getCaption());
 			JSONArray tags = new JSONArray();
             for (int i = 0; i<egg.getTags().size(); i++) {
-                tags.put(new String(egg.getTags().get(i).getName()));
+                tags.put(egg.getTags().get(i).getName());
             }
             temp.put("tags", tags);
 			return temp.toString();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Failed to convert egg to JSON: JSONException");
 		}
     	return "";
     }
