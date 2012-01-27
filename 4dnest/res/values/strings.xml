@@ -55,4 +55,8 @@
 	<string name="prefs_nest_accept_all_certs_descr">Accept all SSL certificates even if they have been self-signed</string>
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="change_nest_prompt">Change</string>
+	<string name="stream_update_frequency_title">Stream Update</string>
+	<string name="stream_update_frequency_descr">How often the Stream is fetched from the server in seconds</string>
+	<string name="stream_size_title">Stream size</string>
+	<string name="stream_size_descr">How many objects are fetched from the stream</string>
 </resources>
