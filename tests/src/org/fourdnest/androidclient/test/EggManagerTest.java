@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -34,6 +35,8 @@ public class EggManagerTest extends AndroidTestCase {
 	public void testSaveAndGetEgg() {
 		long now = System.currentTimeMillis();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag("tag1"));
+		tags.add(new Tag("tagi toinen"));
 		Egg e = new Egg(
 			null,
 			1,
@@ -42,7 +45,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		
 		e = this.eggManager.saveEgg(e);
@@ -64,7 +68,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		Egg e2 = e;
 		
@@ -90,7 +95,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionForEgg",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e1 = this.eggManager.saveEgg(e1);
 		
@@ -102,7 +108,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionToo!",
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		
@@ -114,7 +121,8 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			null,
 			tags,
-			now
+			now,
+			new Date()
 		);
 		e3 = this.eggManager.saveEgg(e3);
 		
@@ -138,16 +146,17 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now
+				now,
+				new Date()
 		);
-		this.eggManager.saveEgg(e1);
+		e1 = this.eggManager.saveEgg(e1);
 		
 		// Check that 1 nest is deleted
-		int result = this.eggManager.deleteEgg(0);
+		int result = this.eggManager.deleteEgg(e1.getId());
 		assertEquals(1, result);
 		
 		// Check that nest with that id no longer exists
-		Egg e = this.eggManager.getEgg(0);
+		Egg e = this.eggManager.getEgg(e1.getId());
 		assertNull(e);
 	}
 	
@@ -163,7 +172,8 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now
+				now,
+				new Date()
 		);
 		e1 = this.eggManager.saveEgg(e1);
 			
@@ -175,7 +185,8 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionToo!",
 				tags,
-				now
+				now,
+				new Date()
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		

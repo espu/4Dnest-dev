@@ -6,7 +6,6 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 
-import android.content.Context;
 
 /**
  * Interface for communications protocols. Protocol objects are created by

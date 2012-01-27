@@ -4,14 +4,15 @@ import java.io.File;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,12 +23,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 public class NewEggActivity extends NestSpecificActivity{
 
@@ -48,12 +48,14 @@ public class NewEggActivity extends NestSpecificActivity{
 	private enum mediaItemType{
 		none, image, video, audio, multiple //note that multiple is currently not used
 	}
-	private mediaItemType currentMediaItem = mediaItemType.none;
-	private static final int SELECT_PICTURE = 1; //this is needed for selecting picture
-	private static final int SELECT_AUDIO = 2;
-	private static final int SELECT_VIDEO = 3;
+	protected mediaItemType currentMediaItem = mediaItemType.none;
+	protected static final int SELECT_PICTURE = 1; //this is needed for selecting picture
+	protected static final int SELECT_AUDIO = 2;
+	protected static final int SELECT_VIDEO = 3;
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
+	protected static final int AUDIO_RECORER_REQUEST = 6;
+	protected String currentEggID = "0"; //0 if new egg
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -74,6 +76,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private RelativeLayout upperButtons;
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
+	private boolean kioskMode; //tells us what ever kiosk mode is on, set up in getContentLayout
 
 	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
@@ -88,9 +91,22 @@ public class NewEggActivity extends NestSpecificActivity{
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
 		{
-		fileURL = extras.getString("pictureURL");
+			/*
+			 * I really don't want NULL pointer exceptions. 
+			 */
+			if(extras.containsKey("eggID")){
+				currentEggID = extras.getString("eggID");
+				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
+			}
+			if(extras.containsKey("pictureURL")){
+				fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
+			}
 		}
-
+		if (!currentEggID.equals("0")){
+			
+		}
+		
+		this.kioskMode = super.application.getKioskModeEnabled();
 		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
 		this.thumbNailView = (ImageView) view.findViewById(R.id.new_photo_egg_thumbnail_view);
 		/*
@@ -102,7 +118,6 @@ public class NewEggActivity extends NestSpecificActivity{
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
-            	System.out.println("picture url is: xzy  " +realFileURL);
             	Intent i = new Intent(Intent.ACTION_VIEW);
             	/*
             	 * Creates an intent for previewing media with correct type of media
@@ -113,10 +128,9 @@ public class NewEggActivity extends NestSpecificActivity{
             	
             	if(currentMediaItem==mediaItemType.image){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "image/*");
-
             	}
             	else if(currentMediaItem==mediaItemType.audio){
-            	i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
+            		i.setDataAndType(Uri.parse("file://"+realFileURL), "audio/*");
             	}
             	else if(currentMediaItem==mediaItemType.video){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
@@ -134,7 +148,7 @@ public class NewEggActivity extends NestSpecificActivity{
         Button sendButton = (Button) view.findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
-			public void onClick(View v) {				
+			public void onClick(View v) {		
 				//TODO: Proper implementation
 				Egg egg = new Egg();
 				egg.setAuthor("Saruman_The_White_42");
@@ -144,7 +158,6 @@ public class NewEggActivity extends NestSpecificActivity{
 				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
-				
 				
 				// Go to ListStreamActivity after finishing
 				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
@@ -161,17 +174,15 @@ public class NewEggActivity extends NestSpecificActivity{
     	((ImageButton) view.findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
-				// in onCreate or any event where your want the user to
-				// select a file
+				/*
+				 * If kiosk mode is enabled, open camera directly. Othervice 
+				 */
+				if (kioskMode){
+					startIntent(CAMERA_PIC_REQUEST);
+				}
+				else{
 				showDialog(DIALOG_ASK_IMAGE);
-				/*Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				intent.addCategory(Intent.CATEGORY_OPENABLE);
-				startActivityForResult(
-						Intent.createChooser(intent, "Select Picture"),
-						SELECT_PICTURE);
-			*/
+				}
 			}
 		});
     	
@@ -185,14 +196,12 @@ public class NewEggActivity extends NestSpecificActivity{
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
-    				Intent intent = new Intent();
-    				intent.setType("audio/*");
-    				intent.setAction(Intent.ACTION_GET_CONTENT);
-    				intent.addCategory(Intent.CATEGORY_OPENABLE);
-    				startActivityForResult(
-    						Intent.createChooser(intent, "Select Audio"),
-    						SELECT_AUDIO);
-
+    				if(kioskMode){
+    					startIntent(AUDIO_RECORER_REQUEST);
+    				}
+    				else{
+    					startIntent(SELECT_AUDIO);
+    				}
     			}
     		});
        	
@@ -205,6 +214,9 @@ public class NewEggActivity extends NestSpecificActivity{
        	((ImageButton) view.findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
+    				if(kioskMode){
+    					startIntent(CAMERA_VIDEO_REQUEST);
+    				}
     				// in onCreate or any event where your want the user to
     				// select a file
     				showDialog(DIALOG_ASK_VIDEO);
@@ -296,40 +308,17 @@ public class NewEggActivity extends NestSpecificActivity{
 	    Dialog dialog = null;
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE: //determines that this dialogue is used to determine what ever to open image camera or image gallery
-	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_photo_camera), getString(R.string.new_egg_dialogue_open_image_callery)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
+	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	builder.setTitle("Select Source");
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
-	    	    	if(item==1){ //this one means that user wants to open the image gallery
-	    	    		Intent intent = new Intent();
-	    	    		intent.setType("image/*");
-	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
-	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
-	    	    		startActivityForResult(
-							Intent.createChooser(intent, getString(R.string.new_egg_intent_select_picture)),	//the second argument is the title of intent
-							SELECT_PICTURE);
+	    	    	if(item==0){ //this one means that user wants to open the image gallery
+	    	    		startIntent(SELECT_PICTURE);
 	    	    	}
-	    	    	else if(item==0){ //this one means  that user wants to open the image camrea
+	    	    	else if(item==1){ //this one means  that user wants to open the image camera
 	    	    		//define the file-name to save photo taken by Camera activity
-	    	    		String fileName = "dpic.jpg"; //there is a string res for this but I decided not to use if for now 
-	    	    		//TODO:generate better filenames
-	    	    		//create parameters for Intent with filename
-	    	    		ContentValues values = new ContentValues();
-	    	    		values.put(MediaStore.Images.Media.TITLE, fileName);
-	    	    		values.put(MediaStore.Images.Media.DESCRIPTION, getString(R.string.new_egg_intent_image_description));
-	    	    		/*
-	    	    		 * We are going to save the Uri to the image before actually taking the picture.
-	    	    		 * This was the way used in the example, so far I haven't been able to find a better
-	    	    		 * way (but there has to be one, this cant be good)
-	    	    		 */
-	    	    		capturedImageURI = getContentResolver().insert(
-	    	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-	    	    		//create new Intent
-	    	    		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-	    	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageURI); //tell the intent where to store the file
-	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-	    	    		startActivityForResult(intent, CAMERA_PIC_REQUEST);
+	    	    		startIntent(CAMERA_PIC_REQUEST);
 	    	    	}
 	    	    }
 	    	});
@@ -337,27 +326,16 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	break;
 	    
 	    case DIALOG_ASK_VIDEO: //this one is used to determine what ever to open a video camera or video gallery
-	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_camera), getString(R.string.new_egg_dialogue_open_video_callery)};
+	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_callery), getString(R.string.new_egg_dialogue_open_video_camera)};
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
 	    	videoBuilder.setTitle("Select Source");
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
-	    	    	if(item==0){ //video camera requested
-	    	    		ContentValues values = new ContentValues();
-	    	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Video captured for 4D Nest");
-	    	    		//create new Intent
-	    	    		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE );
-	    	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-	    	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
+	    	    	if(item==1){ //video camera requested
+	    	    		startIntent(CAMERA_VIDEO_REQUEST);
 	    	    	}
-	    	    	if(item==1){ //video gallery requested.
-	    	    		Intent intent = new Intent();
-	    	    		intent.setType("video/*");
-	    	    		intent.setAction(Intent.ACTION_GET_CONTENT);
-	    	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
-	    	    		startActivityForResult(
-    						Intent.createChooser(intent, "Select Video"),
-    						SELECT_VIDEO);
+	    	    	if(item==0){ //video gallery requested.
+	    	    		startIntent(SELECT_VIDEO);
 	    	    	}
 	    	    }
 	    	});
@@ -388,7 +366,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			if(requestCode == SELECT_PICTURE || requestCode == CAMERA_PIC_REQUEST){ //is there a neater way to format that?
 			this.currentMediaItem = mediaItemType.image;
 			}
-			else if(requestCode == SELECT_AUDIO){ //Audio always comes with SELECT_AUDIO code
+			else if(requestCode == SELECT_AUDIO || requestCode == AUDIO_RECORER_REQUEST){ //Audio always comes with SELECT_AUDIO code
 				this.currentMediaItem = mediaItemType.audio;
 			}
 			else if(requestCode == SELECT_VIDEO || requestCode==CAMERA_VIDEO_REQUEST){
@@ -433,6 +411,9 @@ public class NewEggActivity extends NestSpecificActivity{
 		case R.id.menu_create_discard:
 			//TODO discard implementation
 			return true;
+        case R.id.menu_create_drafts:
+            startActivity(new Intent(this, ListDraftEggsActivity.class));
+            return true;
 		}
 		return false;
 	}
@@ -443,7 +424,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	
 	private String recoverMediaFileURL(int requestCode, Intent data){
 		Uri selectedImageUri = null;
-		if(requestCode==this.CAMERA_PIC_REQUEST){
+		if(requestCode==CAMERA_PIC_REQUEST){
 
 					filemanagerstring = capturedImageURI.getPath();
 
@@ -491,8 +472,108 @@ public class NewEggActivity extends NestSpecificActivity{
 		}
 	}
 	
+	/*
+	 * Private method for quick starting intents. Needed so we don't need to duplicate code AND for code
+	 * quality
+	 */
 	
-}
+	private void startIntent(int intentType){
+		Intent intent = new Intent(); //all the cases are gonna need an intent
+		ContentValues values = null; //some cases need constantValues 
+		/*
+		 * I JUST CAN'T GET SWITCHES WORKING 
+		 */
+			if(intentType== SELECT_PICTURE){
+	    		intent.setType("image/*");
+	    		intent.setAction(Intent.ACTION_GET_CONTENT);
+	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
+	    		startActivityForResult(
+					Intent.createChooser(intent, getString(R.string.new_egg_intent_select_picture)),	//the second argument is the title of intent
+					SELECT_PICTURE);
+			}
+			if(intentType== SELECT_AUDIO){ 
+				intent.setType("audio/*");
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
+				startActivityForResult(
+						Intent.createChooser(intent, "Select Audio"),
+						SELECT_AUDIO);
+			}
+			if(intentType ==  CAMERA_PIC_REQUEST){
+	    		String fileName = "dpic.jpg"; //there is a string res for this but I decided not to use if for now 
+	    		//TODO:generate better filenames
+	    		//create parameters for Intent with filename
+	    		values = new ContentValues();
+	    		values.put(MediaStore.Images.Media.TITLE, fileName);
+	    		values.put(MediaStore.Images.Media.DESCRIPTION, getString(R.string.new_egg_intent_image_description));
+	    		/*
+	    		 * We are going to save the Uri to the image before actually taking the picture.
+	    		 * This was the way used in the example, so far I haven't been able to find a better
+	    		 * way (but there has to be one, this cant be good)
+	    		 */
+	    		capturedImageURI = getContentResolver().insert(
+	    		        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+	    		//create new Intent
+	    		intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
+	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageURI); //tell the intent where to store the file
+	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+	    		startActivityForResult(intent, CAMERA_PIC_REQUEST);
+			}
+			if (intentType == SELECT_VIDEO){
+	    		intent.setType("video/*");
+	    		intent.setAction(Intent.ACTION_GET_CONTENT);
+	    		intent.addCategory(Intent.CATEGORY_OPENABLE);
+	    		startActivityForResult(
+					Intent.createChooser(intent, "Select Video"),
+					SELECT_VIDEO);
+			}
+			if (intentType == CAMERA_VIDEO_REQUEST){
+	    		values = new ContentValues();
+	    		values.put(MediaStore.Images.Media.DESCRIPTION,"Video captured for 4D Nest");
+	    		//create new Intent
+	    		intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE );
+	    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+	    		startActivityForResult(intent, CAMERA_VIDEO_REQUEST);
+			}
+			if (intentType == AUDIO_RECORER_REQUEST){
+				intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+				startActivityForResult(intent, AUDIO_RECORER_REQUEST);
+
+			}
+		
+		}
 	
-
-
+	/**
+	 * A local method for recovering data from an existing egg. Used when 
+	 * a draft is loaded for editing
+	 */
+	
+	private void recoverDataFromExistingEGG(){
+		int eggIDInt = Integer.valueOf(currentEggID);
+		EggManager draftManager = super.application.getDraftEggManager();
+		Egg existingEgg = draftManager.getEgg(eggIDInt);
+		Uri uri = existingEgg.getLocalFileURI();	
+		if (uri == null){
+			currentMediaItem = mediaItemType.none;
+		}
+		else {
+			ContentResolver cR = this.getContentResolver();
+			MimeTypeMap mime = MimeTypeMap.getSingleton();
+			String type = mime.getExtensionFromMimeType(cR.getType(uri));	
+			if (type.startsWith("image")){
+				this.currentMediaItem = mediaItemType.image;
+			}
+			else if (type.startsWith("audio")){
+				this.currentMediaItem = mediaItemType.audio;
+			}
+			else if (type.startsWith("video")){
+				this.currentMediaItem = mediaItemType.video;
+			}
+			fileURL = uri.toString();
+			this.refreshElements();
+		}
+		
+	}
+	
+	
+	}

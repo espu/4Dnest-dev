@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
@@ -24,11 +25,12 @@ public class ViewEggActivity extends NestSpecificActivity {
 		
 		Bundle startingExtras = getIntent().getExtras();
 		this.eggID = (Integer) startingExtras
-				.get(ListStreamActivity.INTENT_EGG_ID);
+				.get(EggItemOnClickListener.INTENT_EGG_ID);
 		
 		super.onCreate(savedInstanceState);
 		
 		//TODO: Inflate based on egg type
+
 //		FrameLayout mediaView = (FrameLayout) findViewById(R.id.media_view);
 //		LayoutInflater inflater = LayoutInflater.from(mediaView.getContext());
 //		View view = inflater.inflate(R.layout.egg_element_large, mediaView, false);

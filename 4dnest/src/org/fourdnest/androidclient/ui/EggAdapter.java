@@ -53,6 +53,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		super(parent.getContext(), resourceId, objects);
 		this.resourceId = resourceId;
 		this.parent = parent;
+		this.setNotifyOnChange(true);
 	}
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
@@ -61,10 +62,23 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			return bindLargeEggView(arg0, arg1);
 		} else if (this.resourceId == R.layout.egg_element_small) {
 			return bindSmallEggView(arg0, arg1);
+		} else if (this.resourceId == R.layout.egg_element_draft) {
+			return bindDraftEggView(arg0, arg1);
 		} else {
 			return null;
 		}
+	}
 
+	private View bindDraftEggView(int arg0, View arg1) {
+		View view = arg1;
+		if (view == null) {
+			LayoutInflater inflater = LayoutInflater.from(getContext());
+			view = inflater.inflate(this.resourceId, getParent(), false);
+		}
+		Egg egg = (Egg) this.getItem(arg0);
+		TextView message = (TextView) view.findViewById(R.id.message);
+		
+		return view;
 	}
 
 	/**
@@ -126,7 +140,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
-		//TODO: Value binding
+		// TODO: Value binding
 		Egg egg = (Egg) this.getItem(arg0);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView date = (TextView) view.findViewById(R.id.date);
