@@ -43,11 +43,12 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * Task bar notification
 	 */
 	private Notification notification;
+	private final int NOTIFICATION_ID = 410983;
 	
 	private String provider = "gps"; // Fixed provider
 	
 	private static final File FILE_BASE_PATH = Environment.getExternalStorageDirectory();
-	private static final String FILE_DIRECTORY = "fourdnest";
+	private static final String FILE_DIRECTORY = "fourdnest" + File.separator + "routes";
 	private static final String FILE_EXTENSION = ".json";
 	
 	private final static String TAG = RouteTrackService.class.getSimpleName();
@@ -80,11 +81,8 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onStart");
 		// If gps provider does not exist or is disabled, show error and die
 		if(this.locationManager.getProvider(this.provider) == null ||
-			!this.locationManager.getProviders(true).contains(this.provider)) {
-
-			Toast.makeText(this.getApplicationContext(), getText(R.string.gps_notification_on), Toast.LENGTH_LONG);
-			Log.d(TAG, "No location provider, stopping");
-			
+			!this.locationManager.getProviders(true).contains(this.provider)) {			
+			this.displayToast(getText(R.string.gps_error_gps_disabled));
 			stopSelf();
 		}
 		
@@ -101,11 +99,11 @@ public class RouteTrackService extends Service implements LocationListener {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
 
         // Set status bar info
-        notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_statusbar_tracking_active), contentIntent);
+		this.notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_statusbar_tracking_active), contentIntent);
 
         // Start service in foreground, checking for null to avoid Android testing bug
         if(getSystemService(ACTIVITY_SERVICE) != null) {
-        	this.startForeground(R.string.gps_notification_on, notification);
+        	this.startForeground(NOTIFICATION_ID, this.notification);
         }
         
         // Run until explicitly stopped
@@ -117,33 +115,28 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onDestroy");
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
-		
-	    // Cancel the persistent notification
-		if(getSystemService(ACTIVITY_SERVICE) != null) {
-			this.stopForeground(true);
-		}
-		
-		String message = "Tracking stopped. ";
-		message += this.locationCache.size() + " Locations received.";
-		
+				
 		// Trigger file write
 		try {
-			this.writeLocationCache(this.getOutputFile());
-			Toast.makeText(this, getText(R.string.gps_file_save_success), Toast.LENGTH_LONG);
+			String savedFile = this.writeLocationCache(this.getOutputFile());
+			this.displayToast(getText(R.string.gps_file_save_success) + ": " + savedFile);
 		} catch(Exception e) {
-			Toast.makeText(this, getText(R.string.gps_file_save_failure) + ": " + e.getMessage(), Toast.LENGTH_LONG);
+			this.displayToast(getText(R.string.gps_file_save_failure) + ": " + e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		
 		// Empty the cache
 		this.locationCache = new ArrayList<Location>();
 		
-		// Tell the user we stopped    
-		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+		// Cancel the persistent notification
+		if(getSystemService(ACTIVITY_SERVICE) != null) {
+			this.stopForeground(true);
+		}
 	}
 
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged: " + LocationHelper.locationToJSON(location).toString());
-		Toast.makeText(this, "New location: " + location.getLongitude(), Toast.LENGTH_SHORT);
+		this.displayNotification(getText(R.string.gps_statusbar_last_location_received));
 		
 		// Add some sanity checks, for now just cache it
 		this.locationCache.add(location);
@@ -151,15 +144,50 @@ public class RouteTrackService extends Service implements LocationListener {
 
 	public void onProviderDisabled(String provider) {
 		Log.d(TAG, "onProviderDisabled: " + provider);
+		this.displayToast("onProviderDisabled: " + provider);
 	}
 
 	public void onProviderEnabled(String provider) {
 		Log.d(TAG, "onProviderEnabled: " + provider);
-		//this.provider = provider;
+		this.displayToast("onProviderEnabled: " + provider);
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		Log.d(TAG, "onStatusChanged, provider: " + provider + ", status: " + status);
+		this.displayToast("onStatusChanged " + provider + ", status: " + status);
+	}
+	
+	/**
+	 * Helper for displaying status bar notification	 * 
+	 * @param message
+	 */
+	private void displayNotification(CharSequence message) {	
+		if(this.notification != null) {
+			Notification notification = new Notification(
+					this.notification.icon,
+					message,
+					System.currentTimeMillis()
+					);
+			
+			notification.setLatestEventInfo(
+					this,
+					getText(R.string.gps_statusbar_title), // Always the same title
+					message,
+					this.notification.contentIntent); // Don't change the configured return intent
+			
+			// (Re-)call startForeground to change status bar
+			this.startForeground(NOTIFICATION_ID, notification);
+			
+			this.notification = notification;
+		}
+	}
+	
+	/**
+	 * Helper for displaying a toast
+	 * @param message
+	 */
+	private void displayToast(CharSequence message) {
+		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 	}
 	
 	
@@ -168,15 +196,15 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * @param outFile target file
 	 * @return success
 	 */
-	private boolean writeLocationCache(File outFile) throws IOException, JSONException {
-		if(this.locationCache.size() < 1) return false;
+	private String writeLocationCache(File outFile) throws IOException, JSONException {
+		if(this.locationCache.size() < 1) return null;
 		JSONObject o = LocationHelper.listToJSON(this.locationCache);
 
 		FileWriter fw = new FileWriter(outFile);
 		fw.write(o.toString());
 		fw.close();
 		
-		return true;
+		return outFile.getAbsolutePath();
 	}
 	
 	/**
@@ -187,7 +215,12 @@ public class RouteTrackService extends Service implements LocationListener {
 	private File getOutputFile() throws IOException {
 		// Get file name, check that it can be created. If not,
 		// get a file name with added seq number and try a few times
-		File outputFile = new File(FILE_BASE_PATH + File.separator + FILE_DIRECTORY, getFileName());
+		File baseDir = new File(FILE_BASE_PATH + File.separator + FILE_DIRECTORY);
+		if(!baseDir.exists()) { 
+			baseDir.mkdirs();
+		}
+		
+		File outputFile = new File(baseDir, getFileName());
 		
 		int tryCounter = 0;
 		while(!outputFile.createNewFile()) {
@@ -216,7 +249,7 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * @return string filename
 	 */
 	private String getFileName(int duplicateNum) {
-		String f = DateFormat.format("yyyy-MM-dd_hhmmss", new Date()).toString();
+		String f = DateFormat.format("yyyy-MM-dd_HHmmss", new Date()).toString();
 		if(duplicateNum > 0) f += "_" + duplicateNum;
 		
 		f += FILE_EXTENSION;
