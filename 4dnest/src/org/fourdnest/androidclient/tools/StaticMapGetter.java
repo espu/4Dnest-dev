@@ -1,7 +1,7 @@
 package org.fourdnest.androidclient.tools;
 
-import android.net.Uri;
+import org.fourdnest.androidclient.Egg;
 
 public interface StaticMapGetter {
-	boolean getStaticMap(Uri localUri, Uri routeFileUri);
+	boolean getStaticMap(Egg egg);
 }

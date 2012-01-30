@@ -6,13 +6,17 @@ import java.util.Date;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.tools.OsmStaticMapGetter;
+import org.fourdnest.androidclient.tools.StaticMapGetter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ViewEggActivity extends NestSpecificActivity {
@@ -80,6 +84,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
+		ImageView map = (ImageView) view.findViewById(R.id.map);
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
@@ -89,6 +94,13 @@ public class ViewEggActivity extends NestSpecificActivity {
 				tagList += current.toString();
 			}
 			tags.setText(tagList);
+		}
+		
+		StaticMapGetter mapGetter = new OsmStaticMapGetter();
+		Uri mapUri = Uri.parse("/sdcard/testfile.png");
+		boolean val = mapGetter.getStaticMap(egg);
+		if (val) {
+			map.setImageURI(mapUri);
 		}
 
 		return view;
