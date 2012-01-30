@@ -1,6 +1,5 @@
-package org.fourdnest.androidclient.tools;
+package org.fourdnest.androidclient.comm;
 
-import org.fourdnest.androidclient.comm.FourDNestProtocol;
 
 import android.net.Uri;
 
