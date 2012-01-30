@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.entity.mime.MIME;
-
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 /**
