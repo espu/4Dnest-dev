@@ -1,5 +1,8 @@
 package org.fourdnest.androidclient.ui;
 
+import java.util.List;
+
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
