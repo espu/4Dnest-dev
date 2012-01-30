@@ -2,6 +2,7 @@ package org.fourdnest.androidclient.ui;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
+import org.fourdnest.androidclient.EggTimeComparator;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
@@ -64,6 +65,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 		EggAdapter adapter = new EggAdapter(streamListView,
 				R.layout.egg_element_large, manager.listEggs());
 		streamListView.setAdapter(adapter);
+		((EggAdapter)streamListView.getAdapter()).sort(new EggTimeComparator());
 		streamListView.setOnItemClickListener(new EggItemOnClickListener(
 				streamListView));
 	}
@@ -185,6 +187,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 		for (Egg current : this.streamManager.listEggs()) {
 			streamListViewAdapter.add(current);
 		}
+		streamListViewAdapter.sort(new EggTimeComparator());
 		streamListViewAdapter.notifyDataSetChanged();
 	}
 
