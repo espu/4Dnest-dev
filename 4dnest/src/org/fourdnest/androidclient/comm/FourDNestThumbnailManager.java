@@ -3,7 +3,6 @@ package org.fourdnest.androidclient.comm;
 import java.io.File;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Egg.fileType;
 
 import android.net.Uri;
 
@@ -36,7 +35,7 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 		if (!thumbNailExists(path)) {
 			if (egg.getMimeType() == Egg.fileType.ROUTE) {
 				StaticMapGetter mapGetter = new OsmStaticMapGetter();
-				res = mapGetter.getStaticMap(thumbnailUri, null);
+				res = mapGetter.getStaticMap(egg);
 			}else {
 				// IMPLEMENT OTHER FILES
 				res = false;
