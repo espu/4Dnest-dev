@@ -66,4 +66,5 @@
 	<string name="default_no_message">No Message</string>
 	<string name="default_no_tags">No Tags</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="stream_list_refreshed_toast">Stream Refreshed</string>
 </resources>
