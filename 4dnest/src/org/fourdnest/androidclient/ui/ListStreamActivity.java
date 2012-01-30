@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -26,6 +27,7 @@ import android.widget.ToggleButton;
 public class ListStreamActivity extends NestSpecificActivity {
 	public static final String PREFS_NAME = "ourPrefsFile";
 	private EggManager streamManager;
+	private ListView streamListView;
 
 	/** Called when this Activity is first created. */
 	@Override
@@ -42,8 +44,9 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		initializeCreateButton((Button) view.findViewById(R.id.create_button));
 
+		this.streamListView = (ListView) view.findViewById(R.id.egg_list);
 		initializeStreamList(this.streamManager,
-				(ListView) view.findViewById(R.id.egg_list));
+				this.streamListView);
 		return view;
 
 	}
@@ -166,6 +169,12 @@ public class ListStreamActivity extends NestSpecificActivity {
             startActivity(new Intent(this, ListDraftEggsActivity.class));
 			return true;
         case R.id.menu_stream_refresh:
+        	EggAdapter streamListViewAdapter = (EggAdapter)this.streamListView.getAdapter();
+        	streamListViewAdapter.clear();
+        	for (Egg current : this.streamManager.listEggs()) {
+        		streamListViewAdapter.add(current);
+        	}
+        	streamListViewAdapter.notifyDataSetChanged();
             return true;
 		}
 		return false;
