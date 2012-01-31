@@ -125,29 +125,25 @@
         </LinearLayout>
     </ScrollView>
 
-    <RelativeLayout
-        android:id="@+id/nwe_photo_egg_view_bottom_buttons"
+    
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
+        
         <Button
             android:id="@+id/new_photo_egg_save_draft_button"
-            android:layout_width="50px"
-            android:layout_height="30px"
-            android:layout_toLeftOf="@+id/new_photo_egg_send_egg_button"
-            android:text="Save as \n Draft" />
-/
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/new_egg_save_as_draft"/>
     	
 
         <Button
             android:id="@+id/new_photo_egg_send_egg_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:text="@string/send_egg_to_nest" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
