@@ -70,7 +70,11 @@ public class TaggingTool extends LinearLayout {
         this.tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flowlayout);
         this.addTagButton = ((Button) this.findViewById(R.id.add_tag_button));
 
+        // Only allow valid characters in tags
         this.tagTextView.setFilters(tagFilter);
+        // Start as disabled, enable once something is written
+        this.addTagButton.setEnabled(false);
+        
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(context);
 		IntentFilter filter = new IntentFilter();
         filter.addAction(TagSuggestionService.ACTION_AUTOCOMPLETE_TAGS);

@@ -154,6 +154,7 @@ public class NewEggActivity extends NestSpecificActivity{
 				egg.setAuthor("Saruman_The_White_42");
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+				NewEggActivity.this.taggingTool.addTagFromTextView();
 				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
 				egg.setTags(tags);
 				SendQueueService.sendEgg(getApplication(), egg);
