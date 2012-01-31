@@ -1,7 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
-import java.sql.Date;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -110,8 +110,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
-		date.setText(new Date(egg.getLastUpload()).toString());
-		time.setText(new Time(egg.getLastUpload()).toString());
+		date.setText(DateFormat.getDateInstance().format(egg.getCreationDate()));
+		time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {
 			String eggTags = "";

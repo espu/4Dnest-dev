@@ -119,7 +119,11 @@ public class RouteTrackService extends Service implements LocationListener {
 		// Trigger file write
 		try {
 			String savedFile = this.writeLocationCache(this.getOutputFile());
-			this.displayToast(getText(R.string.gps_file_save_success) + ": " + savedFile);
+			if(savedFile == null) {
+				this.displayToast(getText(R.string.gps_empty_route_not_saved));
+			} else {
+				this.displayToast(getText(R.string.gps_file_save_success) + ": " + savedFile);
+			}
 		} catch(Exception e) {
 			this.displayToast(getText(R.string.gps_file_save_failure) + ": " + e.getMessage());
 			Log.e(TAG, e.getMessage());

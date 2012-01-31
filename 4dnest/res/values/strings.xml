@@ -31,8 +31,8 @@
     <string name="welcome_title">Welcome to 4DNest!</string>
     <string name="setup_qr">Read in QR-code</string>
     <string name="setup_manual">Fill in by Hand</string>
-    <string name="egg_queued">Egg queued</string>
-    <string name="egg_send_complete">Send completed</string>
+    <string name="sendqueue_egg_queued">Egg queued</string>
+    <string name="sendqueue_egg_send_complete">Send completed</string>
     <string name="gps_notification_on">GPS tracking started</string>
     <string name="gps_notification_off">GPS tracking disabled</string>
     <string name="gps_statusbar_title">4DNest</string>
@@ -41,6 +41,7 @@
     <string name="gps_error_gps_disabled">GPS disabled, please enable to track</string>
     <string name="gps_file_save_success">Route saved to file</string>
     <string name="gps_file_save_failure">Route saving failed</string>
+    <string name="gps_empty_route_not_saved">No locations received, route not saved</string>
     <string name="sendqueue_statusbar_title">Sending item</string>
     <string name="sendqueue_statusbar_descr">Item upload in progress</string>
     <string name="add_tag_button">Add tag</string>
@@ -70,4 +71,11 @@
 	<string name="default_no_date">No Date</string>
 	<string name="default_no_message">No Message</string>
 	<string name="default_no_tags">No Tags</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="stream_list_refreshed_toast">Stream Refreshed</string>
+    <string name="protocolerror_authfail">Authorization failed</string>
+    <string name="protocolerror_sendfail">Sending failed</string>
+    <string name="protocolerror_servererror">Server error, contact server owner</string>
+    <string name="protocolerror_unknown">Unknown error</string>
+    
 </resources>

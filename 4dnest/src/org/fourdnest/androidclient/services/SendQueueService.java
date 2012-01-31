@@ -87,7 +87,7 @@ public class SendQueueService extends IntentService {
 		intent.putExtra(SendQueueService.BUNDLE_EGG_ID, savedEgg.getId());
 
 		context.startService(intent);
-		Toast.makeText(context, context.getString(R.string.egg_queued), Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, context.getString(R.string.sendqueue_egg_queued), Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -103,17 +103,17 @@ public class SendQueueService extends IntentService {
 		if(intent.hasCategory(SEND_EGG)) {			
 			FourDNestApplication app = (FourDNestApplication) this.getApplication();
 			
-			Notification notification = new Notification(R.drawable.icon, getText(R.string.egg_queued), System.currentTimeMillis());
+			Notification notification = new Notification(R.drawable.icon, getText(R.string.sendqueue_egg_queued), System.currentTimeMillis());
 
 			// Prepare intent to start desired activity when notification is clicked
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
 
 	        // Set status bar info
-	        notification.setLatestEventInfo(this, getText(R.string.sendqueue_statusbar_title), getText(R.string.egg_queued), contentIntent);
+	        notification.setLatestEventInfo(this, getText(R.string.sendqueue_statusbar_title), getText(R.string.sendqueue_egg_queued), contentIntent);
 
 	        // Start service in foreground, checking for null to avoid Android testing bug
 	        if(getSystemService(ACTIVITY_SERVICE) != null) {
-	        	this.startForeground(R.string.egg_queued, notification);
+	        	this.startForeground(R.string.sendqueue_egg_queued, notification);
 	        }
 			
 			
@@ -128,30 +128,27 @@ public class SendQueueService extends IntentService {
 				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
 				if(res.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED) {
 					// Display message
-					this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+					this.handler.post(new ToastDisplay(app, getString(R.string.sendqueue_egg_send_complete), Toast.LENGTH_SHORT));
 					// Delete Egg from drafts
 					app.getDraftEggManager().deleteEgg(eggId);
 					
 					Log.d(TAG, "Send completed");
 				} else {
 					// Something went wrong, transform code to message
-					String message;
+					String message = "";
 					
 					switch (res.getStatusCode()) {
 					case ProtocolResult.AUTHORIZATION_FAILED:
-						message = "Authorization failed";
+						message = (String) getText(R.string.protocolerror_authfail);
 						break;
 					case ProtocolResult.SENDING_FAILED:
-						message = "Sending failed";
+						message = (String) getText(R.string.protocolerror_sendfail);
 						break;
 					case ProtocolResult.SERVER_INTERNAL_ERROR:
-						message = "Server internal error";
+						message = (String) getText(R.string.protocolerror_servererror);
 						break;
 					case ProtocolResult.UNKNOWN_REASON:
-						message = "Unknown failure";
-						break;
-					default:
-						message = "Unknown result";
+						message = (String) getText(R.string.protocolerror_unknown);
 						break;
 					}
 					// Display message and die
