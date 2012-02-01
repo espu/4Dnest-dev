@@ -25,7 +25,7 @@ public class SendQueueTestProtocol implements Protocol {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public List<Egg> getStream() {
+	public List<Egg> getStream(int size) {
 		// TODO Auto-generated method stub
 		return null;
 	}

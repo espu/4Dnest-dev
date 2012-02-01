@@ -22,6 +22,10 @@ public class StreamReaderService extends IntentService {
     
     /**Intent should have this category when stream should be read from the server */
     public static final String READ_STREAM = "READ_STREAM_CATEGORY";
+    public static final String STREAM_FREQ = "STREAM_FREQUENCY_CATEGORY";
+    public static final String NEW_FREQUENCY = "NEW_FRQUENCY";
+    public static final String STREAM_SIZE = "STREAM_SIZE_CATEGORY";
+    public static final String NEW_STREAM_SIZE = "NEW_STREAM_SIZE";
     
     /**How long we initially wait before fetching the Stream*/
     public static final long FIRST_INTERVAL = 0;
@@ -37,8 +41,12 @@ public class StreamReaderService extends IntentService {
     private static final String THUMBNAIL_DEFAULT_SIZE = "-100x100.";
     
     private static final long TWO_MINUTE = 120000;
+    private static final int DEFAULT_FREQUENCY = 600000;
+    private static final int DEFAULT_SIZE = 10;
     
     private FourDNestApplication app;
+    private int frequency = DEFAULT_FREQUENCY;
+    private int size = DEFAULT_SIZE;
     
     public StreamReaderService() {
         super(StreamReaderService.class.getName());
@@ -52,6 +60,8 @@ public class StreamReaderService extends IntentService {
     public void onCreate() {
     	super.onCreate();
     	Log.d(TAG, "Intentcreated");
+    	Log.d(TAG, "Value of freq: " + frequency);
+    	Log.d(TAG, "Value of size: " + size);
         
         app = FourDNestApplication.getApplication();
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -60,7 +70,7 @@ public class StreamReaderService extends IntentService {
         am.setInexactRepeating( //Be power efficient: we don't need exact timing
                 AlarmManager.ELAPSED_REALTIME,  // Don't wake up phone just for this
                 FIRST_INTERVAL,                             
-                TWO_MINUTE,     // Update frequency
+                frequency,     // Update frequency
                 PendingIntent.getService(
                         app,                    // The context
                         0,
@@ -80,7 +90,7 @@ public class StreamReaderService extends IntentService {
     	Log.d(TAG, "Handling intent");
         if (intent.hasCategory(READ_STREAM)) {
             EggManager em = app.getStreamEggManager();
-            List<Egg> eggList = app.getCurrentNest().getProtocol().getStream();
+            List<Egg> eggList = app.getCurrentNest().getProtocol().getStream(size);
             Log.d(TAG, "Egglist size: " + eggList.size());
             for (int i = 0; i < eggList.size(); i++) {
                 em.saveEgg(eggList.get(i));
@@ -102,6 +112,16 @@ public class StreamReaderService extends IntentService {
             Log.d(TAG, "Saved eggs");
             List<Egg> eggs = em.listEggs();
             Log.d("EGGAMOUNT2", String.valueOf(eggs.size()));
+        }
+        if (intent.hasCategory(STREAM_FREQ)) {
+        	frequency = Integer.parseInt(intent.getStringExtra(NEW_FREQUENCY)) *1000;
+        	Log.d(TAG, "Got updated frequency");
+        	Log.d(TAG, "Frequency after change:" + frequency);
+        }
+        if (intent.hasCategory(STREAM_SIZE)) {
+        	size = Integer.parseInt(intent.getStringExtra(NEW_STREAM_SIZE));
+        	Log.d(TAG, "Got updated size");
+        	Log.d(TAG, "size after change:" + size);
         }
     }
 

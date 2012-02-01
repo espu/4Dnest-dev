@@ -45,7 +45,7 @@ public interface Protocol {
      * FIXME Errorhandling!
      * @return The Eggs currently in the stream, or an empty list if unable to retrieve stream.
      */
-    List<Egg> getStream();
+    List<Egg> getStream(int size);
     /**
      * Attempts to retrieve the top tags from the Nest that this Protocol is bound to.
      * FIXME Errorhandling!

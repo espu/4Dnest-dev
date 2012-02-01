@@ -129,7 +129,7 @@ public class httpTest extends AndroidTestCase {
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
-		List<Egg> eggList = protocol.getStream();
+		List<Egg> eggList = protocol.getStream(10);
 		assertTrue(eggList.size() > 0);
 	}
 	
