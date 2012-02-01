@@ -14,7 +14,9 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +51,7 @@ public class TaggingTool extends LinearLayout {
 	private FlowLayout tagFlowLayout;
 	private AutoCompleteTextView tagTextView;
 	private LocalBroadcastManager mLocalBroadcastManager;
+	private Button addTagButton;
 
 	private BroadcastReceiver mReceiver;
 
@@ -65,8 +68,13 @@ public class TaggingTool extends LinearLayout {
 		inflater.inflate(R.layout.taggingtool_layout, this, true);
         this.tagTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_tag);
         this.tagFlowLayout = (FlowLayout) findViewById(R.id.tag_flowlayout);
+        this.addTagButton = ((Button) this.findViewById(R.id.add_tag_button));
 
+        // Only allow valid characters in tags
         this.tagTextView.setFilters(tagFilter);
+        // Start as disabled, enable once something is written
+        this.addTagButton.setEnabled(false);
+        
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(context);
 		IntentFilter filter = new IntentFilter();
         filter.addAction(TagSuggestionService.ACTION_AUTOCOMPLETE_TAGS);
@@ -97,15 +105,26 @@ public class TaggingTool extends LinearLayout {
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
 		
 
-       	((Button) this.findViewById(R.id.add_tag_button))
-		.setOnClickListener(new OnClickListener() {
+       	this.addTagButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
-				TaggingTool.this.addTag(
-					new Tag(TaggingTool.this.tagTextView.getText()),
-					true
-				);
-				TaggingTool.this.tagTextView.setText("");
+				TaggingTool.this.addTagFromTextView();
 			}
+		});
+       	
+       	this.tagTextView.addTextChangedListener(new TextWatcher() {
+       		// disable add button if text field is empty
+			public void afterTextChanged(Editable s) {
+				if(s.length() > 0) {
+					TaggingTool.this.addTagButton.setEnabled(true);
+				} else {
+					TaggingTool.this.addTagButton.setEnabled(false);
+				}
+			}
+       		
+       		// empty implementations for unneeded methods
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
 		});
       	
 		this.setOrientation(VERTICAL);
@@ -128,6 +147,20 @@ public class TaggingTool extends LinearLayout {
 		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
 	}
 	
+	/**
+	 * Adds the text currently in the text view as a tag
+	 */
+	public void addTagFromTextView() {
+		if(this.tagTextView.length() == 0) {
+			// don't add empty tags
+			return;
+		}
+		this.addTag(
+				new Tag(TaggingTool.this.tagTextView.getText()),
+				true
+		);
+		this.tagTextView.setText("");
+	}
 	
 	/**
 	 * Adds a single new tag, or marks the corresponding tag as selected
