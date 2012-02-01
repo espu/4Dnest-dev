@@ -57,7 +57,7 @@ public class SendQueueServiceTest extends ServiceTestCase<SendQueueService> {
     public void testBindable() {
         Intent startIntent = new Intent();
         startIntent.setClass(getContext(), SendQueueService.class);
-        IBinder service = bindService(startIntent); 
+        IBinder service = bindService(startIntent);
     }
 
 	/*
