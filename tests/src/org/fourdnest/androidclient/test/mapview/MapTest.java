@@ -1,11 +1,10 @@
 package org.fourdnest.androidclient.test.mapview;
 
-import org.fourdnest.androidclient.tools.OsmStaticMapGetter;
+import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import android.net.Uri;
 import android.test.AndroidTestCase;
 
 
