@@ -48,6 +48,7 @@
     <string name="new_egg_intent_select_picture">Select Picture</string>
     <string name="new_egg_intent_image_description">Image captured for 4D Nest</string>
     <string name="new_egg_intent_image_file_name">dpic.jpg</string>
+    <string name="new_egg_save_as_draft">save as draft</string>
     <string name="new_egg_dialogue_open_image_callery">Open Picture Gallery</string>
     <string name="new_egg_dialogue_open_photo_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_camera">Open Camera</string>
