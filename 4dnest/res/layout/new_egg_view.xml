@@ -37,7 +37,6 @@
             android:id="@+id/new_egg_inputs_linearlayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:orientation="vertical"
             android:paddingBottom="40dp"
             android:paddingTop="5dp" >
@@ -46,8 +45,7 @@
                 android:id="@+id/new_egg_upper_buttons"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/create_screen_text_margin"
-                android:layout_marginTop="5px"
+                android:layout_marginTop="5dp"
                 android:background="#ffffff"
                 android:gravity="center_horizontal" >
 
@@ -96,6 +94,11 @@
                 android:paddingRight="10sp"
                 android:visibility="gone" />
 
+              <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,8 +115,9 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp" />
-/
+
     	
+    	</LinearLayout>
             <!--
              <EditText
     	    android:layout_width="fill_parent"
@@ -121,33 +125,32 @@
     	    android:layout_above="@+id/new_photo_egg_send_egg_button"
     	    android:hint="tags"/>
             -->
-
-        </LinearLayout>
-    </ScrollView>
-
-    <RelativeLayout
-        android:id="@+id/nwe_photo_egg_view_bottom_buttons"
+       <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
+        
         <Button
             android:id="@+id/new_photo_egg_save_draft_button"
-            android:layout_width="50px"
-            android:layout_height="30px"
-            android:layout_toLeftOf="@+id/new_photo_egg_send_egg_button"
-            android:text="Save as \n Draft" />
-/
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/new_egg_save_as_draft"/>
     	
 
         <Button
             android:id="@+id/new_photo_egg_send_egg_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:text="@string/send_egg_to_nest" />
-    </RelativeLayout>
+    </LinearLayout>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    
+    
 
 </RelativeLayout>

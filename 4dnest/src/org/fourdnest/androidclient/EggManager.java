@@ -84,7 +84,7 @@ public class EggManager {
                 null, // No arguments in selection
                 null, // No GROUP BY
                 null, // No HAVING
-                C_ID, // Order by id
+                C_DATE, // Order by date
                 "100"); // Limit 100
         
         List<Egg> eggs = new ArrayList<Egg>();
@@ -364,19 +364,19 @@ public class EggManager {
             Log.d(TAG, "onCreated SQL: " + tableCreateQuery);
         }
 
-        // Called when DB version number has changed
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // TODO Add proper alter scripts for production use when version changes
-            
-            // For now, just drop and recreate
-            String tableDropQuery = String.format("DROP TABLE IF EXISTS %s", TABLE);
-            db.execSQL(tableDropQuery);
-            Log.d(TAG, "onUpgrade: Dropped existing table");
-            
-            onCreate(db);       
-        }
-        
-    }
-    
+		// Called when DB version number has changed
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			// TODO Add proper alter scripts for production use when version changes
+			
+			// For now, just drop and recreate
+			String tableDropQuery = String.format("DROP TABLE IF EXISTS %s", TABLE);
+			db.execSQL(tableDropQuery);
+			Log.d(TAG, "onUpgrade: Dropped existing table");
+			
+			onCreate(db);
+			db.close();
+		}
+		
+	}
 }

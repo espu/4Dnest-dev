@@ -82,6 +82,7 @@ public class StreamReaderService extends IntentService {
             EggManager em = app.getStreamEggManager();
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream();
             Log.d(TAG, "Egglist size: " + eggList.size());
+            em.deleteAllEggs();
             for (int i = 0; i < eggList.size(); i++) {
                 em.saveEgg(eggList.get(i));
                 String thumbnailUri = app.getCurrentNest().getBaseURI()
