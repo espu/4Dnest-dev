@@ -97,7 +97,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		}
 		
 		StaticMapGetter mapGetter = new OsmStaticMapGetter();
-		Uri mapUri = Uri.parse("/sdcard/testfile.png");
+		Uri mapUri = Uri.parse("/sdcard/testfile");
 		boolean val = mapGetter.getStaticMap(egg);
 		if (val) {
 			map.setImageURI(mapUri);
