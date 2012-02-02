@@ -1,7 +1,5 @@
 package org.fourdnest.androidclient.services;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -11,13 +9,11 @@ import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -89,6 +85,14 @@ public class StreamReaderService extends IntentService {
         );
         this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
+ 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
+		return START_STICKY;
+	}
     
     @Override
     public void onDestroy() {

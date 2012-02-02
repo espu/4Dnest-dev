@@ -54,17 +54,26 @@ public class ListStreamActivity extends NestSpecificActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
             	Log.d(TAG, "BroadcastReceiver.onReceive");
-            	// only thing it receives at the moment is ACTION_STREAM_UPDATED
-    			refreshStreamList();
+            	if (intent.getAction().equals(StreamReaderService.ACTION_STREAM_UPDATED)) {
+            		refreshStreamList();
+            	}
             }
         };
+        Log.d(TAG, "Registering the broadcast receiver");
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(TAG, "Requesting update in onResume");
 		StreamReaderService.requestUpdate(this);
+	}
+	
+	@Override
+	public void onDestroy() {
+		Log.d(TAG, "UnRegistering the broadcast receiver");
+		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
 	}
 
 	@Override
@@ -213,17 +222,17 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 	private void refreshStreamList() {
 		Log.d(TAG, "refreshStreamList");
-		Toast.makeText(getApplicationContext(),
-				getText(R.string.stream_list_refreshed_toast), 1).show();
 		EggAdapter streamListViewAdapter = (EggAdapter) this.streamListView
 				.getAdapter();
-		streamListViewAdapter.clear();
 		List<Egg> newEggList = this.streamManager.listEggs();
+		streamListViewAdapter.clear();
 		for (Egg current : newEggList) {
 			streamListViewAdapter.add(current);
 		}
 		streamListViewAdapter.sort(new EggTimeComparator());
 		streamListViewAdapter.notifyDataSetChanged();
+		Toast.makeText(getApplicationContext(),
+				getText(R.string.stream_list_refreshed_toast), 1).show();
 	}
 
 	@Override
