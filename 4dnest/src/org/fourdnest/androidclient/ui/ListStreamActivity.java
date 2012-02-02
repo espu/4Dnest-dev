@@ -72,6 +72,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 	
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
 		Log.d(TAG, "UnRegistering the broadcast receiver");
 		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
 	}
