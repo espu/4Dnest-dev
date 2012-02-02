@@ -17,6 +17,7 @@ public class ChooseSetupMethodActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		/*
 		Button QRButton = (Button) findViewById(R.id.setup_qr);
 		Button manualButton = (Button) findViewById(R.id.setup_manual);
 		
@@ -35,6 +36,7 @@ public class ChooseSetupMethodActivity extends Activity {
 				
 			}
 		});
+		*/
 	}
 
 }
