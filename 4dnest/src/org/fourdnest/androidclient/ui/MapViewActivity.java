@@ -22,7 +22,7 @@ public class MapViewActivity extends Activity {
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setBuiltInZoomControls(true);
         mapController = mapView.getController();
-        mapController.setZoom(15);
+        mapController.setZoom(8);
         GeoPoint point2 = new GeoPoint(61000000, 25000000);
         mapController.setCenter(point2);
 
