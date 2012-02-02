@@ -160,8 +160,9 @@ public class NewEggActivity extends NestSpecificActivity{
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				
 				// Go to ListStreamActivity after finishing
-				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
-				v.getContext();
+				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+				//v.getContext();
+				finish();
 				
 			}
 		});
@@ -188,8 +189,9 @@ public class NewEggActivity extends NestSpecificActivity{
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				
 				// Go to ListStreamActivity after finishing
-				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
-				v.getContext();
+				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+				//v.getContext();
+				finish();
 				
 			}
 		});
