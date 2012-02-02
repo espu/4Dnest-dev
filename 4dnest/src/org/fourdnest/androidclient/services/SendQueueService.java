@@ -4,12 +4,17 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.comm.ProtocolResult;
+import org.fourdnest.androidclient.ui.ListStreamActivity;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 /**
@@ -29,6 +34,7 @@ public class SendQueueService extends IntentService {
 	
 	/** Internal Handler for displaying Toast after job completes */
 	private Handler handler;
+	private NotificationManager notificationManager;
 	
 	/**
 	 * Constructor, simply calls super. Never used explicitly in user code.
@@ -51,6 +57,8 @@ public class SendQueueService extends IntentService {
 	@Override
 	public void onCreate() {
 		this.handler = new Handler();
+		this.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		
 		super.onCreate();
 	}
 	
@@ -60,26 +68,32 @@ public class SendQueueService extends IntentService {
 	 * 
 	 * @param context Current application context
 	 * @param egg Egg to be put to queue
+	 * @param isDraft Is the Egg already in the draft database (sending of saved drafts)
 	 */
-	public static void sendEgg(Context context, Egg egg) {
+	public static void sendEgg(Context context, Egg egg, boolean isDraft) {
 		FourDNestApplication app = (FourDNestApplication)context; 
 		
-		Nest currentNest = app.getCurrentNest();		
-		if(currentNest == null) {
-			Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
-			return;
+		Egg savedEgg;
+		if(!isDraft) {
+			Nest currentNest = app.getCurrentNest();		
+			if(currentNest == null) {
+				Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
+				return;
+			}
+			
+			egg.setAuthor(currentNest.getUserName());
+			egg.setNestId(currentNest.getId());
+			savedEgg = app.getDraftEggManager().saveEgg(egg);
+		} else {
+			savedEgg = egg;
 		}
-		
-		egg.setAuthor(currentNest.getUserName());
-		egg.setNestId(currentNest.getId());
-		Egg savedEgg = app.getDraftEggManager().saveEgg(egg);
 		
 		Intent intent = new Intent(context, SendQueueService.class);
 		intent.addCategory(SendQueueService.SEND_EGG);
 		intent.putExtra(SendQueueService.BUNDLE_EGG_ID, savedEgg.getId());
 
 		context.startService(intent);
-		Toast.makeText(context, context.getString(R.string.egg_queued), Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, context.getString(R.string.sendqueue_egg_queued), Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -95,6 +109,21 @@ public class SendQueueService extends IntentService {
 		if(intent.hasCategory(SEND_EGG)) {			
 			FourDNestApplication app = (FourDNestApplication) this.getApplication();
 			
+			Notification notification = new Notification(R.drawable.icon, getText(R.string.sendqueue_egg_queued), System.currentTimeMillis());
+
+			// Prepare intent to start desired activity when notification is clicked
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
+
+	        // Set status bar info
+	        notification.setLatestEventInfo(this, getText(R.string.sendqueue_statusbar_title), getText(R.string.sendqueue_egg_queued), contentIntent);
+
+	        // Start service in foreground, checking for null to avoid Android testing bug
+	        if(getSystemService(ACTIVITY_SERVICE) != null) {
+	        	this.startForeground(R.string.sendqueue_egg_queued, notification);
+	        }
+			
+			
+			
 			// Get Egg id from Intent, fetch the Egg from db
 			int eggId = intent.getIntExtra(BUNDLE_EGG_ID, -1);
 			Egg egg = app.getDraftEggManager().getEgg(eggId);
@@ -105,30 +134,27 @@ public class SendQueueService extends IntentService {
 				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
 				if(res.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED) {
 					// Display message
-					this.handler.post(new ToastDisplay(app, getString(R.string.egg_send_complete), Toast.LENGTH_SHORT));
+					this.handler.post(new ToastDisplay(app, getString(R.string.sendqueue_egg_send_complete), Toast.LENGTH_SHORT));
 					// Delete Egg from drafts
 					app.getDraftEggManager().deleteEgg(eggId);
 					
 					Log.d(TAG, "Send completed");
 				} else {
 					// Something went wrong, transform code to message
-					String message;
+					String message = "";
 					
 					switch (res.getStatusCode()) {
 					case ProtocolResult.AUTHORIZATION_FAILED:
-						message = "Authorization failed";
+						message = (String) getText(R.string.protocolerror_authfail);
 						break;
 					case ProtocolResult.SENDING_FAILED:
-						message = "Sending failed";
+						message = (String) getText(R.string.protocolerror_sendfail);
 						break;
 					case ProtocolResult.SERVER_INTERNAL_ERROR:
-						message = "Server internal error";
+						message = (String) getText(R.string.protocolerror_servererror);
 						break;
 					case ProtocolResult.UNKNOWN_REASON:
-						message = "Unknown failure";
-						break;
-					default:
-						message = "Unknown result";
+						message = (String) getText(R.string.protocolerror_unknown);
 						break;
 					}
 					// Display message and die

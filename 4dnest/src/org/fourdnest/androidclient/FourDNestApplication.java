@@ -2,7 +2,6 @@ package org.fourdnest.androidclient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;

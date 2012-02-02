@@ -102,9 +102,6 @@ public class NewEggActivity extends NestSpecificActivity{
 				fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
 			}
 		}
-		if (!currentEggID.equals("0")){
-			
-		}
 		
 		this.kioskMode = super.application.getKioskModeEnabled();
 		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
@@ -151,12 +148,14 @@ public class NewEggActivity extends NestSpecificActivity{
 			public void onClick(View v) {		
 				//TODO: Proper implementation
 				Egg egg = new Egg();
-				egg.setAuthor("Saruman_The_White_42");
+				// Author is set by SendQueueService
 				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+				NewEggActivity.this.taggingTool.addTagFromTextView();
 				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
 				egg.setTags(tags);
-				SendQueueService.sendEgg(getApplication(), egg);
+				//FIXME currently supports only editing of drafts, not Eggs from the stream
+				SendQueueService.sendEgg(getApplication(), egg, !isNewEgg());
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				
 				// Go to ListStreamActivity after finishing
@@ -222,7 +221,7 @@ public class NewEggActivity extends NestSpecificActivity{
     				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
-       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_egg_inputs_linearlayout);
+       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
        	return view;
 	}
@@ -550,6 +549,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	
 	private void recoverDataFromExistingEGG(){
 		int eggIDInt = Integer.valueOf(currentEggID);
+		//FIXME currently supports only editing of drafts, not Eggs from the stream
 		EggManager draftManager = super.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
 		Uri uri = existingEgg.getLocalFileURI();	
@@ -574,6 +574,15 @@ public class NewEggActivity extends NestSpecificActivity{
 		}
 		
 	}
-	
-	
+
+	/**
+	 * New eggs (not yet entered into the database) have Id "0".
+	 * FIXME currently supports only editing of drafts, not Eggs from the stream
+	 * @return true if new Egg, false if editing existing Egg
+	 */
+	private boolean isNewEgg() {
+		return currentEggID.equals("0");
 	}
+	
+	
+}

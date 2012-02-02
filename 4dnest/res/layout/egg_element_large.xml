@@ -15,15 +15,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <!-- Avatar visibility set to gone: Not implemented in 1.0 -->
+
             <ImageView
-                android:id="@+id/thumbnail"
+                android:id="@+id/avatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
                 android:maxHeight="50pt"
-                android:src="@drawable/icon" />
-            
+                android:src="@drawable/icon"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/author"
                 android:layout_width="wrap_content"
@@ -42,11 +45,14 @@
                 android:layout_height="wrap_content"
                 android:text="No Time" />
 
+            <!-- Comments visibility set to gone: Not implemented in 1.0 -->
+
             <TextView
                 android:id="@+id/comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No Comments" />
+                android:text="No Comments"
+                android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
@@ -57,12 +63,12 @@
             android:adjustViewBounds="true"
             android:maxHeight="80pt"
             android:src="@drawable/icon" />
-        
+
         <TextView
-        android:id="@+id/tags"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="No Tags" />
+            android:id="@+id/tags"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="No Tags" />
     </LinearLayout>
 
     <TextView

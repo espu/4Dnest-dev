@@ -7,6 +7,8 @@ import java.util.List;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
+import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
+import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.app.AlarmManager;
 import android.app.Application;
@@ -32,15 +34,13 @@ public class StreamReaderService extends IntentService {
     /**How long we initially wait before fetching the Stream*/
     public static final long FIRST_INTERVAL = 0;
     
-    /**Location of thumbnails on the server */
-    public static final String THUMBNAIL_PATH = "content/instance/";
+ 
     
     public static final String THUMBNAIL_SAVE_LOCATION = "thumbnails";
     
-    /** Thumbnails on the server are in jpg format*/
-    private static final String THUMBNAIL_FILETYPE = "jpg";
+
     
-    private static final String THUMBNAIL_DEFAULT_SIZE = "-100x100.";
+
     
     /** Default Frequency in seconds, as a String so it can be used in the getPreference method*/
     private static final String DEFAULT_FREQUENCY = "600";
@@ -102,22 +102,14 @@ public class StreamReaderService extends IntentService {
             em.deleteAllEggs();
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream(size);
             Log.d(TAG, "Egglist size: " + eggList.size());
+            em.deleteAllEggs();
+            ThumbnailManager thumbnailManager = new FourDNestThumbnailManager();
             for (int i = 0; i < eggList.size(); i++) {
-                em.saveEgg(eggList.get(i));
-                String thumbnailUri = app.getCurrentNest().getBaseURI()
-                        + THUMBNAIL_PATH + eggList.get(i).getExternalId()
-                        + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
-                String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + THUMBNAIL_SAVE_LOCATION;
-                if (!new File(thumbnail_dir).exists()) {
-                	new File(thumbnail_dir).mkdirs();
-                }
-                String saveLocation = thumbnail_dir + "/" + eggList.get(i).getExternalId() + ".jpg";
-               // Log.d("SAVELOC", saveLocation);
-                if (app.getCurrentNest().getProtocol().getMediaFile(thumbnailUri, saveLocation)) {
-                 //   Log.d(TAG, "Egg written succesfully");
-                }else {
-                 //   Log.d(TAG, "Egg failed to write");
-                }
+
+            	Egg egg = eggList.get(i);
+                em.saveEgg(egg);
+                thumbnailManager.getThumbnail(egg);
+                
             }
             Log.d(TAG, "Saved eggs");
             List<Egg> eggs = em.listEggs();

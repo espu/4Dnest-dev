@@ -1,7 +1,10 @@
 package org.fourdnest.androidclient.ui;
 
+import java.util.List;
 
+import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
+import org.fourdnest.androidclient.EggTimeComparator;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 /**
@@ -26,6 +30,7 @@ import android.widget.ToggleButton;
 public class ListStreamActivity extends NestSpecificActivity {
 	public static final String PREFS_NAME = "ourPrefsFile";
 	private EggManager streamManager;
+	private ListView streamListView;
 
 	/** Called when this Activity is first created. */
 	@Override
@@ -42,8 +47,8 @@ public class ListStreamActivity extends NestSpecificActivity {
 
 		initializeCreateButton((Button) view.findViewById(R.id.create_button));
 
-		initializeStreamList(this.streamManager,
-				(ListView) view.findViewById(R.id.egg_list));
+		this.streamListView = (ListView) view.findViewById(R.id.egg_list);
+		initializeStreamList(this.streamManager, this.streamListView);
 		return view;
 
 	}
@@ -57,11 +62,15 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 *            Reference to the ListView that is responsible for displaying
 	 *            the Stream Listing
 	 */
-	private void initializeStreamList(EggManager manager, ListView streamListView) {
+	private void initializeStreamList(EggManager manager,
+			ListView streamListView) {
 		EggAdapter adapter = new EggAdapter(streamListView,
 				R.layout.egg_element_large, manager.listEggs());
 		streamListView.setAdapter(adapter);
-		streamListView.setOnItemClickListener(new EggItemOnClickListener(streamListView));
+		((EggAdapter)streamListView.getAdapter()).sort(new EggTimeComparator());
+		((EggAdapter)streamListView.getAdapter()).notifyDataSetChanged();
+		streamListView.setOnItemClickListener(new EggItemOnClickListener(
+				streamListView));
 	}
 
 	/**
@@ -163,12 +172,27 @@ public class ListStreamActivity extends NestSpecificActivity {
 		case R.id.menu_stream_nests:
 			return true;
 		case R.id.menu_stream_drafts:
-            startActivity(new Intent(this, ListDraftEggsActivity.class));
+			startActivity(new Intent(this, ListDraftEggsActivity.class));
 			return true;
-        case R.id.menu_stream_refresh:
-            return true;
+		case R.id.menu_stream_refresh:
+			refreshStreamList();
+			Toast.makeText(getApplicationContext(),
+					getText(R.string.stream_list_refreshed_toast), 1).show();
+			return true;
 		}
 		return false;
+	}
+
+	private void refreshStreamList() {
+		EggAdapter streamListViewAdapter = (EggAdapter) this.streamListView
+				.getAdapter();
+		streamListViewAdapter.clear();
+		List<Egg> newEggList = this.streamManager.listEggs();
+		for (Egg current : newEggList) {
+			streamListViewAdapter.add(current);
+		}
+		streamListViewAdapter.sort(new EggTimeComparator());
+		streamListViewAdapter.notifyDataSetChanged();
 	}
 
 	@Override

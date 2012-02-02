@@ -31,5 +31,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="No Tags" />
+    
+    <ImageView 
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />"
 
 </LinearLayout>
