@@ -223,7 +223,7 @@ public class NewEggActivity extends NestSpecificActivity{
     				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
-       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_egg_inputs_linearlayout);
+       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
        	return view;
 	}
