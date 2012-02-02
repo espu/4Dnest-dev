@@ -133,7 +133,7 @@
         
         <Button
 
-            android:id="@+id/new_photo_egg_save_draft_button"
+            android:id="@+id/edit_egg_save_draft_button"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/new_egg_save_as_draft"/>
