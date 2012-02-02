@@ -19,11 +19,11 @@ public class MapTest extends AndroidTestCase {
 		super.tearDown();
 	}
 
-	@Test
-	public void testGetMediaFile() throws Exception {
-		boolean val = (new OsmStaticMapGetter().getStaticMap(null));
-		assertTrue(val);
-	}
+	//@Test
+	//public void testGetMediaFile() throws Exception {
+	//	boolean val = (new OsmStaticMapGetter().getStaticMap(null));
+	//	assertTrue(val);
+	//}
 
 }
 

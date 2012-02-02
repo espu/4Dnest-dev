@@ -8,20 +8,19 @@ import android.util.Log;
 
 public class OsmStaticMapGetter implements StaticMapGetter {
 	private static String BASEURI = "http://pafciu17.dev.openstreetmap.org/?module=map";
-	private static String TESTURI = "/sdcard/testfile";
 	private static String JPG_TYPE = "imgType=jpg";
+
 	
-	/**
-	 * comments
-	 */
+
 	public boolean getStaticMap(Egg egg) {
+		String internalUriString = FourDNestThumbnailManager.getThumbnailUriString(egg);
 		String uriString = BASEURI;
 		uriString = setBoundBox(uriString, 15, 65, 20, 63);
 		uriString = setWidth(uriString, 400);
 		//uriString = setHeight(uriString, 100);
 		uriString = uriString + JPG_TYPE;
 		Log.d("thumbs", uriString);
-		boolean val = CommUtils.getNetFile(Uri.parse(uriString), Uri.parse(TESTURI));
+		boolean val = CommUtils.getNetFile(Uri.parse(uriString), Uri.parse(internalUriString));
 		Log.d("map_val", String.valueOf(val));
 		return val;
 	}
@@ -35,11 +34,11 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	}
 	
 	private String addPath(String uriString, Egg egg) {
-		return "";
+		return uriString;
 	}
 	
 	private String addPoint(String uriString, Egg egg) {
-		return "";
+		return uriString;
 	}
 	
 	private String setCenterPoint(String uriString, float longitude, float latitude) {
@@ -55,7 +54,7 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	}
 	
 	private String setZoom(String uriString, int zoomLevel) {
-		return "";
+		return uriString;
 	}
 
 

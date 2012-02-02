@@ -5,6 +5,6 @@ import org.fourdnest.androidclient.Egg;
 import android.net.Uri;
 
 public interface ThumbnailManager {
-	Uri getThumbnail(Egg egg);
+	boolean getThumbnail(Egg egg);
 	boolean deleteLocalThumbnail(Egg egg);
 }
