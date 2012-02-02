@@ -6,13 +6,17 @@ import java.util.Date;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
+import org.fourdnest.androidclient.comm.StaticMapGetter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ViewEggActivity extends NestSpecificActivity {
@@ -80,15 +84,23 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
+		ImageView map = (ImageView) view.findViewById(R.id.map);
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
 			for (Tag current : egg.getTags()) {
-				tagList += current.toString();
+				tagList += current.getName() + " ";
 			}
 			tags.setText(tagList);
+		}
+		
+		StaticMapGetter mapGetter = new OsmStaticMapGetter();
+		Uri mapUri = Uri.parse("/sdcard/testfile");
+		boolean val = mapGetter.getStaticMap(egg);
+		if (val) {
+			map.setImageURI(mapUri);
 		}
 
 		return view;
