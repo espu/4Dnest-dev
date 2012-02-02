@@ -134,17 +134,17 @@
         <Button
 
             android:id="@+id/new_photo_egg_save_draft_button"
-            android:layout_width="0dip"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/new_egg_save_as_draft"/>
     	
 
         <Button
             android:id="@+id/new_photo_egg_send_egg_button"
-            android:layout_width="fill_parent"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:layout_weight="1"
             android:text="@string/send_egg_to_nest" />
     </LinearLayout>
 
