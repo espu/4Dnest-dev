@@ -4,7 +4,6 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
-import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.os.Bundle;
 import android.view.View;
