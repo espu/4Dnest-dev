@@ -67,7 +67,7 @@ public class StreamReaderService extends IntentService {
         app = FourDNestApplication.getApplication();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
         int frequency = Integer.parseInt(prefs.getString("stream_frequency",
-                String.valueOf(DEFAULT_FREQUENCY))) * 1000;
+               String.valueOf(DEFAULT_FREQUENCY))) * 60000;
         size = Integer.parseInt(prefs.getString("stream_size", String
                 .valueOf(DEFAULT_SIZE)));
         Log.d(TAG, "Value of freq after read: " + frequency);
@@ -77,7 +77,7 @@ public class StreamReaderService extends IntentService {
         intent.addCategory(READ_STREAM);
         am.setInexactRepeating( //Be power efficient: we don't need exact timing
                 AlarmManager.ELAPSED_REALTIME,  // Don't wake up phone just for this
-                frequency,      //Don't run on start                            
+                FIRST_INTERVAL,      //Don't run on start                            
                 frequency,     // Update frequency
                 PendingIntent.getService(
                         app,                    // The context
