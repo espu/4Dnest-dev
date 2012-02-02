@@ -68,19 +68,25 @@ public class SendQueueService extends IntentService {
 	 * 
 	 * @param context Current application context
 	 * @param egg Egg to be put to queue
+	 * @param isDraft Is the Egg already in the draft database (sending of saved drafts)
 	 */
-	public static void sendEgg(Context context, Egg egg) {
+	public static void sendEgg(Context context, Egg egg, boolean isDraft) {
 		FourDNestApplication app = (FourDNestApplication)context; 
 		
-		Nest currentNest = app.getCurrentNest();		
-		if(currentNest == null) {
-			Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
-			return;
+		Egg savedEgg;
+		if(!isDraft) {
+			Nest currentNest = app.getCurrentNest();		
+			if(currentNest == null) {
+				Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
+				return;
+			}
+			
+			egg.setAuthor(currentNest.getUserName());
+			egg.setNestId(currentNest.getId());
+			savedEgg = app.getDraftEggManager().saveEgg(egg);
+		} else {
+			savedEgg = egg;
 		}
-		
-		egg.setAuthor(currentNest.getUserName());
-		egg.setNestId(currentNest.getId());
-		Egg savedEgg = app.getDraftEggManager().saveEgg(egg);
 		
 		Intent intent = new Intent(context, SendQueueService.class);
 		intent.addCategory(SendQueueService.SEND_EGG);
