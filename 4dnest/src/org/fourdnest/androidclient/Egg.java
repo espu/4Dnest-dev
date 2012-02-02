@@ -277,7 +277,7 @@ public class Egg {
                     return fileType.VIDEO;
                 }else if (fileT.equals("text")) {
                     return fileType.TEXT;
-                }else if (fileTArray[2].equals("json")) { // string is application/json
+                }else if (fileTArray[1].equals("json")) { // string is application/json
                 	return fileType.ROUTE;
                 }else {
                     return fileType.NOT_SUPPORTED;
