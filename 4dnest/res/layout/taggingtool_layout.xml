@@ -27,7 +27,8 @@
 	<AutoCompleteTextView android:id="@+id/autocomplete_tag"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="5dp"/>
+	android:layout_marginLeft="5dp"
+	android:hint="@string/add_tag_here"/>
 	<Button
 	android:id="@+id/add_tag_button"
 	android:layout_width="80dp"
