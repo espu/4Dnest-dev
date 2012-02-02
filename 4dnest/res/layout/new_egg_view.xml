@@ -143,6 +143,7 @@
             android:id="@+id/new_photo_egg_send_egg_button"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:layout_weight="1"
             android:text="@string/send_egg_to_nest" />
     </LinearLayout>
