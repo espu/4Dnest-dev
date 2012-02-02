@@ -32,7 +32,7 @@
     <string name="welcome_title">Welcome to 4DNest!</string>
     <string name="setup_qr">Read in QR-code</string>
     <string name="setup_manual">Fill in by Hand</string>
-    <string name="sendqueue_egg_queued">Egg queued</string>
+    <string name="sendqueue_egg_queued">Sending...</string>
     <string name="sendqueue_egg_send_complete">Send completed</string>
     <string name="gps_notification_on">GPS tracking started</string>
     <string name="gps_notification_off">GPS tracking disabled</string>
@@ -74,6 +74,7 @@
 	<string name="default_no_message">No Message</string>
 	<string name="default_no_tags">No Tags</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="stream_list_refreshing_toast">Refreshing stream...</string>
     <string name="stream_list_refreshed_toast">Stream Refreshed</string>
     <string name="protocolerror_authfail">Authorization failed</string>
     <string name="protocolerror_sendfail">Sending failed</string>

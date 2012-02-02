@@ -9,9 +9,15 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
+import org.fourdnest.androidclient.services.StreamReaderService;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,9 +34,12 @@ import android.widget.ToggleButton;
  * toggling route tracking.
  */
 public class ListStreamActivity extends NestSpecificActivity {
+	public static final String TAG = ListStreamActivity.class.getSimpleName();
 	public static final String PREFS_NAME = "ourPrefsFile";
 	private EggManager streamManager;
 	private ListView streamListView;
+	private LocalBroadcastManager mLocalBroadcastManager;
+	private BroadcastReceiver mReceiver;
 
 	/** Called when this Activity is first created. */
 	@Override
@@ -38,6 +47,24 @@ public class ListStreamActivity extends NestSpecificActivity {
 		this.streamManager = ((FourDNestApplication) getApplication())
 				.getStreamEggManager();
 		super.onCreate(savedInstanceState);
+		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+		IntentFilter filter = new IntentFilter();
+        filter.addAction(StreamReaderService.ACTION_STREAM_UPDATED);
+        this.mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            	Log.d(TAG, "BroadcastReceiver.onReceive");
+            	// only thing it receives at the moment is ACTION_STREAM_UPDATED
+    			refreshStreamList();
+            }
+        };
+        mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		StreamReaderService.requestUpdate(this);
 	}
 
 	@Override
@@ -175,15 +202,19 @@ public class ListStreamActivity extends NestSpecificActivity {
 			startActivity(new Intent(this, ListDraftEggsActivity.class));
 			return true;
 		case R.id.menu_stream_refresh:
-			refreshStreamList();
 			Toast.makeText(getApplicationContext(),
-					getText(R.string.stream_list_refreshed_toast), 1).show();
+					getText(R.string.stream_list_refreshing_toast), 1).show();
+			// The reply comes through broadcast
+			StreamReaderService.requestUpdate(this);
 			return true;
 		}
 		return false;
 	}
 
 	private void refreshStreamList() {
+		Log.d(TAG, "refreshStreamList");
+		Toast.makeText(getApplicationContext(),
+				getText(R.string.stream_list_refreshed_toast), 1).show();
 		EggAdapter streamListViewAdapter = (EggAdapter) this.streamListView
 				.getAdapter();
 		streamListViewAdapter.clear();
