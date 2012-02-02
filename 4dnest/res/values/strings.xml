@@ -79,5 +79,9 @@
     <string name="protocolerror_sendfail">Sending failed</string>
     <string name="protocolerror_servererror">Server error, contact server owner</string>
     <string name="protocolerror_unknown">Unknown error</string>
+    <string name="stream_update_frequency_title">Stream Update</string>
+    <string name="stream_update_frequency_descr">How often the Stream is fetched from the server in minutes</string>
+    <string name="stream_size_title">Stream size</string>
+    <string name="stream_size_descr">How many objects are fetched from the stream</string>
     
 </resources>

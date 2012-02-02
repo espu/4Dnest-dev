@@ -56,6 +56,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
 	private static final String TAG_DOWNLOAD_PATH = "fourdnest/api/v1/tag/";
 	private static final String JSON_FORMAT = "?format=json";
+	private static final String SIZE_FORMAT = "?limit=";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UPDATED = 204;
@@ -247,7 +248,7 @@ public class FourDNestProtocol implements Protocol {
 		HttpGet request = new HttpGet();
 		String temp = "http://test42.4dnest.org/";
 		String uriPath = temp + EGG_DOWNLOAD_PATH + uid + "/" + JSON_FORMAT;
-		Log.d("URI", uriPath);
+		//Log.d("URI", uriPath);
 
 		try {
 			request.setURI(new URI(uriPath));
@@ -280,17 +281,13 @@ public class FourDNestProtocol implements Protocol {
 	 * 
 	 * @return List of egg objects, obtained from the server.
 	 */
-	public List<Egg> getStream() {
+	public List<Egg> getStream(int size) {
 		Egg current = null;
 		ArrayList<Egg> eggList = new ArrayList<Egg>();
 		HttpClient client = CommUtils.createHttpClient();
 		HttpGet request = new HttpGet();
-		String uriPath = "http://test42.4dnest.org/fourdnest/api/v1/egg/?format=json"; // this.nest.getBaseURI()
-																						// +
-																						// EGG_DOWNLOAD_PATH
-																						// +
-																						// JSON_FORMAT;
-		Log.d("URIStream", uriPath);
+		String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + SIZE_FORMAT + size;
+		//Log.d("URIStream", uriPath);
 		try {
 			request.setURI(new URI(uriPath));
 			addAuthentication(request, "");
@@ -300,7 +297,7 @@ public class FourDNestProtocol implements Protocol {
 			for (int i = 0; i < jsonArr.length(); i++) {
 				current = jSONObjectToEgg(jsonArr.getJSONObject(i));
 				if (current != null) {
-					Log.d("CURRENTEGG", current.getExternalId());
+					//Log.d("CURRENTEGG", current.getExternalId());
 					eggList.add(current);
 				}
 			}
@@ -372,10 +369,10 @@ public class FourDNestProtocol implements Protocol {
 		Date date = new Date();
 		String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
 				+ "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
-		Log.d("stringtosign", stringToSign);
+		//Log.d("stringtosign", stringToSign);
 
 		String authHead = user + ":" + computeSignature(stringToSign, key);
-		Log.d("HASH", authHead);
+		//Log.d("HASH", authHead);
 		base.setHeader("Authorization", authHead);
 
 		base.setHeader("Date", DateUtils.formatDate(date));
@@ -461,7 +458,7 @@ public class FourDNestProtocol implements Protocol {
 				// No tags
 			}
 			String dateStr = js.getString("created");
-			Log.d("DATESTR", dateStr);
+			//Log.d("DATESTR", dateStr);
 			DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss"));
 			Date date;
             try {
