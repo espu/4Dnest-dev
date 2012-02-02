@@ -54,7 +54,7 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 				String externalUriString = app.getCurrentNest().getBaseURI()
                         + THUMBNAIL_PATH + egg.getExternalId()
                         + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
-                String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + THUMBNAIL_LOCATION;
+                String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
                 if (!new File(thumbnail_dir).exists()) {
                 	new File(thumbnail_dir).mkdirs();
                 }
