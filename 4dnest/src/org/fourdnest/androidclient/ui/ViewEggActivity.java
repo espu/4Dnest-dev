@@ -91,7 +91,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
 			for (Tag current : egg.getTags()) {
-				tagList += current.toString();
+				tagList += current.getName() + " ";
 			}
 			tags.setText(tagList);
 		}
