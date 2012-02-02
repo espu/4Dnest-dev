@@ -144,6 +144,7 @@
             android:id="@+id/new_photo_egg_send_egg_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/send_egg_to_nest" />
     </LinearLayout>
 
