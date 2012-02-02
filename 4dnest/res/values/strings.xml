@@ -9,14 +9,14 @@
     <string name="create_screen_track_route_tag">Track Route</string>
     <string name="stored_eggs_screen_unsent_title">Unsent Eggs:</string>
     <string name="stored_eggs_screen_sent_title">Sent Eggs:</string>
-    <string name="stream_reader_title">Eggs in Nest:</string>
+    <string name="stream_reader_title">Latest messages:</string>
     <string name="stream_reader_stream_tag">Read</string>
     <string name="stream_reader_create_tag">Create&gt;&gt;</string>
     <string name="stream_reader_gps_button_tracking">Tracking</string>
     <string name="stream_reader_gps_button_nottracking">Start track</string>
     <string name="stored_eggs_screen_create_tag">&lt;&lt;Create</string>
     <string name="stored_eggs_screen_stored_eggs_tag">Stored Eggs</string>
-    <string name="send_egg_to_nest">Send Egg To Nest!</string>
+    <string name="send_egg_to_nest">Send!</string>
     <string name="preview">preview</string>
     <string name="add_message_here">Add Message here</string>
     <string name="add_tag_here">Write tag here</string>
@@ -32,7 +32,7 @@
     <string name="welcome_title">Welcome to 4DNest!</string>
     <string name="setup_qr">Read in QR-code</string>
     <string name="setup_manual">Fill in by Hand</string>
-    <string name="sendqueue_egg_queued">Egg queued</string>
+    <string name="sendqueue_egg_queued">Sending...</string>
     <string name="sendqueue_egg_send_complete">Send completed</string>
     <string name="gps_notification_on">GPS tracking started</string>
     <string name="gps_notification_off">GPS tracking disabled</string>
@@ -49,7 +49,7 @@
     <string name="new_egg_intent_select_picture">Select Picture</string>
     <string name="new_egg_intent_image_description">Image captured for 4D Nest</string>
     <string name="new_egg_intent_image_file_name">dpic.jpg</string>
-    <string name="new_egg_save_as_draft">save as draft</string>
+    <string name="new_egg_save_as_draft">Save as draft</string>
     <string name="new_egg_dialogue_open_image_callery">Open Picture Gallery</string>
     <string name="new_egg_dialogue_open_photo_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_camera">Open Camera</string>
@@ -74,6 +74,7 @@
 	<string name="default_no_message">No Message</string>
 	<string name="default_no_tags">No Tags</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="stream_list_refreshing_toast">Refreshing stream...</string>
     <string name="stream_list_refreshed_toast">Stream Refreshed</string>
     <string name="protocolerror_authfail">Authorization failed</string>
     <string name="protocolerror_sendfail">Sending failed</string>

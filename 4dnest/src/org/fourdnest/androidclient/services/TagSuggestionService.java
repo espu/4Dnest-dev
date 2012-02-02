@@ -37,9 +37,9 @@ public class TagSuggestionService extends IntentService {
 	public static final String SET_LAST_USED_TAGS = "SET_LAST_USED_TAGS_CATEGORY";
 
 	/** Broadcast Intent will have this action if it contains autocomplete suggestions */
-	public static final String ACTION_AUTOCOMPLETE_TAGS = "corg.fourdnest.androidclient.AUTOCOMPLETE_TAGS";
+	public static final String ACTION_AUTOCOMPLETE_TAGS = "org.fourdnest.androidclient.AUTOCOMPLETE_TAGS";
 	/** Broadcast Intent will have this action if it contains last used tags */
-	public static final String ACTION_LAST_USED_TAGS = "corg.fourdnest.androidclient.LAST_USED_TAGS";
+	public static final String ACTION_LAST_USED_TAGS = "org.fourdnest.androidclient.LAST_USED_TAGS";
 
 	
 	/** Key for current Nest id in Intent extras */
