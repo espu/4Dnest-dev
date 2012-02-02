@@ -1,11 +1,10 @@
 package org.fourdnest.androidclient.ui;
 
-import java.util.List;
-
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +15,8 @@ import android.widget.ListView;
 public class ListDraftEggsActivity extends NestSpecificActivity {
 
 	private EggManager draftManager;
+	ListView draftListView;
+	Button sendAllButton;
 	
 	/** Called when this Activity is first created. */
 	@Override
@@ -26,8 +27,17 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 	}
 	
 	@Override
+	protected void onResume() {
+		initializeDraftList(this.draftManager, this.draftListView);
+		super.onResume();
+	}
+	
+	@Override
 	public View getContentLayout(View view) {
-		initializeDraftList(this.draftManager, (ListView) view.findViewById(R.id.draft_list));
+		this.draftListView = (ListView) view.findViewById(R.id.draft_list);
+		this.sendAllButton = (Button) view.findViewById(R.id.send_all_button);
+		initializeDraftList(this.draftManager, this.draftListView);
+		initializeSendAllButton(this.sendAllButton);
 		return view;
 	}
 
@@ -47,9 +57,15 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		button.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				while (!ListDraftEggsActivity.this.draftManager.listEggs().isEmpty()) {
-					//TODO: Send all the things!
+				EggAdapter draftAdapter = (EggAdapter) ListDraftEggsActivity.this.draftListView.getAdapter();
+				Egg current = null;
+				while (!draftAdapter.isEmpty()) {
+					current = draftAdapter.getItem(0);
+					//TODO: Wait for sendAll in Services. Use that instead of sending each egg individually.
+//					SendQueueService.sendEgg(getApplicationContext(), current, true);
+					draftAdapter.remove(current);
 				}
+				draftAdapter.notifyDataSetChanged();
 				
 			}
 		});
