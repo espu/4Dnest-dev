@@ -67,7 +67,7 @@
 <string name="default_no_tags">No Tags</string>
     <string name="menu_refresh">Refresh</string>
      <string name="stream_update_frequency_title">Stream Update</string>
-	<string name="stream_update_frequency_descr">How often the Stream is fetched from the server in seconds</string>
+	<string name="stream_update_frequency_descr">How often the Stream is fetched from the server in minutes</string>
 	<string name="stream_size_title">Stream size</string>
 	<string name="stream_size_descr">How many objects are fetched from the stream</string>
 </resources>

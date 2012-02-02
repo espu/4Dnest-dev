@@ -35,14 +35,14 @@
         android:title="@string/pref_kiosk_title" >
 	</CheckBoxPreference>
 	
-	<EditTextPreference
+	<ListPreference
     	android:key="stream_frequency"
     	android:summary="@string/stream_update_frequency_descr"
     	android:title="@string/stream_update_frequency_title"
-    	android:inputType="number"
-    	android:defaultValue = "600">
-    </EditTextPreference>
-    
+    	android:entries="@array/listStreamFrequencies"
+    	android:entryValues="@array/listStreamValues"
+    	android:defaultValue = "30">
+    </ListPreference>
     <EditTextPreference
     	android:key="stream_size"
     	android:summary="@string/stream_size_descr"

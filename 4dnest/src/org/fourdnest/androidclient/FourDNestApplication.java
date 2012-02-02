@@ -143,7 +143,7 @@ public class FourDNestApplication extends Application
         	Intent i = new Intent(this, StreamReaderService.class);
         	i.addCategory(StreamReaderService.STREAM_SIZE);
         	i.putExtra(StreamReaderService.NEW_STREAM_SIZE, this.prefs.getString("stream_size", ""));
-        	startService(i);
+        	//startService(i);
         }
     }
     
