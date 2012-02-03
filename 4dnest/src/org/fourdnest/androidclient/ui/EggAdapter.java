@@ -7,7 +7,9 @@ import java.util.List;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +109,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView time = (TextView) view.findViewById(R.id.time);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
+		
+		thumbnail.setImageURI(Uri.parse(FourDNestThumbnailManager.getThumbnailUriString(egg)));
 
 		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
