@@ -21,6 +21,7 @@ public class MapViewActivity extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
         mapController = mapView.getController();
         mapController.setZoom(8);
         GeoPoint point2 = new GeoPoint(61000000, 25000000);
