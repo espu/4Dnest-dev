@@ -79,9 +79,28 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 		Egg egg = (Egg) this.getItem(arg0);
 		TextView message = (TextView) view.findViewById(R.id.message);
+		TextView tags = (TextView) view.findViewById(R.id.tags);
+		if(egg.getCaption().length()>0){ //if caption is empty, leave default message (no message)
+			message.setText(egg.getCaption());
+		}
+		List<Tag> tagList = egg.getTags();
+		if(tagList.size()>0){ //if there are no tags, leave default message (no tags)
+			String tagListString = "";
+			
+			for (int i = 0; i <tagList.size(); i++){ //No join in Android java ? Could not find it
+				if(i==0){
+					tagListString = tagListString.concat(tagList.get(0).getName());
+				}
+				else {
+					tagListString = tagListString.concat(", "+tagList.get(i).getName());
+				}
+				
+				}
+			tags.setText(tagListString);
+			}
 		
 		return view;
-	}
+		}
 
 	/**
 	 * Binds and returns a large egg view element. Layout defined in
