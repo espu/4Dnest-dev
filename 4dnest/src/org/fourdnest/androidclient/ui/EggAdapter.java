@@ -106,16 +106,16 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		// TODO: Proper implementation after thumbnail fetching
 		// functionality.
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-		TextView author = (TextView) view.findViewById(R.id.author);
-		TextView time = (TextView) view.findViewById(R.id.time);
+		//TextView author = (TextView) view.findViewById(R.id.author);
+		//TextView time = (TextView) view.findViewById(R.id.time);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		
 		thumbnail.setImageURI(Uri.parse(FourDNestThumbnailManager.getThumbnailUriString(egg)));
 
-		author.setText(egg.getAuthor());
+		//author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
 		date.setText(DateFormat.getDateInstance().format(egg.getCreationDate()));
-		time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
+		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {
 			String eggTags = "";

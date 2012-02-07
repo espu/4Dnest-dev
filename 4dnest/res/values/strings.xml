@@ -87,6 +87,6 @@
     <string name="egg_view_no_date_dummy">No Date</string>
     <string name="egg_view_no_text">No Text</string>
     <string name="egg_view_no_tags">No Tags</string>
-    <string name="new_egg_draft_toast">Saved as Draft</string>
+    <string name="new_egg_draft_toast">Saved as draft</string>
     
 </resources>
