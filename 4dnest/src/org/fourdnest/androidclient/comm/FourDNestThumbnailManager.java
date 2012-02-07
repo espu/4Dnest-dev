@@ -10,6 +10,7 @@ import android.util.Log;
 
 /**
  * 
+ * This class gives functionality to maintain egg thumbnails between 4dNest server and android client.
  *
  */
 public class FourDNestThumbnailManager implements ThumbnailManager {
@@ -32,6 +33,12 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 		this.app = FourDNestApplication.getApplication();
 	}
 	
+
+	/**
+	 * Check if given file exists
+	 * @param egg for which the check is done
+	 * @return boolean
+	 */
 	private boolean thumbNailExists(Egg egg) {
 		String path = getThumbnailUriString(egg);
 		if ((new File(path)).exists()) {
@@ -40,7 +47,12 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 			return false;	
 		}
 	}
-
+	
+	/**
+	 * Returns predefined thumbnailUri for given egg as a string
+	 * @param egg 
+	 * @return String of egg's thumbnail's Uri
+	 */
 	public static String getThumbnailUriString(Egg egg) {
 
 		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION
@@ -50,6 +62,14 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 
 	}
 	
+	/**
+	 * Can be called to make sure thumbnail is in memory card, thumbnail is downloaded from 4dnest server or
+	 * OSM static maps api when applicable.
+	 * 
+	 * @param Egg whose thumbnail is in question
+	 * 
+	 * @return boolean whether thumbnail can be found in predefined location
+	 */
 	public boolean getThumbnail(Egg egg) {
 		String path = getThumbnailUriString(egg);
 		boolean res = true;
@@ -79,6 +99,7 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 	}
 	
 	public boolean deleteLocalThumbnail(Egg egg) {
+		// TODO Implement if time 
 		return false;
 	}
 }

@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +33,14 @@ public class ViewEggActivity extends NestSpecificActivity {
 				.get(EggItemOnClickListener.INTENT_EGG_ID);
 		
 		super.onCreate(savedInstanceState);
+		
+		final Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        });
 		
 		//TODO: Inflate based on egg type
 
@@ -94,7 +103,6 @@ public class ViewEggActivity extends NestSpecificActivity {
 			}
 			tags.setText(tagList);
 		}
-		
 		return view;
 	}
 

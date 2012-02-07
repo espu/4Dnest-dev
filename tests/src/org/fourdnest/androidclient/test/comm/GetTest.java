@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.test.comm;
 
 import org.fourdnest.androidclient.comm.CommUtils;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
