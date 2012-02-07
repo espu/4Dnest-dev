@@ -39,8 +39,12 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 			return false;	
 		}
 	}
+
 	public static String getThumbnailUriString(Egg egg) {
-		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION + egg.getExternalId() + THUMBNAIL_FILETYPE;
+
+		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION
+				+ egg.getId() + THUMBNAIL_FILETYPE;
+
 	}
 	
 	public boolean getThumbnail(Egg egg) {

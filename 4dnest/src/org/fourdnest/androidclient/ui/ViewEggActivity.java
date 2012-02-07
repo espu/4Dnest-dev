@@ -84,7 +84,6 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		ImageView map = (ImageView) view.findViewById(R.id.map);
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
@@ -96,13 +95,6 @@ public class ViewEggActivity extends NestSpecificActivity {
 			tags.setText(tagList);
 		}
 		
-		StaticMapGetter mapGetter = new OsmStaticMapGetter();
-		Uri mapUri = Uri.parse("/sdcard/testfile");
-		boolean val = mapGetter.getStaticMap(egg);
-		if (val) {
-			map.setImageURI(mapUri);
-		}
-
 		return view;
 	}
 

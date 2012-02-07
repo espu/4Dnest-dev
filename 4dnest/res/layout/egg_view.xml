@@ -31,10 +31,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/egg_view_no_tags" />
-    
-    <ImageView 
-        android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />"
 
 </LinearLayout>
