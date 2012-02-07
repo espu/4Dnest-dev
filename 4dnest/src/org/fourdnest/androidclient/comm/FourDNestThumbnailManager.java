@@ -32,7 +32,8 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 		this.app = FourDNestApplication.getApplication();
 	}
 	
-	private boolean thumbNailExists(String path) {
+	private boolean thumbNailExists(Egg egg) {
+		String path = getThumbnailUriString(egg);
 		if ((new File(path)).exists()) {
 			return true;
 		}else {
@@ -43,14 +44,16 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 	public static String getThumbnailUriString(Egg egg) {
 
 		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION
-				+ egg.getId() + THUMBNAIL_FILETYPE;
+				+ egg.getId()
+				+ CommUtils.md5FromString(egg.getRemoteFileURI().toString())
+				+ THUMBNAIL_FILETYPE;
 
 	}
 	
 	public boolean getThumbnail(Egg egg) {
 		String path = getThumbnailUriString(egg);
 		boolean res = true;
-		if (!thumbNailExists(path)) {
+		if (!thumbNailExists(egg)) {
 			if (egg.getMimeType() == Egg.fileType.ROUTE) {
 				StaticMapGetter mapGetter = new OsmStaticMapGetter();
 				res = mapGetter.getStaticMap(egg);
