@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="@string/stream_reader_create_tag"
+            android:textStyle="bold"
             android:textSize="15dp" />
     </RelativeLayout>
 
