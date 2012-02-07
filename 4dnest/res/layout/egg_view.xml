@@ -33,6 +33,11 @@
 
         android:text="@string/egg_view_no_tags" />
     
+    <ImageView 
+        android:id="@+id/file_thumbnail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />"
+    
     <Button 
         android:id="@+id/button"
         android:layout_height="wrap_content"
