@@ -75,7 +75,7 @@ public class EggManager {
      * 
      * @return ArrayList<Nest> List of saved nests
      */
-    public List<Egg> listEggs() {
+    public synchronized List<Egg> listEggs() {
         
         SQLiteDatabase db = this.eggDb.getReadableDatabase();
         
@@ -113,7 +113,7 @@ public class EggManager {
      * @param id of nest
      * @return Nest with specified id or null
      */
-    public Egg getEgg(int id) {
+    public synchronized Egg getEgg(int id) {
 
         SQLiteDatabase db = this.eggDb.getReadableDatabase();
         Cursor result = db.query(TABLE,
@@ -146,7 +146,7 @@ public class EggManager {
      * @param id of egg to delete
      * @return 1 if deletion was successful, 0 if not
      */
-    public int deleteEgg(int id) {
+    public synchronized int deleteEgg(int id) {
         SQLiteDatabase db = this.eggDb.getWritableDatabase();
         
         int result = db.delete(TABLE, C_ID + "==" + id, null);
@@ -160,7 +160,7 @@ public class EggManager {
      * Deletes all saved Eggs in the database
      * @return number of deleted Eggs
      */
-    public int deleteAllEggs() {
+    public synchronized int deleteAllEggs() {
         SQLiteDatabase db = this.eggDb.getWritableDatabase();
         
         int result = db.delete(TABLE, null, null);
@@ -175,7 +175,7 @@ public class EggManager {
      * @param cursor to be read. Will not be manipulated, only read.
      * @return Egg from cursor
      */
-    private Egg extractEggFromCursor(Cursor cursor) {                   
+    private synchronized Egg extractEggFromCursor(Cursor cursor) {                   
         int id = cursor.getInt(0);
         int nestId = cursor.getInt(1);
         String author = cursor.getString(2);
@@ -231,7 +231,7 @@ public class EggManager {
      * @param egg object to save
      * @return Egg with updated info (id)
      */
-    public Egg saveEgg(Egg egg) {
+    public synchronized Egg saveEgg(Egg egg) {
         
         
         SQLiteDatabase db = this.eggDb.getWritableDatabase();
@@ -318,7 +318,7 @@ public class EggManager {
     /**
      * Closes database
      */
-    public void close() {
+    public synchronized void close() {
         Log.d(TAG, "db closed");
         this.eggDb.close();
     }

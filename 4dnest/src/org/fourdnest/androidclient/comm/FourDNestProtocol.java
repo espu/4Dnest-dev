@@ -362,8 +362,8 @@ public class FourDNestProtocol implements Protocol {
 		 * 
 		 * Should be in utf-8 automatically.
 		 */
-		String user = "Hard-coded";
-		String key = "secret";
+		String user = this.nest.getUserName();
+		String key = this.nest.getSecretKey();
 		String verb = base.getMethod();
 		String requestUri = base.getURI().getPath();
 		Date date = new Date();

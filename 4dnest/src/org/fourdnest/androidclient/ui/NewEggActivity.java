@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
@@ -14,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 public class NewEggActivity extends NestSpecificActivity{
 
@@ -159,11 +162,47 @@ public class NewEggActivity extends NestSpecificActivity{
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				
 				// Go to ListStreamActivity after finishing
-				v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
-				v.getContext();
+				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+				//v.getContext();
+				finish();
 				
 			}
 		});
+        
+        /*
+         * Adds on click listener to draft button, that handles drafting the egg
+         */
+        
+        Button draftButton = (Button) view.findViewById(R.id.edit_egg_save_draft_button);
+        final FourDNestApplication applicationTemp = super.application; //needs to define this outside of the onClickListerer or awfull thinks will happen
+        draftButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				//TODO: Proper implementation
+				Egg egg = new Egg();
+				// Author is set by SendQueueService
+				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
+				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+				NewEggActivity.this.taggingTool.addTagFromTextView();
+				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
+				egg.setTags(tags);
+				//FIXME currently supports only editing of drafts, not Eggs from the stream
+				applicationTemp.getDraftEggManager().saveEgg(egg);
+				TagSuggestionService.setLastUsedTags(getApplication(), tags);
+				Context context = getApplicationContext();
+				String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, saveAsDraftToast, duration);
+				toast.show();
+
+				// Go to ListStreamActivity after finishing
+				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+				//v.getContext();
+				finish();
+				
+			}
+		});
+        
         
 		/*
 		* This onClick listener is used to popup a dialogue that determines what ever to

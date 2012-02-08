@@ -37,9 +37,9 @@ public class TagSuggestionService extends IntentService {
 	public static final String SET_LAST_USED_TAGS = "SET_LAST_USED_TAGS_CATEGORY";
 
 	/** Broadcast Intent will have this action if it contains autocomplete suggestions */
-	public static final String ACTION_AUTOCOMPLETE_TAGS = "corg.fourdnest.androidclient.AUTOCOMPLETE_TAGS";
+	public static final String ACTION_AUTOCOMPLETE_TAGS = "org.fourdnest.androidclient.AUTOCOMPLETE_TAGS";
 	/** Broadcast Intent will have this action if it contains last used tags */
-	public static final String ACTION_LAST_USED_TAGS = "corg.fourdnest.androidclient.LAST_USED_TAGS";
+	public static final String ACTION_LAST_USED_TAGS = "org.fourdnest.androidclient.LAST_USED_TAGS";
 
 	
 	/** Key for current Nest id in Intent extras */
@@ -87,15 +87,17 @@ public class TagSuggestionService extends IntentService {
 			this.app = FourDNestApplication.getApplication();
 			this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 
+			Intent alarmIntent = new Intent(app, TagSuggestionService.class);
+			alarmIntent.addCategory(UPDATE_REMOTE_TAGS);
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 	        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
 	        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
 	        		FIRST_INTERVAL,								
-	        		AlarmManager.INTERVAL_HOUR,		// Update frequency
+	        		AlarmManager.INTERVAL_FIFTEEN_MINUTES,		// Update frequency
 	        		PendingIntent.getService(
 	        				app,					// The context
 	        				0,
-	        				new Intent(app, TagSuggestionService.class),
+	        				alarmIntent,
 	        				0
 	        		)
 	        );
@@ -115,9 +117,9 @@ public class TagSuggestionService extends IntentService {
 	 * Request broadcasting of the current tag suggestions
 	 */
 	public static void requestTagBroadcast(Context context) {
-		Log.d(TAG, "requestTagBroadcast");
 		FourDNestApplication app = (FourDNestApplication) context;
 		Integer currentNestId = Integer.valueOf(app.getCurrentNestId());
+		Log.d(TAG, "requestTagBroadcast for nest with id " + currentNestId.toString());
 		
 		Intent intent = new Intent(context, TagSuggestionService.class);
 		intent.addCategory(GET_TAGS);
@@ -164,6 +166,8 @@ public class TagSuggestionService extends IntentService {
 			broadcastTags(intent);
 		} else if(intent.hasCategory(SET_LAST_USED_TAGS)) {
 			handleLastUsedTags(intent);
+		} else {
+			super.onStartCommand(intent, flags, startId);
 		}
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -181,7 +185,7 @@ public class TagSuggestionService extends IntentService {
 			Protocol protocol = nest.getProtocol();
 			List<Tag> tags = protocol.topTags(REMOTE_TAG_COUNT);
 			if(tags != null) {
-				Log.d(TAG, "Tags updated for Nest with id " + nestId);
+				Log.d(TAG, "Tags updated for Nest with id " + nestId + " one is " + tags.get(0).getName());
 				this.remoteTags.put(nestId, tagListToStringArray(tags));
 			} else {
 				Log.w(TAG, "Nest with id " + nestId + " returned null topTags");
@@ -195,6 +199,7 @@ public class TagSuggestionService extends IntentService {
 	private synchronized void broadcastTags(Intent intent) {
 		// First broadcast the autocomplete suggestions
 		Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
+		Log.d(TAG, "broadcastTags for nest with id " + currentNestId.toString());
 		List<String> out = new ArrayList<String>();
 		Set<String> lt = this.localTags.get(currentNestId);
 		if(lt != null) {
@@ -203,6 +208,7 @@ public class TagSuggestionService extends IntentService {
 		String[] rt = this.remoteTags.get(currentNestId);
 		if(rt != null) {
 			for(String tag : rt) {
+				Log.d(TAG, "Added remote tag " + tag);
 				out.add(tag);
 			}
 		}

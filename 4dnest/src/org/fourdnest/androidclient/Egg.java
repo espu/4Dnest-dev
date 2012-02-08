@@ -290,10 +290,9 @@ public class Egg {
                     return fileType.VIDEO;
                 } else if (fileT.equals("text")) {
                     return fileType.TEXT;
-                } else if (fileTArray[1].equals("json")) { // string is
-                                                           // application/json
-                    return fileType.ROUTE;
-                } else {
+                }else if (fileTArray[1].equals("json")) { // string is application/json
+                	return fileType.ROUTE;
+                }else {
                     return fileType.NOT_SUPPORTED;
                 }
             }
