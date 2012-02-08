@@ -49,16 +49,27 @@ public class FourDNestThumbnailManager implements ThumbnailManager {
 	}
 	
 	/**
-	 * Returns predefined thumbnailUri for given egg as a string
+	 * Returns predefined thumbnailUri for given egg as a string based on localID and a hash from unique property
 	 * @param egg 
 	 * @return String of egg's thumbnail's Uri
 	 */
 	public static String getThumbnailUriString(Egg egg) {
-
-		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION
-				+ egg.getId()
-				+ CommUtils.md5FromString(egg.getRemoteFileURI().toString())
-				+ THUMBNAIL_FILETYPE;
+		if (egg.getRemoteFileURI() == null) {
+			return Environment.getExternalStorageDirectory()
+					+ THUMBNAIL_LOCATION
+					+ egg.getId()
+					+ CommUtils
+							.md5FromString(egg.getRemoteFileURI().toString())
+					+ THUMBNAIL_FILETYPE;
+		}else {
+			// egg has only textual content
+			return Environment.getExternalStorageDirectory()
+					+ THUMBNAIL_LOCATION
+					+ egg.getId()
+					+ CommUtils
+							.md5FromString(egg.getCaption())
+					+ THUMBNAIL_FILETYPE;
+		}
 
 	}
 	
