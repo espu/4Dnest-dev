@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+import java.io.File;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.util.List;
@@ -9,6 +10,8 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +74,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 	}
 
+	/**
+	 * Binds code side stuff to each drafted eggs UI in draft listing. A fairly long and complex class.
+	 */
+	
 	private View bindDraftEggView(int arg0, View arg1) {
 		View view = arg1;
 		if (view == null) {
@@ -78,6 +85,9 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
 		Egg egg = (Egg) this.getItem(arg0);
+		/*
+		 * First bind comment and tags to their fields
+		 */
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		if(egg.getCaption().length()>0){ //if caption is empty, leave default message (no message)
@@ -97,7 +107,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 				
 				}
 			tags.setText(tagListString);
-			}
+			}		
+		//ImageView thumbnail = (ImageView) view.findViewById(R.id.draft_thumbnail);
+		//thumbnail.setImageURI((egg.getLocalFileURI()));
+
+		/*
+		 * Bind listeners and other actions to their respective fields 
+		 */
 		
 		return view;
 		}

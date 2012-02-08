@@ -8,7 +8,7 @@
     <!-- maxHeight essentially defines the height of the egg element -->
 
     <ImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/draft_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
