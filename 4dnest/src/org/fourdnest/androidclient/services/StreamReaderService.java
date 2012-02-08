@@ -107,6 +107,7 @@ public class StreamReaderService extends IntentService {
             for (int i = 0; i < eggList.size(); i++) {
 
             	Egg egg = eggList.get(i);
+            	Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
                 em.saveEgg(egg);
                 thumbnailManager.getThumbnail(egg);
                 

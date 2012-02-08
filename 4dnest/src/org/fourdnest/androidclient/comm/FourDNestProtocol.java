@@ -446,8 +446,25 @@ public class FourDNestProtocol implements Protocol {
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
 			String caption = js.getString("caption");
-			String externalFileUri = js.getString("content_uri");
+			String externalFileUriStr;
+			Uri externalFileUri = null;
+			try {
+				externalFileUriStr = js.getString("content_uri");
+				externalFileUri = Uri.parse(externalFileUriStr);
+			} catch (Exception e) {
+				//No content_uri means text egg, so we leave the external file uri as null
+			}
 			String author = js.getString("author");
+			String thumbnailUriStr = null;
+			try {
+				thumbnailUriStr = js.getString("thumbnail_uri");
+			} catch (JSONException e) {
+				thumbnailUriStr = null;
+			}
+			Uri thumbNailUri = null;
+			if (thumbnailUriStr != null) {
+				thumbNailUri = Uri.parse(thumbnailUriStr);
+			}
 			ArrayList<Tag> tags = new ArrayList<Tag>();
 			try {
 				JSONArray tagar = js.getJSONArray("tags");
@@ -467,7 +484,7 @@ public class FourDNestProtocol implements Protocol {
                Log.e(TAG, "Failed to parse date");
                date = null;
             }
-			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, tags, 0, date);
+			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0, date);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			return egg;
