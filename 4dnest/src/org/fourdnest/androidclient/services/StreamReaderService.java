@@ -5,7 +5,6 @@ import java.util.List;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
-import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.app.AlarmManager;
@@ -118,13 +117,12 @@ public class StreamReaderService extends IntentService {
             em.deleteAllEggs();
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream(size);
             Log.d(TAG, "Egglist size: " + eggList.size());
-            ThumbnailManager thumbnailManager = new FourDNestThumbnailManager();
             for (int i = 0; i < eggList.size(); i++) {
 
             	Egg egg = eggList.get(i);
             	Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
                 em.saveEgg(egg);
-                thumbnailManager.getThumbnail(egg);
+                app.getCurrentNest().getProtocol().getThumbnail(egg);
                 
             }
             Log.d(TAG, "Saved eggs");
