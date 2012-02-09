@@ -360,7 +360,7 @@ public class EggManager {
         }
         double latitude = 0;
         if (!cursor.isNull(11)) {
-            longitude = cursor.getDouble(11);
+            latitude = cursor.getDouble(11);
         }
         Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload, date);
         egg.setLongitude(longitude);
