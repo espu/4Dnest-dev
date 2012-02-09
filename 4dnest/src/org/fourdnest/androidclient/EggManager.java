@@ -29,7 +29,7 @@ public class EggManager {
     
     private static final String TAG = EggManager.class.getSimpleName();
     
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
     
     // Table columns
     private static final String TABLE = "egg";
@@ -45,12 +45,13 @@ public class EggManager {
     private static final String C_REMOTETHUMBNAILURI = "remote_thumbnail_uri";
     private static final String C_LONGITUDE = "longitude";
     private static final String C_LATITUDE = "latitude";
+    private static final String C_EXID = "external_id";
     
     private static final String TAG_LIST_SEPARATOR = ",";
     
     private static final String[] ALL_COLUMNS = new String[] { C_ID, C_NESTID,
             C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD,
-            C_TAGS, C_DATE, C_REMOTETHUMBNAILURI, C_LONGITUDE, C_LATITUDE };
+            C_TAGS, C_DATE, C_REMOTETHUMBNAILURI, C_LONGITUDE, C_LATITUDE, C_EXID };
         
     private final EggDatabase eggDb;
     private String dbName;
@@ -246,6 +247,7 @@ public class EggManager {
                             .getRemoteThumbnailUri().toString() : null);
             values.put(C_LONGITUDE, egg.getLongitude());
             values.put(C_LATITUDE, egg.getLatitude());
+            values.put(C_EXID, egg.getExternalId());
 	        
 	        // API level 8 would have insertWithOnConflict, have to work around it
 	        // and check for conflict and then either insert or update
@@ -364,9 +366,14 @@ public class EggManager {
         if (!cursor.isNull(11)) {
             longitude = cursor.getDouble(11);
         }
+        String exId = null;
+        if (!cursor.isNull(12)) {
+        	exId = cursor.getString(12);
+        }
         Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload, date);
         egg.setLongitude(longitude);
         egg.setLatitude(latitude);
+        egg.setExternalId(exId);
         
         return egg;
 
@@ -404,7 +411,8 @@ public class EggManager {
                         "%s datetime DEFAULT NULL," +
                         "%s text DEFAULT NULL," +
                         "%s double DEFAULT NULL," +
-                        "%s double DEFAULT NULL)",
+                        "%s double DEFAULT NULL," +
+                        "%s text DEFAULT NULL)",
                         TABLE,
                         C_ID,
                         C_NESTID,
@@ -417,7 +425,8 @@ public class EggManager {
                         C_DATE,
                         C_REMOTETHUMBNAILURI,
                         C_LONGITUDE,
-                        C_LATITUDE
+                        C_LATITUDE,
+                        C_EXID
             );
             
             db.execSQL(tableCreateQuery);
