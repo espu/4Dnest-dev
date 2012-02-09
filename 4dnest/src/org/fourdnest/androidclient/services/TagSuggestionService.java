@@ -169,7 +169,7 @@ public class TagSuggestionService extends IntentService {
 	/**
 	 * Loops through all Nests updating their tag cache
 	 */
-	private void updateRemoteTags() {
+	private synchronized void updateRemoteTags() {
 		TagCache cache = app.getTagCache();
 		synchronized(cache) {
 			Log.d(TAG, "updateRemoteTags");
@@ -192,7 +192,7 @@ public class TagSuggestionService extends IntentService {
 	/**
 	 * Loops through all Nests updating their tag cache
 	 */
-	private void broadcastTags(Intent intent) {
+	private synchronized void broadcastTags(Intent intent) {
 		TagCache cache = app.getTagCache();
 		synchronized(cache) {
 			// First broadcast the autocomplete suggestions
