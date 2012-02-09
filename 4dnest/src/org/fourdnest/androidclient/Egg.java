@@ -56,6 +56,10 @@ public class Egg {
 	/**Time the egg was created in the server */
 	private Date creationDate;
 	
+	private double longitude;
+	
+	private double latitude;
+	
 	// FIXME: automatic metadata.
 	
 	
@@ -315,5 +319,21 @@ public class Egg {
 	public void setRemoteThumbnailUri(Uri remoteThumbnailUri) {
 		this.remoteThumbnailUri = remoteThumbnailUri;
 	}
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
 	
 }
