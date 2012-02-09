@@ -61,12 +61,8 @@ public class FourDNestProtocol implements Protocol {
 	private static final String SIZE_FORMAT = "?limit=";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
-	private static final int HTTP_STATUSCODE_UPDATED = 204;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
-	private static final int CONNECTION_TIMEOUT = 15000;
-	private static final int HTTP_PORT = 80;
-	private static final int HTTPS_PORT = 443;
 	private static final String THUMBNAIL_DEFAULT_SIZE = "-400x400";
 	
     private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
@@ -438,13 +434,17 @@ public class FourDNestProtocol implements Protocol {
 			temp.put("caption", egg.getCaption());
 			JSONArray tags = new JSONArray();
             for (int i = 0; i<egg.getTags().size(); i++) {
-                tags.put(new String(egg.getTags().get(i).getName()));
+                tags.put(egg.getTags().get(i).getName());
             }
             temp.put("tags", tags);
+            if (egg.getLatitude() != 0 || egg.getLongitude() != 0) {
+                temp.put("lon", egg.getLongitude());
+                temp.put("lat", egg.getLatitude());
+            }
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "eggToJsonString: JSONException");
 		}
     	return "";
     }
@@ -463,6 +463,7 @@ public class FourDNestProtocol implements Protocol {
 				externalFileUriStr = js.getString("content_uri");
 				externalFileUri = Uri.parse(externalFileUriStr);
 			} catch (Exception e) {
+			    externalFileUri = null;
 				//No content_uri means text egg, so we leave the external file uri as null
 			}
 			String author = js.getString("author");
@@ -538,7 +539,10 @@ public class FourDNestProtocol implements Protocol {
                         + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
                 String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
                 if (!new File(thumbnail_dir).exists()) {
-                    new File(thumbnail_dir).mkdirs();
+                    if (!new File(thumbnail_dir).mkdirs()) {
+                        Log.d(TAG, "Could not create path for the thumbnail");
+                        return false;
+                    }
                 }
                 Log.d("SAVELOC", path);
                 if (app.getCurrentNest().getProtocol().getMediaFile(externalUriString, path)) {

@@ -8,10 +8,10 @@
         android:id="@+id/menu_stream_drafts"
         android:icon="@android:drawable/ic_menu_agenda"
         android:title="@string/menu_drafts"></item>
-    <item
+    <!-- <item
         android:id="@+id/menu_stream_nests"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="@string/menu_nests"></item>
+        android:title="@string/menu_nests"></item>   -->
     <item
         android:id="@+id/menu_stream_pref"
         android:icon="@android:drawable/ic_menu_preferences"

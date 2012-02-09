@@ -31,11 +31,7 @@ public class ThumbnailManager {
      */
     public static boolean thumbNailExists(Egg egg) {
         String path = getThumbnailUriString(egg);
-        if ((new File(path)).exists()) {
-            return true;
-        }else {
-            return false;   
-        }
+        return new File(path).exists();
     }
     
     /**
@@ -44,7 +40,7 @@ public class ThumbnailManager {
      * @return String of egg's thumbnail's Uri
      */
     public static String getThumbnailUriString(Egg egg) {
-        if (egg.getRemoteFileURI() != null) {
+        if (!(egg.getRemoteFileURI() == null)) {
             return Environment.getExternalStorageDirectory()
                     + THUMBNAIL_LOCATION
                     + egg.getId()
