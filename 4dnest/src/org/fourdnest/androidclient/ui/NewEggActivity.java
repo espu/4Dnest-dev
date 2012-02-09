@@ -9,6 +9,7 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.services.SendQueueService;
+import org.fourdnest.androidclient.services.StreamReaderService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +72,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	static final int DIALOG_ASK_VIDEO = 2;
 	//static final int DIALOG_GAMEOVER_ID = 1;
 	
+	public static final String TAG = NewEggActivity.class.getSimpleName();
 
 	private String fileURL = "";
 	private String realFileURL = "";
@@ -87,10 +90,9 @@ public class NewEggActivity extends NestSpecificActivity{
 	 */
 	
 	@Override
-	public View getContentLayout(View view) {
-		//super.onCreate(savedInstanceState);
-		//setContentView(R.layout.new_egg_view);
-		this.getApplicationContext();
+	public void onCreate(Bundle savedInstanceState) {
+		this.application = (FourDNestApplication) getApplication();
+		setContentView(R.layout.new_egg_view);
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
 		{
@@ -106,9 +108,9 @@ public class NewEggActivity extends NestSpecificActivity{
 			}
 		}
 		
-		this.kioskMode = super.application.getKioskModeEnabled();
-		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
-		this.thumbNailView = (ImageView) view.findViewById(R.id.new_photo_egg_thumbnail_view);
+		this.kioskMode = this.application.getKioskModeEnabled();
+		this.upperButtons = (RelativeLayout) findViewById(R.id.new_egg_upper_buttons);
+		this.thumbNailView = (ImageView) findViewById(R.id.new_photo_egg_thumbnail_view);
 		/*
 		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
 		 */
@@ -145,27 +147,26 @@ public class NewEggActivity extends NestSpecificActivity{
          * the server
          */
         
-        Button sendButton = (Button) view.findViewById(R.id.new_photo_egg_send_egg_button);
+        Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {		
 				//TODO: Proper implementation
 				Egg egg = new Egg();
-				// Author is set by SendQueueService
-				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
-				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				NewEggActivity.this.taggingTool.addTagFromTextView();
-				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
-				egg.setTags(tags);
+				eggEditingDone(egg);
+
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				SendQueueService.sendEgg(getApplication(), egg, !isNewEgg());
-				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				
 				// Go to ListStreamActivity after finishing
 				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
 				//v.getContext();
+				if (NewEggActivity.this.application.getKioskModeEnabled()) {
+					Intent intent = new Intent(NewEggActivity.this, NewEggActivity.class);
+					NewEggActivity.this.startActivity(intent);
+					
+				}
 				finish();
-				
 			}
 		});
         
@@ -173,22 +174,16 @@ public class NewEggActivity extends NestSpecificActivity{
          * Adds on click listener to draft button, that handles drafting the egg
          */
         
-        Button draftButton = (Button) view.findViewById(R.id.edit_egg_save_draft_button);
-        final FourDNestApplication applicationTemp = super.application; //needs to define this outside of the onClickListerer or awfull thinks will happen
+        Button draftButton = (Button) findViewById(R.id.edit_egg_save_draft_button);
+        final FourDNestApplication applicationTemp = this.application; //needs to define this outside of the onClickListerer or awfull thinks will happen
         draftButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
 				//TODO: Proper implementation
 				Egg egg = new Egg();
-				// Author is set by SendQueueService
-				egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
-				egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-				NewEggActivity.this.taggingTool.addTagFromTextView();
-				List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
-				egg.setTags(tags);
+				eggEditingDone(egg);
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				applicationTemp.getDraftEggManager().saveEgg(egg);
-				TagSuggestionService.setLastUsedTags(getApplication(), tags);
 				Context context = getApplicationContext();
 				String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
 				int duration = Toast.LENGTH_SHORT;
@@ -209,7 +204,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		* open the image gallery or the camera
 		 */
         
-    	((ImageButton) view.findViewById(R.id.select_image))
+    	((ImageButton) findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				/*
@@ -229,7 +224,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		 * to open the audio gallery or the audio recorder.
 		 */
     	
-       	((ImageButton) view.findViewById(R.id.select_audio))
+       	((ImageButton) findViewById(R.id.select_audio))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
@@ -249,7 +244,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		 */
         
        	
-       	((ImageButton) view.findViewById(R.id.select_video))
+       	((ImageButton) findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				if(kioskMode){
@@ -260,15 +255,16 @@ public class NewEggActivity extends NestSpecificActivity{
     				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
-       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_photo_egg_caption_and_tag_part);
+       	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
-       	return view;
+       	
+       	super.onCreate(savedInstanceState);
 	}
 	
 	
 	/**
 	 * 
-	 * Destroys the activity. Over-riden so we get rid of the tagging tool
+	 * Destroys the activity. Overridden so we get rid of the tagging tool
 	 */
 	
     @Override
@@ -279,17 +275,17 @@ public class NewEggActivity extends NestSpecificActivity{
     }
 
     /**
-     * 
-     * A method used by the onCreate in NestSpesificActivity to recover the correct layout to use (used to initially
-     * create the view which is then populated by getContentLayout). 
-     *
+     * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
-    
-	
-	public int getLayoutId() {
-		return R.layout.new_egg_view;
-	}
-	
+    private void eggEditingDone(Egg egg) {
+		// Author is set by SendQueueService
+		egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
+		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+		NewEggActivity.this.taggingTool.addTagFromTextView();
+		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
+		egg.setTags(tags);
+		TagSuggestionService.setLastUsedTags(getApplication(), tags);
+    }
 	
 	/**
 	 * Used to refresh the elements displayed when an media item is selected / unselected
@@ -609,7 +605,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private void recoverDataFromExistingEGG(){
 		int eggIDInt = Integer.valueOf(currentEggID);
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
-		EggManager draftManager = super.application.getDraftEggManager();
+		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
 		Uri uri = existingEgg.getLocalFileURI();	
 		if (uri == null){

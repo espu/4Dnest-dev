@@ -45,9 +45,11 @@ public class ListStreamActivity extends NestSpecificActivity {
 	/** Called when this Activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		this.streamManager = ((FourDNestApplication) getApplication())
-				.getStreamEggManager();
-		super.onCreate(savedInstanceState);
+		this.application = (FourDNestApplication) getApplication();
+
+		setContentView(R.layout.list_stream_view);
+
+		this.streamManager = this.application.getStreamEggManager();
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		IntentFilter filter = new IntentFilter();
         filter.addAction(StreamReaderService.ACTION_STREAM_UPDATED);
@@ -62,13 +64,32 @@ public class ListStreamActivity extends NestSpecificActivity {
         };
         Log.d(TAG, "Registering the broadcast receiver");
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+        
+		initializeTrackButton((ToggleButton) findViewById(R.id.route_tracker_button));
+
+		initializeCreateButton((Button) findViewById(R.id.create_button));
+
+		this.streamListView = (ListView) findViewById(R.id.egg_list);
+		initializeStreamList(this.streamManager, this.streamListView);
+
+		super.onCreate(savedInstanceState);
+
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d(TAG, "Requesting update in onResume");
-		StreamReaderService.requestUpdate(this);
+		/*
+		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
+		 * start new egg activity and FINISH this one (prevents the back button
+		 * problem).
+		 */
+
+		if (this.application.getKioskModeEnabled()) {
+			Intent intent = new Intent(this, NewEggActivity.class);
+			this.startActivity(intent);
+			finish();
+		}
 	}
 	
 	@Override
@@ -76,19 +97,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 		super.onDestroy();
 		Log.d(TAG, "UnRegistering the broadcast receiver");
 		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
-	}
-
-	@Override
-	public View getContentLayout(View view) {
-		initializeTrackButton(view,
-				(ToggleButton) view.findViewById(R.id.route_tracker_button));
-
-		initializeCreateButton((Button) view.findViewById(R.id.create_button));
-
-		this.streamListView = (ListView) view.findViewById(R.id.egg_list);
-		initializeStreamList(this.streamManager, this.streamListView);
-		return view;
-
 	}
 
 	/**
@@ -139,8 +147,8 @@ public class ListStreamActivity extends NestSpecificActivity {
 	 *            The ToggleButton responsible for toggling GPS tracking on and
 	 *            off.
 	 */
-	private void initializeTrackButton(View view, ToggleButton trackButton) {
-		trackButton.setChecked(Util.isServiceRunning(view.getContext(),
+	private void initializeTrackButton(ToggleButton trackButton) {
+		trackButton.setChecked(Util.isServiceRunning(getApplicationContext(),
 				RouteTrackService.class));
 
 		trackButton.setOnClickListener(new OnClickListener() {
@@ -158,25 +166,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 		});
 	}
 
-	@Override
-	public int getLayoutId() {
-
-		/*
-		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
-		 * start new egg activity and FINISH this one (prevents the back button
-		 * problem).
-		 */
-
-		super.application.getKioskModeEnabled();
-
-		if (super.application.getKioskModeEnabled()) {
-			Intent intent = new Intent(this, NewEggActivity.class);
-			this.startActivity(intent);
-			finish();
-		}
-
-		return R.layout.list_stream_view;
-	}
 
 	/**
 	 * Creates the options menu on the press of the Menu button.
@@ -235,11 +224,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 		streamListViewAdapter.notifyDataSetChanged();
 		Toast.makeText(getApplicationContext(),
 				getText(R.string.stream_list_refreshed_toast), 1).show();
-	}
-
-	@Override
-	public void setNestSpecificOnClickListener(Button nestButton) {
-		return;
 	}
 
 }
