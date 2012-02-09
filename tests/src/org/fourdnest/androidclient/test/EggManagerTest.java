@@ -27,9 +27,6 @@ public class EggManagerTest extends AndroidTestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		
-		this.eggManager.close();
-		this.eggManager2.close();
 	}
 	
 	public void testSaveAndGetEgg() {
