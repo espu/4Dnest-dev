@@ -135,17 +135,15 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 					.getThumbnailUriString(egg,
 							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
 		}
-		//TextView author = (TextView) view.findViewById(R.id.author);
-		//TextView time = (TextView) view.findViewById(R.id.time);
+		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		
 
-		//author.setText(egg.getAuthor());
+		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
 		if (egg.getCreationDate() != null) {
 		      date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
 		}
-		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {
 			String eggTags = "";
