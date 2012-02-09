@@ -138,8 +138,9 @@ public class httpTest extends AndroidTestCase {
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
-		List<Tag> tags = protocol.topTags(5);
-		assertTrue(tags.size() > 0);
+		List<Tag> tags = protocol.topTags(2);
+		assertTrue(tags.size() == 2);
+		Log.d("TAGSIZE", ": " + tags.size());
 	}
 	
 	private void getPreviouslySentEgg() {
