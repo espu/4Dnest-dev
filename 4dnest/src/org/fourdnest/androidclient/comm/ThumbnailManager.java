@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.fourdnest.androidclient.Egg;
 
-import android.net.Uri;
 import android.os.Environment;
 
 /**
@@ -27,25 +26,29 @@ public class ThumbnailManager {
      * 
      * @param egg
      *            for which the check is done
+     * @param size thumbnail size
      * @return boolean
      */
-    public static boolean thumbNailExists(Egg egg) {
-        String path = getThumbnailUriString(egg);
+
+    public static boolean thumbNailExists(Egg egg, String size) {
+        String path = getThumbnailUriString(egg, size);
         return new File(path).exists();
     }
     
     /**
      * Returns predefined thumbnailUri for given egg as a string based on localID and a hash from unique property
      * @param egg 
+     * @param size thumbnail size
      * @return String of egg's thumbnail's Uri
      */
-    public static String getThumbnailUriString(Egg egg) {
-        if (!(egg.getRemoteFileURI() == null)) {
+    public static String getThumbnailUriString(Egg egg, String size) {
+        if (egg.getRemoteFileURI() != null) {
             return Environment.getExternalStorageDirectory()
                     + THUMBNAIL_LOCATION
                     + egg.getId()
                     + CommUtils
                             .md5FromString(egg.getRemoteFileURI().toString())
+                    + size
                     + THUMBNAIL_FILETYPE;
         }else {
             // egg has only textual content

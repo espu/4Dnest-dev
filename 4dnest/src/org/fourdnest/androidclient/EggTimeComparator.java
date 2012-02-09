@@ -12,6 +12,12 @@ public class EggTimeComparator implements Comparator<Egg> {
 	// Note the minus sign. Reverses sorting order so that latest entry is
 	// displayed on top.
 	public int compare(Egg arg0, Egg arg1) {
+	    if (arg0.getCreationDate() == null) {
+	        return 1;
+	    }
+	    if (arg1.getCreationDate() == null) {
+	        return 0;
+	    }
 		int value = -arg0.getCreationDate().compareTo(arg1.getCreationDate());
 		
 		if (value == 0) {
