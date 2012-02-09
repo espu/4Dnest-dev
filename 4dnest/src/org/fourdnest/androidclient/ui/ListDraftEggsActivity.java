@@ -6,9 +6,12 @@ import org.fourdnest.androidclient.EggTimeComparator;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -28,15 +31,15 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 
 	@Override
 	protected void onResume() {
-		initializeDraftList(this.draftManager, this.draftListView);
+		initializeDraftList(this.draftManager);
 		super.onResume();
 	}
 
 	@Override
 	public View getContentLayout(View view) {
-		this.draftListView = (ListView) view.findViewById(R.id.draft_list);
 		this.sendAllButton = (Button) view.findViewById(R.id.send_all_button);
-		initializeDraftList(this.draftManager, this.draftListView);
+		this.draftListView = (ListView) view.findViewById(R.id.draft_list);
+		initializeDraftList(this.draftManager);
 		initializeSendAllButton(this.sendAllButton);
 		return view;
 	}
@@ -46,15 +49,14 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		return R.layout.list_drafts_activity;
 	}
 
-	private void initializeDraftList(EggManager manager, ListView draftListView) {
+	private void initializeDraftList(EggManager manager) {
 		EggAdapter adapter = new EggAdapter(draftListView,
 				R.layout.egg_element_draft, manager.listEggs());
 		draftListView.setAdapter(adapter);
-		((EggAdapter) draftListView.getAdapter())
-				.sort(new EggTimeComparator());
+		((EggAdapter) draftListView.getAdapter()).sort(new EggTimeComparator());
 		((EggAdapter) draftListView.getAdapter()).notifyDataSetChanged();
 		draftListView.setOnItemClickListener(new DraftListOnItemClickListener(
-				draftListView));
+				this.draftListView));
 	}
 
 	private void initializeSendAllButton(Button button) {
