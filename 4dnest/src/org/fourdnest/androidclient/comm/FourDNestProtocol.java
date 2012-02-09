@@ -53,6 +53,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
+
 	
 	public static final String THUMBNAIL_SIZE_SMALL = "-100x100";
 	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
@@ -433,14 +434,19 @@ public class FourDNestProtocol implements Protocol {
 			temp.put("author", egg.getAuthor());
 			temp.put("caption", egg.getCaption());
 			JSONArray tags = new JSONArray();
-			for (int i = 0; i < egg.getTags().size(); i++) {
-				tags.put(new String(egg.getTags().get(i).getName()));
-			}
-			temp.put("tags", tags);
+
+            for (int i = 0; i<egg.getTags().size(); i++) {
+                tags.put(egg.getTags().get(i).getName());
+            }
+            temp.put("tags", tags);
+            if (egg.getLatitude() != 0 || egg.getLongitude() != 0) {
+                temp.put("lon", egg.getLongitude());
+                temp.put("lat", egg.getLatitude());
+            }
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "eggToJsonString: JSONException");
 		}
 		return "";
 	}
@@ -461,8 +467,9 @@ public class FourDNestProtocol implements Protocol {
 				externalFileUriStr = js.getString("content_uri");
 				externalFileUri = Uri.parse(externalFileUriStr);
 			} catch (Exception e) {
-				// No content_uri means text egg, so we leave the external file
-				// uri as null
+
+			    externalFileUri = null;
+				//No content_uri means text egg, so we leave the external file uri as null
 			}
 			String author = js.getString("author");
 			String thumbnailUriStr = null;
@@ -489,16 +496,28 @@ public class FourDNestProtocol implements Protocol {
 			DateFormat formatter = new SimpleDateFormat(
 					("yyyy-MM-dd'T'HH:mm:ss"));
 			Date date;
-			try {
-				date = (Date) formatter.parse(dateStr);
-			} catch (ParseException e) {
-				Log.e(TAG, "Failed to parse date");
-				date = null;
-			}
-			Egg egg = new Egg(0, this.nest.getId(), author, null,
-					externalFileUri, thumbNailUri, caption, tags, 0, date);
+
+            try {
+                date = (Date) formatter.parse(dateStr);
+            } catch (ParseException e) {
+               Log.e(TAG, "Failed to parse date");
+               date = null;
+            }
+            double latitude = 0;
+            double longitude = 0;
+            try {
+                latitude = js.getDouble("lat");
+                longitude = js.getDouble("lon");
+                Log.d(TAG, "succesfully parsed location data");
+            }catch (JSONException e) {
+                // No location information
+            }
+			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0, date);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
+			egg.setLatitude(latitude);
+			egg.setLongitude(longitude);
+			Log.d("EGGLATI", ":" + egg.getLatitude());
 			return egg;
 		} catch (JSONException e) {
 			Log.e("JSONTOEGG", "Got JSONexception");
@@ -516,6 +535,27 @@ public class FourDNestProtocol implements Protocol {
 	 * 
 	 * @return boolean whether thumbnail can be found in predefined location
 	 */
+
+
+
+
+/**
+ * Can be called to make sure thumbnail is in memory card, thumbnail is
+ * downloaded from 4dnest server or OSM static maps api when applicable.
+ * 
+ * @param Egg
+ *            whose thumbnail is in question
+ * 
+ * @return boolean whether thumbnail can be found in predefined location
+ */
+	public boolean getMedia(Egg egg) {
+		String path = MediaManager.getMediaUriString(egg);
+		FourDNestApplication app = FourDNestApplication.getApplication();
+		boolean res = app.getCurrentNest().getProtocol()
+				.getMediaFile(egg.getRemoteFileURI().toString(), path);
+		return res;
+	}
+	
 	public boolean getThumbnail(Egg egg, String size) {
 		String path = ThumbnailManager.getThumbnailUriString(egg, size);
 		boolean res = true;
@@ -546,23 +586,6 @@ public class FourDNestProtocol implements Protocol {
 				}
 			}
 		}
-		return res;
-	}
-
-	/**
-	 * Can be called to make sure thumbnail is in memory card, thumbnail is
-	 * downloaded from 4dnest server or OSM static maps api when applicable.
-	 * 
-	 * @param Egg
-	 *            whose thumbnail is in question
-	 * 
-	 * @return boolean whether thumbnail can be found in predefined location
-	 */
-	public boolean getMedia(Egg egg) {
-		String path = MediaManager.getMediaUriString(egg);
-		FourDNestApplication app = FourDNestApplication.getApplication();
-		boolean res = app.getCurrentNest().getProtocol()
-				.getMediaFile(egg.getRemoteFileURI().toString(), path);
 		return res;
 	}
 

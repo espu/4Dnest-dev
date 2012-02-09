@@ -43,6 +43,7 @@
     <string name="gps_file_save_success">Route saved to file</string>
     <string name="gps_file_save_failure">Route saving failed</string>
     <string name="gps_empty_route_not_saved">No locations received, route not saved</string>
+    <string name="gps_error_file_open">Error opening track output file. Exiting.</string>
     <string name="sendqueue_statusbar_title">Sending item</string>
     <string name="sendqueue_statusbar_descr">Item upload in progress</string>
     <string name="add_tag_button">Add tag</string>
@@ -63,7 +64,7 @@
 	<string name="prefs_nest_password_descr">Password</string>
 	<string name="prefs_nest_accept_all_certs_title">Accept all SSL certs</string>
 	<string name="prefs_nest_accept_all_certs_descr">Accept all SSL certificates even if they have been self-signed</string>
-	<string name="prefs_nest_accept_all_certs_offdescr">Only valid certificates are allowed</string>
+	<string name="prefs_nest_accept_all_certs_offdescr">Only signed certificates are allowed</string>
 	<string name="prefs_nest_accept_all_certs_ondescr">All certificates are allowed</string>
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
