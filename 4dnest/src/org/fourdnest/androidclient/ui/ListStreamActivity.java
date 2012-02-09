@@ -78,6 +78,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		/*
 		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
 		 * start new egg activity and FINISH this one (prevents the back button
@@ -89,7 +90,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 			this.startActivity(intent);
 			finish();
 		}
-		super.onResume();
 	}
 	
 	@Override

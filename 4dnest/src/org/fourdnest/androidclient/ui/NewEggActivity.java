@@ -161,8 +161,12 @@ public class NewEggActivity extends NestSpecificActivity{
 				// Go to ListStreamActivity after finishing
 				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
 				//v.getContext();
+				if (NewEggActivity.this.application.getKioskModeEnabled()) {
+					Intent intent = new Intent(NewEggActivity.this, NewEggActivity.class);
+					NewEggActivity.this.startActivity(intent);
+					
+				}
 				finish();
-				
 			}
 		});
         
