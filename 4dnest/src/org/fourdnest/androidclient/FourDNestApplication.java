@@ -7,6 +7,7 @@ import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 import org.fourdnest.androidclient.services.StreamReaderService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
+import org.fourdnest.androidclient.services.TagSuggestionService.TagCache;
 
 import android.app.Application;
 import android.content.Intent;
@@ -38,6 +39,7 @@ public class FourDNestApplication extends Application
     private EggManager streamEggManager;
     
     private Handler handler;
+	private TagSuggestionService.TagCache tagCache;
     
     private static FourDNestApplication app;
     
@@ -63,6 +65,8 @@ public class FourDNestApplication extends Application
                 this.setCurrentNestId(nest.getId());
             }
 
+            this.tagCache = new TagSuggestionService.TagCache();
+            
             // Init handler
             this.handler = new Handler();
       }
@@ -259,6 +263,10 @@ public class FourDNestApplication extends Application
         SharedPreferences.Editor prefEditor = this.prefs.edit();
         prefEditor.putBoolean("nest_accept_all_certs", val);
     }
+
+	public TagCache getTagCache() {
+		return this.tagCache;
+	}
     
 
 }

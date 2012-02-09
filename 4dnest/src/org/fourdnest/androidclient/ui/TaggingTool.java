@@ -213,7 +213,6 @@ public class TaggingTool extends LinearLayout {
 			this.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
 					if(isChecked) {
-						//FIXME define colors
 						button.getBackground().setColorFilter(
 								new LightingColorFilter(COLOR_SELECTED_MUL, COLOR_SELECTED_ADD)
 						);

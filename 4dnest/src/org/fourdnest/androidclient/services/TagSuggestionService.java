@@ -54,11 +54,7 @@ public class TagSuggestionService extends IntentService {
 	
 	private LocalBroadcastManager mLocalBroadcastManager;
 	
-	/** Use String[] instead of List<Tag>, to avoid converting back and forth.
-	 * Intents only support standard types. */
-	private Map<Integer, String[]> lastUsedTags;
-	private Map<Integer, Set<String>> localTags;
-	private Map<Integer, String[]> remoteTags;
+
 
 	private FourDNestApplication app;
 	
@@ -81,9 +77,6 @@ public class TagSuggestionService extends IntentService {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
 		synchronized(this) {
-			this.lastUsedTags = new HashMap<Integer, String[]>();
-			this.localTags = new HashMap<Integer, Set<String>>();
-			this.remoteTags = new HashMap<Integer, String[]>();
 			this.app = FourDNestApplication.getApplication();
 			this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 
@@ -172,19 +165,22 @@ public class TagSuggestionService extends IntentService {
 	/**
 	 * Loops through all Nests updating their tag cache
 	 */
-	private synchronized void updateRemoteTags() {
-		Log.d(TAG, "updateRemoteTags");
-		NestManager nestManager = app.getNestManager();
-		List<Nest> nests = nestManager.listNests();
-		for(Nest nest : nests) {
-			Integer nestId = Integer.valueOf(nest.getId());
-			Protocol protocol = nest.getProtocol();
-			List<Tag> tags = protocol.topTags(REMOTE_TAG_COUNT);
-			if(tags != null) {
-				Log.d(TAG, "Tags updated for Nest with id " + nestId);
-				this.remoteTags.put(nestId, tagListToStringArray(tags));
-			} else {
-				Log.w(TAG, "Nest with id " + nestId + " returned null topTags");
+	private void updateRemoteTags() {
+		TagCache cache = app.getTagCache();
+		synchronized(cache) {
+			Log.d(TAG, "updateRemoteTags");
+			NestManager nestManager = app.getNestManager();
+			List<Nest> nests = nestManager.listNests();
+			for(Nest nest : nests) {
+				Integer nestId = Integer.valueOf(nest.getId());
+				Protocol protocol = nest.getProtocol();
+				List<Tag> tags = protocol.topTags(REMOTE_TAG_COUNT);
+				if(tags != null) {
+					Log.d(TAG, "Tags updated for Nest with id " + nestId);
+					cache.putRemoteTags(nestId, tagListToStringArray(tags));
+				} else {
+					Log.w(TAG, "Nest with id " + nestId + " returned null topTags");
+				}
 			}
 		}
 	}
@@ -192,50 +188,56 @@ public class TagSuggestionService extends IntentService {
 	/**
 	 * Loops through all Nests updating their tag cache
 	 */
-	private synchronized void broadcastTags(Intent intent) {
-		// First broadcast the autocomplete suggestions
-		Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
-		List<String> out = new ArrayList<String>();
-		Set<String> lt = this.localTags.get(currentNestId);
-		if(lt != null) {
-			out.addAll(lt);
-		}
-		String[] rt = this.remoteTags.get(currentNestId);
-		if(rt != null) {
-			for(String tag : rt) {
-				out.add(tag);
+	private void broadcastTags(Intent intent) {
+		TagCache cache = app.getTagCache();
+		synchronized(cache) {
+			// First broadcast the autocomplete suggestions
+			Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
+			List<String> out = new ArrayList<String>();
+			Set<String> lt = cache.getLocalTags(currentNestId);
+			if(lt != null) {
+				out.addAll(lt);
 			}
+			String[] rt = cache.getRemoteTags(currentNestId);
+			if(rt != null) {
+				for(String tag : rt) {
+					out.add(tag);
+				}
+			}
+			Intent broadcastIntent = new Intent(ACTION_AUTOCOMPLETE_TAGS);
+			broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
+			broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[out.size()]));
+			mLocalBroadcastManager.sendBroadcast(broadcastIntent);
+	
+			// Then broadcast the last used tags
+			broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
+			broadcastIntent = new Intent(ACTION_LAST_USED_TAGS);
+			String[] tags = cache.getLastUsedTags(currentNestId);
+			if(tags == null) {
+				tags = new String[0];
+			}
+			broadcastIntent.putExtra(BUNDLE_TAG_LIST, tags);
+			mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 		}
-		Intent broadcastIntent = new Intent(ACTION_AUTOCOMPLETE_TAGS);
-		broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
-		broadcastIntent.putExtra(BUNDLE_TAG_LIST, out.toArray(new String[out.size()]));
-		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
-
-		// Then broadcast the last used tags
-		broadcastIntent.putExtra(BUNDLE_NEST_ID, currentNestId);
-		broadcastIntent = new Intent(ACTION_LAST_USED_TAGS);
-		String[] tags = this.lastUsedTags.get(currentNestId);
-		if(tags == null) {
-			tags = new String[0];
-		}
-		broadcastIntent.putExtra(BUNDLE_TAG_LIST, tags);
-		mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 	}
 
 	/**
 	 * Stores the last used tags 
 	 */
 	private synchronized void handleLastUsedTags(Intent intent) {
-		Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
-		String[] tags = intent.getStringArrayExtra(BUNDLE_TAG_LIST);
-		this.lastUsedTags.put(currentNestId, tags);
-		Set<String> lt = this.localTags.get(currentNestId);
-		if(lt == null) {
-			lt = new HashSet<String>();
-			this.localTags.put(currentNestId, lt);
-		}
-		for(String tag : tags) {
-			lt.add(tag);
+		TagCache cache = app.getTagCache();
+		synchronized(cache) {
+			Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
+			String[] tags = intent.getStringArrayExtra(BUNDLE_TAG_LIST);
+			cache.putLastUsedTags(currentNestId, tags);
+			Set<String> lt = cache.getLocalTags(currentNestId);
+			if(lt == null) {
+				lt = new HashSet<String>();
+				cache.putLocalTags(currentNestId, lt);
+			}
+			for(String tag : tags) {
+				lt.add(tag);
+			}
 		}
 	}
 
@@ -249,5 +251,45 @@ public class TagSuggestionService extends IntentService {
 			out[i++] = tag.getName();
 		}
 		return out;
+	}
+
+	/**
+	 * Stupid wrapper around the tag cache maps, for safekeeping in FourDNestApplication
+	 */
+	public static class TagCache {
+		public Object getLastUsedTags;
+		/** Use String[] instead of List<Tag>, to avoid converting back and forth.
+		 * Intents only support standard types. */
+		private Map<Integer, String[]> lastUsedTags;
+		private Map<Integer, Set<String>> localTags;
+		private Map<Integer, String[]> remoteTags;
+		
+		public TagCache() {
+			this.lastUsedTags = new HashMap<Integer, String[]>();
+			this.localTags = new HashMap<Integer, Set<String>>();
+			this.remoteTags = new HashMap<Integer, String[]>();
+		}
+
+		public void putLastUsedTags(Integer currentNestId, String[] tags) {
+			this.lastUsedTags.put(currentNestId, tags);
+		}
+		public void putRemoteTags(Integer nestId, String[] tags) {
+			this.remoteTags.put(nestId, tags);
+		}
+		public void putLocalTags(Integer currentNestId, Set<String> lt) {
+			this.localTags.put(currentNestId, lt);
+		}
+		
+		public String[] getLastUsedTags(Integer currentNestId) {
+			return this.lastUsedTags.get(currentNestId);
+		}
+
+		public String[] getRemoteTags(Integer currentNestId) {
+			return this.remoteTags.get(currentNestId);
+		}
+
+		public Set<String> getLocalTags(Integer currentNestId) {
+			return this.localTags.get(currentNestId);
+		}
 	}
 }
