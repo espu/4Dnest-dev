@@ -139,6 +139,9 @@ public class SendQueueService extends IntentService {
 					app.getDraftEggManager().deleteEgg(eggId);
 					
 					Log.d(TAG, "Send completed");
+					
+			    	Log.d(TAG, "Requesting stream update in onHandleIntent");
+					StreamReaderService.requestUpdate(app);
 				} else {
 					// Something went wrong, transform code to message
 					String message = "";

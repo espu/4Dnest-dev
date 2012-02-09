@@ -46,17 +46,6 @@ public class ListStreamActivity extends NestSpecificActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.application = (FourDNestApplication) getApplication();
-		/*
-		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
-		 * start new egg activity and FINISH this one (prevents the back button
-		 * problem).
-		 */
-
-		if (this.application.getKioskModeEnabled()) {
-			Intent intent = new Intent(this, NewEggActivity.class);
-			this.startActivity(intent);
-			finish();
-		}
 
 		setContentView(R.layout.list_stream_view);
 
@@ -89,9 +78,18 @@ public class ListStreamActivity extends NestSpecificActivity {
 	
 	@Override
 	public void onResume() {
+		/*
+		 * Following lines check if the 'kiosk' mode is on. If Kiosk mode is on,
+		 * start new egg activity and FINISH this one (prevents the back button
+		 * problem).
+		 */
+
+		if (this.application.getKioskModeEnabled()) {
+			Intent intent = new Intent(this, NewEggActivity.class);
+			this.startActivity(intent);
+			finish();
+		}
 		super.onResume();
-		Log.d(TAG, "Requesting update in onResume");
-		StreamReaderService.requestUpdate(this);
 	}
 	
 	@Override

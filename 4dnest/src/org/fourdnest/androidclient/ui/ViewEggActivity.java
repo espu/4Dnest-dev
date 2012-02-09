@@ -4,6 +4,7 @@ package org.fourdnest.androidclient.ui;
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
@@ -26,6 +27,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.application = (FourDNestApplication) getApplication();
 		
 		Bundle startingExtras = getIntent().getExtras();
 		this.eggID = (Integer) startingExtras
@@ -33,7 +35,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		
 		setContentView(R.layout.egg_view);
 
-		Egg egg = super.application.getStreamEggManager().getEgg(eggID);
+		Egg egg = this.application.getStreamEggManager().getEgg(eggID);
 
 		TextView timestamp = (TextView) findViewById(R.id.timestamp);
 		TextView message = (TextView) findViewById(R.id.message);
