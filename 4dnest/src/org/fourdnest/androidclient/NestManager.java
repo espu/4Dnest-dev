@@ -63,38 +63,49 @@ public class NestManager {
 	 * 
 	 * @return ArrayList<Nest> List of saved nests
 	 */
-	public List<Nest> listNests() {
+	public synchronized List<Nest> listNests() {
 		
-		SQLiteDatabase db = this.nestDb.getReadableDatabase();
-		
-		Cursor result = db.query(TABLE,
-				ALL_COLUMNS, // Columns
-				null, // No WHERE
-				null, // No arguments in selection
-				null, // No GROUP BY
-				null, // No HAVING
-				C_NAME, // Order by name
-				LIMIT);
-		
+		SQLiteDatabase db = null;
+		Cursor result = null;
 		List<Nest> nests = new ArrayList<Nest>();
 		
-		if(result.getCount() > 0) {
-			result.moveToFirst();
+		try {
+			db = this.nestDb.getReadableDatabase();
+		
+			result = db.query(TABLE,
+					ALL_COLUMNS, // Columns
+					null, // No WHERE
+					null, // No arguments in selection
+					null, // No GROUP BY
+					null, // No HAVING
+					C_NAME, // Order by name
+					LIMIT);
+						
+			if(result.getCount() > 0) {
+				result.moveToFirst();
+				
+				while(!result.isAfterLast()) {
+					// Populate nest with cursor columns in the order specified above
+					Nest nest = this.extractNestFromCursor(result);
+					if(nest != null) {
+						nests.add(nest);
+						this.nestCache.put(nest.getId(), nest);
+					}				
+					result.moveToNext();
+				} 
+			}
+		} catch(Exception e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace().toString());
+		} finally {
+		
+			if(result != null && !result.isClosed()) {
+				result.close();
+			}
 			
-			while(!result.isAfterLast()) {
-				// Populate nest with cursor columns in the order specified above
-				Nest nest = this.extractNestFromCursor(result);
-				if(nest != null) {
-					nests.add(nest);
-					this.nestCache.put(nest.getId(), nest);
-				}				
-				result.moveToNext();
-			} 
+			if(db != null && db.isOpen()) {
+				db.close();
+			}
 		}
-		
-		
-		result.close();
-		db.close();
 		
 		return nests;
 	}
@@ -111,8 +122,13 @@ public class NestManager {
 			return this.nestCache.get(id);
 		}
 
-		SQLiteDatabase db = this.nestDb.getReadableDatabase();
-		Cursor result = db.query(TABLE,
+		Nest nest = null;
+		SQLiteDatabase db = null;
+		Cursor result = null;
+		
+		try {
+			db = this.nestDb.getReadableDatabase();
+			result = db.query(TABLE,
 				ALL_COLUMNS, // Columns
 				C_ID + "==" + id, // Where
 				null, // No arguments in selection
@@ -121,23 +137,30 @@ public class NestManager {
 				null, //No ORDER BY
 				"1"); // Limit 1
 		
-		
-		Nest nest = null;
-		if(result.getCount() > 0) {
-			result.moveToFirst();
-			// Populate nest with cursor columns in the order specified above
-			nest = this.extractNestFromCursor(result);
+			if(result.getCount() > 0) {
+				result.moveToFirst();
+				// Populate nest with cursor columns in the order specified above
+				nest = this.extractNestFromCursor(result);
+				
+			} else {
+				Log.d(TAG, "Nest with id " + id + " not found");
+			}
 			
-		} else {
-			Log.d(TAG, "Nest with id " + id + " not found");
-		}
+			if (nest != null) {
+				this.nestCache.put(nest.getId(), nest);
+			}
+		} catch(Exception e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace().toString());
+		} finally {
 		
-		if (nest != null) {
-			this.nestCache.put(nest.getId(), nest);
+			if(result != null && !result.isClosed()) {
+				result.close();
+			}
+			
+			if(db != null && db.isOpen()) {
+				db.close();
+			}
 		}
-		
-		result.close();
-		db.close();
 		
 		return nest;
 		
@@ -151,10 +174,19 @@ public class NestManager {
 	public int deleteNest(int id) {
 		this.nestCache.remove(id);
 		
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
-		int result = db.delete(TABLE, C_ID + "==" + id, null);
+		SQLiteDatabase db = null;
+		int result = 0;
 		
-		db.close();
+		try {
+			db = this.nestDb.getWritableDatabase();		
+			result = db.delete(TABLE, C_ID + "==" + id, null);
+		} catch(Exception e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace().toString());
+		} finally {
+			if(db != null && db.isOpen()) {
+				db.close();
+			}
+		}
 		
 		return result;
 	}
@@ -166,12 +198,88 @@ public class NestManager {
 	public int deleteAllNests() {
 		this.nestCache.clear();
 		
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();		
-		int result = db.delete(TABLE, null, null);
-		
-		db.close();
+		SQLiteDatabase db = null;
+		int result = 0;
+		try {
+			db = this.nestDb.getWritableDatabase();		
+			result = db.delete(TABLE, null, null);
+		} catch(Exception e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace().toString());
+		} finally {
+			if(db != null && db.isOpen()) {
+				db.close();
+			}
+		}
 		
 		return result;
+	}
+	
+	/**
+	 * Saves Nest to database, updating existing Nest with same id
+	 * and creating new one if necessary 
+	 * @param nest object to save
+	 * @return long row id or -1 on failure
+	 */
+	public long saveNest(Nest nest) {
+		long rowid = -1;
+		SQLiteDatabase db = null;
+		Cursor result = null;
+		
+		try {
+			db = this.nestDb.getWritableDatabase();
+		
+			// API level 8 would have insertWithOnConflict, have to work around it
+			// and check for conflict and then either insert or update
+	
+			// Check if nest with id exists
+			result = db.query(TABLE,
+				new String[] {C_ID},
+				C_ID + "==" + nest.getId(),
+				null, // No selection args
+				null, // No GROUP BY
+				null, // No HAVING
+				null, // No ORDER BY
+				"1"); // LIMIT 1
+			
+			// Create ContentValues object for Nest
+			ContentValues values = new ContentValues();
+			values.put(C_ID, nest.getId());
+			values.put(C_NAME, nest.getName());
+			values.put(C_DESCRIPTION, nest.getDescription());
+			values.put(C_ADDRESS, nest.getBaseURI() != null ? nest.getBaseURI().toString() : null);
+			values.put(C_PROTOCOL, nest.getProtocolId());
+			values.put(C_USERNAME, nest.getUserName());
+			values.put(C_SECRETKEY, nest.getSecretKey());
+			
+			if(result.getCount() > 0) {
+				// Update existing
+				rowid = db.replace(TABLE, null, values);
+				
+				if(rowid < 0) {
+					throw new SQLiteException("Error replacing existing nest with id + "
+							+ nest.getId() + " in database");
+				}
+				Log.d(TAG, "Updated Nest in db");
+				
+			} else {
+				// Insert new row			
+				rowid = db.insert(TABLE, null, values);
+				if(rowid < 0) {
+					throw new SQLiteException("Error inserting new nest to database");
+				}
+				
+				Log.d(TAG, "Inserted new Nest to db");
+			}
+		} catch(Exception e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace().toString());
+		} finally {
+			if(db != null && db.isOpen()) {
+				db.close();
+			}
+		}
+		
+		this.nestCache.put(nest.getId(), nest);		
+		return rowid;
 	}
 	
 	/**
@@ -206,78 +314,6 @@ public class NestManager {
 		}
 		return null;
 	}
-	
-	/**
-	 * Saves Nest to database, updating existing Nest with same id
-	 * and creating new one if necessary 
-	 * @param nest object to save
-	 * @return long row id or -1 on failure
-	 */
-	public long saveNest(Nest nest) {
-		
-		
-		SQLiteDatabase db = this.nestDb.getWritableDatabase();
-		
-		// API level 8 would have insertWithOnConflict, have to work around it
-		// and check for conflict and then either insert or update
-
-		// Check if nest with id exists
-		Cursor result = db.query(TABLE,
-				new String[] {C_ID},
-				C_ID + "==" + nest.getId(),
-				null, // No selection args
-				null, // No GROUP BY
-				null, // No HAVING
-				null, // No ORDER BY
-				"1"); // LIMIT 1
-		
-		// Create ContentValues object for Nest
-		ContentValues values = new ContentValues();
-		values.put(C_ID, nest.getId());
-		values.put(C_NAME, nest.getName());
-		values.put(C_DESCRIPTION, nest.getDescription());
-		values.put(C_ADDRESS, nest.getBaseURI() != null ? nest.getBaseURI().toString() : null);
-		values.put(C_PROTOCOL, nest.getProtocolId());
-		values.put(C_USERNAME, nest.getUserName());
-		values.put(C_SECRETKEY, nest.getSecretKey());
-		
-		long rowid;
-		if(result.getCount() > 0) {
-			// Update existing
-			rowid = db.replace(TABLE, null, values);
-			
-			if(rowid < 0) {
-				throw new SQLiteException("Error replacing existing nest with id + "
-						+ nest.getId() + " in database");
-			}
-			
-			Log.d(TAG, "Updated Nest in db");
-			
-		} else {
-			// Insert new row			
-			rowid = db.insert(TABLE, null, values);
-			if(rowid < 0) {
-				throw new SQLiteException("Error inserting new nest to database");
-			}
-			
-			Log.d(TAG, "Inserted new Nest to db");
-		}
-		
-		db.close();
-		
-		this.nestCache.put(nest.getId(), nest);
-		
-		return rowid;
-	}
-	
-	/**
-	 * Closes database
-	 */
-	public void close() {
-		Log.d(TAG, "db closed");
-		this.nestDb.close();
-	}
-	
 	
 	
 	/**

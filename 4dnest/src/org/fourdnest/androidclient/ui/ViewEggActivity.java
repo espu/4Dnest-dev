@@ -4,10 +4,9 @@ package org.fourdnest.androidclient.ui;
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
-import org.fourdnest.androidclient.comm.StaticMapGetter;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.content.Intent;
@@ -28,17 +27,38 @@ public class ViewEggActivity extends NestSpecificActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.application = (FourDNestApplication) getApplication();
 		
 		Bundle startingExtras = getIntent().getExtras();
 		this.eggID = (Integer) startingExtras
 				.get(EggItemOnClickListener.INTENT_EGG_ID);
 		
-		super.onCreate(savedInstanceState);
+		setContentView(R.layout.egg_view);
+
+		Egg egg = this.application.getStreamEggManager().getEgg(eggID);
+
+		TextView timestamp = (TextView) findViewById(R.id.timestamp);
+		TextView message = (TextView) findViewById(R.id.message);
+		TextView tags = (TextView) findViewById(R.id.tags);
+		ImageView thumbnail= (ImageView) findViewById(R.id.file_thumbnail);
+
+		timestamp.setText(new Date(egg.getLastUpload()).toString());
+
+		message.setText(egg.getCaption());
+		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
+		if (!egg.getTags().isEmpty()) {
+			String tagList = "";
+			for (Tag current : egg.getTags()) {
+				tagList += current.getName() + " ";
+			}
+			tags.setText(tagList);
+		}
 		
 		final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                intent.putExtra(MapViewActivity.EGG_ID, ViewEggActivity.this.eggID);
                 v.getContext().startActivity(intent);
             }
         });
@@ -50,6 +70,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 //		View view = inflater.inflate(R.layout.egg_element_large, mediaView, false);
 //		mediaView.addView(view);
 
+		super.onCreate(savedInstanceState);
 	}
 	
 	/**
@@ -87,31 +108,5 @@ public class ViewEggActivity extends NestSpecificActivity {
 		return false;
 	}
 
-	@Override
-	public View getContentLayout(View view) {
-		Egg egg = super.application.getStreamEggManager().getEgg(eggID);
-
-		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
-		TextView message = (TextView) view.findViewById(R.id.message);
-		TextView tags = (TextView) view.findViewById(R.id.tags);
-		ImageView thumbnail= (ImageView) view.findViewById(R.id.file_thumbnail);
-
-		timestamp.setText(new Date(egg.getLastUpload()).toString());
-		message.setText(egg.getCaption());
-		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
-		if (!egg.getTags().isEmpty()) {
-			String tagList = "";
-			for (Tag current : egg.getTags()) {
-				tagList += current.getName() + " ";
-			}
-			tags.setText(tagList);
-		}
-		return view;
-	}
-
-	@Override
-	public int getLayoutId() {
-		return R.layout.egg_view;
-	}
 
 }

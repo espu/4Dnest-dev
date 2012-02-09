@@ -26,8 +26,6 @@ public class NestManagerTest extends AndroidTestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		
-		this.nestManager.close();
 	}
 	
 	public void testListNests() {

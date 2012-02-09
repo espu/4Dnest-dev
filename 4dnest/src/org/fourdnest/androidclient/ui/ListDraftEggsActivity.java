@@ -22,6 +22,14 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		this.draftManager = ((FourDNestApplication) getApplication())
 				.getDraftEggManager();
+
+		setContentView(R.layout.list_drafts_activity);
+
+		this.draftListView = (ListView) findViewById(R.id.draft_list);
+		this.sendAllButton = (Button) findViewById(R.id.send_all_button);
+		initializeDraftList(this.draftManager, this.draftListView);
+		initializeSendAllButton(this.sendAllButton);
+		
 		super.onCreate(savedInstanceState);
 	}
 	
@@ -31,20 +39,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		super.onResume();
 	}
 	
-	@Override
-	public View getContentLayout(View view) {
-		this.draftListView = (ListView) view.findViewById(R.id.draft_list);
-		this.sendAllButton = (Button) view.findViewById(R.id.send_all_button);
-		initializeDraftList(this.draftManager, this.draftListView);
-		initializeSendAllButton(this.sendAllButton);
-		return view;
-	}
 
-	@Override
-	public int getLayoutId() {
-		return R.layout.list_drafts_activity;
-	}
-	
 	private void initializeDraftList(EggManager manager, ListView draftListView) {
 		EggAdapter adapter = new EggAdapter(draftListView,
 				R.layout.egg_element_draft, manager.listEggs());
