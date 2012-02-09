@@ -43,11 +43,18 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView timestamp = (TextView) findViewById(R.id.timestamp);
 		TextView message = (TextView) findViewById(R.id.message);
 		TextView tags = (TextView) findViewById(R.id.tags);
-		ImageView thumbnail= (ImageView) findViewById(R.id.file_thumbnail);
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
-		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE)));
+		
+		if (egg.getMimeType() != Egg.fileType.TEXT) {
+			ImageView thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
+			application.getCurrentNest().getProtocol()
+					.getThumbnail(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE);
+			thumbnail.setImageURI(Uri.parse(ThumbnailManager
+					.getThumbnailUriString(egg,
+							FourDNestProtocol.THUMBNAIL_SIZE_LARGE)));
+		}
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
 			for (Tag current : egg.getTags()) {

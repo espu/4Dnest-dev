@@ -131,12 +131,15 @@ public class StreamReaderService extends IntentService {
 			for (int i = 0; i < eggList.size(); i++) {
 
 				Egg egg = eggList.get(i);
-				Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
-				em.saveEgg(egg);
-				app.getCurrentNest()
-						.getProtocol()
-						.getThumbnail(egg,
-								FourDNestProtocol.THUMBNAIL_SIZE_SMALL);
+				
+				if (egg.getMimeType() != Egg.fileType.TEXT) {
+					Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
+					em.saveEgg(egg);
+					app.getCurrentNest()
+							.getProtocol()
+							.getThumbnail(egg,
+									FourDNestProtocol.THUMBNAIL_SIZE_SMALL);
+				}
 
 			}
 			Log.d(TAG, "Saved eggs");
