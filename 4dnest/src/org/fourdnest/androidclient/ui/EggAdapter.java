@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -136,7 +137,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		//author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
-		date.setText(DateFormat.getDateInstance().format(egg.getCreationDate()));
+		date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
 		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {

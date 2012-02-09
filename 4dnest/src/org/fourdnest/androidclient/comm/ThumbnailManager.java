@@ -44,7 +44,7 @@ public class ThumbnailManager {
      * @return String of egg's thumbnail's Uri
      */
     public static String getThumbnailUriString(Egg egg) {
-        if (egg.getRemoteFileURI() == null) {
+        if (egg.getRemoteFileURI() != null) {
             return Environment.getExternalStorageDirectory()
                     + THUMBNAIL_LOCATION
                     + egg.getId()
