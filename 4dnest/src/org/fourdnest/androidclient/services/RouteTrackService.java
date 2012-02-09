@@ -30,11 +30,6 @@ import android.widget.Toast;
 public class RouteTrackService extends Service implements LocationListener {
 	
 	/**
-	 * Location cache for received locations
-	 */
-	private List<Location> locationCache;
-	
-	/**
 	 * Location manager to access location info
 	 */
 	private LocationManager locationManager;
@@ -45,11 +40,17 @@ public class RouteTrackService extends Service implements LocationListener {
 	private Notification notification;
 	private final int NOTIFICATION_ID = 410983;
 	
+	/**
+	 * Output file
+	 */
+	private File outputFile;
+	
 	private String provider = "gps"; // Fixed provider
 	
 	private static final File FILE_BASE_PATH = Environment.getExternalStorageDirectory();
 	private static final String FILE_DIRECTORY = "fourdnest" + File.separator + "routes";
 	private static final String FILE_EXTENSION = ".json";
+	private static final String JSON_LOC_SEPARATOR = "\n";
 	
 	private final static String TAG = RouteTrackService.class.getSimpleName();
 	private final int LOCATION_MIN_DELAY = 1000; // ms
@@ -73,7 +74,7 @@ public class RouteTrackService extends Service implements LocationListener {
         		this
         		);
         
-        this.locationCache = new ArrayList<Location>();        
+        this.outputFile = null;
 	}
 	
 	@Override
@@ -84,12 +85,6 @@ public class RouteTrackService extends Service implements LocationListener {
 			!this.locationManager.getProviders(true).contains(this.provider)) {			
 			this.displayToast(getText(R.string.gps_error_gps_disabled));
 			stopSelf();
-		}
-		
-		// Check last known location, if it's more recent than max delay specifies, add it as first point
-		Location lastKnownLocation = this.locationManager.getLastKnownLocation(this.provider);
-		if(lastKnownLocation != null && lastKnownLocation.getTime() < LATEST_LOC_MAX_DELAY) {
-			this.locationCache.add(lastKnownLocation);
 		}
 
 		// Prepare notification message for status bar
@@ -106,6 +101,18 @@ public class RouteTrackService extends Service implements LocationListener {
         	this.startForeground(NOTIFICATION_ID, this.notification);
         }
         
+		this.outputFile = this.getOutputFile();
+		if(this.outputFile == null) {
+			this.displayToast(getText(R.string.gps_error_file_open));
+			stopSelf();
+		}
+		
+		// Check last known location, if it's more recent than max delay specifies, add it as first point
+		Location lastKnownLocation = this.locationManager.getLastKnownLocation(this.provider);
+		if(lastKnownLocation != null && lastKnownLocation.getTime() < LATEST_LOC_MAX_DELAY) {
+			this.writeLocation(lastKnownLocation, this.outputFile);
+		}
+        
         // Run until explicitly stopped
         return START_STICKY;
     }
@@ -115,22 +122,6 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onDestroy");
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
-				
-		// Trigger file write
-		try {
-			String savedFile = this.writeLocationCache(this.getOutputFile());
-			if(savedFile == null) {
-				this.displayToast(getText(R.string.gps_empty_route_not_saved));
-			} else {
-				this.displayToast(getText(R.string.gps_file_save_success) + ": " + savedFile);
-			}
-		} catch(Exception e) {
-			this.displayToast(getText(R.string.gps_file_save_failure) + ": " + e.getMessage());
-			Log.e(TAG, e.getMessage());
-		}
-		
-		// Empty the cache
-		this.locationCache = new ArrayList<Location>();
 		
 		// Cancel the persistent notification
 		if(getSystemService(ACTIVITY_SERVICE) != null) {
@@ -142,8 +133,8 @@ public class RouteTrackService extends Service implements LocationListener {
 		Log.d(TAG, "onLocationChanged: " + LocationHelper.locationToJSON(location).toString());
 		this.displayNotification(getText(R.string.gps_statusbar_last_location_received));
 		
-		// Add some sanity checks, for now just cache it
-		this.locationCache.add(location);
+		// Add some sanity checks, for now just write to output file
+		this.writeLocation(location, this.outputFile);
 	}
 
 	public void onProviderDisabled(String provider) {
@@ -195,45 +186,51 @@ public class RouteTrackService extends Service implements LocationListener {
 	}
 	
 	
-	/**
-	 * Writes locationCache to given file as JSON string
-	 * @param outFile target file
-	 * @return success
-	 */
-	private String writeLocationCache(File outFile) throws IOException, JSONException {
-		if(this.locationCache.size() < 1) return null;
-		JSONObject o = LocationHelper.listToJSON(this.locationCache);
+	private boolean writeLocation(Location loc, File outFile) {
+		if(loc == null) return false;
 
-		FileWriter fw = new FileWriter(outFile);
-		fw.write(o.toString());
-		fw.close();
+		try {
+			JSONObject o = LocationHelper.locationToJSON(loc);
+	
+			FileWriter fw = new FileWriter(outFile, true); // Open & append
+			fw.write(o.toString() + JSON_LOC_SEPARATOR);
+			fw.close();
+		} catch(IOException e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+			this.displayToast(getText(R.string.gps_file_save_failure));
+			return false;
+		}
 		
-		return outFile.getAbsolutePath();
+		Log.d(TAG, "Location written: " + loc.toString() + ", " + outFile.getAbsolutePath());
+		return true;
 	}
 	
 	/**
 	 * Gets output file handle
-	 * @return Output file handle
-	 * @throws IOException
+	 * @return Output file handle or null if file cannot be opened
 	 */
-	private File getOutputFile() throws IOException {
-		// Get file name, check that it can be created. If not,
-		// get a file name with added seq number and try a few times
-		File baseDir = new File(FILE_BASE_PATH + File.separator + FILE_DIRECTORY);
-		if(!baseDir.exists()) { 
-			baseDir.mkdirs();
-		}
-		
-		File outputFile = new File(baseDir, getFileName());
-		
-		int tryCounter = 0;
-		while(!outputFile.createNewFile()) {
-			tryCounter++;
-			if(tryCounter > 9) {
-				Log.e(TAG, "Unable to open file for writing. Gave up after 10 tries");
-				return null;
+	private File getOutputFile() {
+		File outputFile = null;
+		try {
+			// Get file name, check that it can be created. If not,
+			// get a file name with added seq number and try a few times
+			File baseDir = new File(FILE_BASE_PATH + File.separator + FILE_DIRECTORY);
+			if(!baseDir.exists()) { 
+				baseDir.mkdirs();
 			}
-			outputFile = new File(FILE_BASE_PATH, getFileName(tryCounter));
+			
+			outputFile = new File(baseDir, getFileName());
+			
+			int tryCounter = 0;
+			while(!outputFile.createNewFile()) {
+				tryCounter++;
+				if(tryCounter > 9) {
+					throw new IOException("Unable to open file for writing. Gave up after 10 tries." + outputFile.getAbsolutePath());
+				}
+				outputFile = new File(FILE_BASE_PATH, getFileName(tryCounter));
+			}
+		} catch(IOException e) {
+			Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
 		}
 		
 		return outputFile;		
