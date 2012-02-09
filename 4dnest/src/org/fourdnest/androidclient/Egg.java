@@ -89,6 +89,8 @@ public class Egg {
 		this.tags = tags;
 		this.lastUpload = lastUpload;
 		this.setCreationDate(date);
+		this.longitude = 0;
+		this.latitude = 0;
 	}
 	
 	@Override
