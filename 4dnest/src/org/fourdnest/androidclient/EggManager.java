@@ -263,7 +263,7 @@ public class EggManager {
 	                insertNew = false;
 	            }
 	            
-	            if(result.isClosed()) {
+	            if(!result.isClosed()) {
 	            	result.close();
 	            }
 	        }
@@ -365,17 +365,9 @@ public class EggManager {
         egg.setLatitude(latitude);
         
         return egg;
+
     }
 
-    
-    /**
-     * Closes database
-     */
-    public synchronized void close() {
-        Log.d(TAG, "db closed");
-        //this.eggDb.close();
-    }
-    
     
     
     /**
