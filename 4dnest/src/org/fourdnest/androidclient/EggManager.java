@@ -239,6 +239,11 @@ public class EggManager {
 	        }else {
 	            values.put(C_DATE, "");
 	        }
+            values.put(C_REMOTETHUMBNAILURI,
+                    egg.getRemoteThumbnailUri() != null ? egg
+                            .getRemoteThumbnailUri().toString() : null);
+            values.put(C_LONGITUDE, egg.getLongitude());
+            values.put(C_LATITUDE, egg.getLatitude());
 	        
 	        // API level 8 would have insertWithOnConflict, have to work around it
 	        // and check for conflict and then either insert or update
@@ -347,8 +352,17 @@ public class EggManager {
         if (cursor.getString(9) != null) {
         	remoteThumbnail = Uri.parse(cursor.getString(9));
         }
+        double longitude = 0;
+        if (!cursor.isNull(10)) {
+            longitude = cursor.getDouble(10);
+        }
+        double latitude = 0;
+        if (!cursor.isNull(11)) {
+            longitude = cursor.getDouble(11);
+        }
         Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload, date);
-        
+        egg.setLongitude(longitude);
+        egg.setLatitude(latitude);
         
         return egg;
     }
@@ -392,7 +406,9 @@ public class EggManager {
                         "%s long DEFAULT NULL," +
                         "%s text DEFAULT NULL," +
                         "%s datetime DEFAULT NULL," +
-                        "%s text DEFAULT NULL)",
+                        "%s text DEFAULT NULL," +
+                        "%s double DEFAULT NULL," +
+                        "%s double DEFAULT NULL)",
                         TABLE,
                         C_ID,
                         C_NESTID,
@@ -403,7 +419,9 @@ public class EggManager {
                         C_LASTUPLOAD,
                         C_TAGS,
                         C_DATE,
-                        C_REMOTETHUMBNAILURI
+                        C_REMOTETHUMBNAILURI,
+                        C_LONGITUDE,
+                        C_LATITUDE
             );
             
             db.execSQL(tableCreateQuery);
