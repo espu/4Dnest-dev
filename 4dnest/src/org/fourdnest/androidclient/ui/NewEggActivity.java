@@ -316,8 +316,13 @@ public class NewEggActivity extends NestSpecificActivity{
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
 			else if(this.currentMediaItem == mediaItemType.none){ //no media item is currently selected
-				thumbNailView.setVisibility(View.VISIBLE);	
-				upperButtons.setVisibility(View.GONE);
+				if(this.thumbNailView != null) {
+					this.thumbNailView.setVisibility(View.GONE);
+				}
+				
+				if(this.upperButtons != null) {
+					upperButtons.setVisibility(View.VISIBLE);
+				}
 			}
 			else if (this.currentMediaItem == mediaItemType.audio){ //audio item is selected
 			thumbNailView.setVisibility(View.VISIBLE);
@@ -620,8 +625,11 @@ public class NewEggActivity extends NestSpecificActivity{
 		else {
 			ContentResolver cR = this.getContentResolver();
 			MimeTypeMap mime = MimeTypeMap.getSingleton();
-			String type = mime.getExtensionFromMimeType(cR.getType(uri));	
-			if (type.startsWith("image")){
+			String type = mime.getExtensionFromMimeType(cR.getType(uri));
+			if(type == null) {
+				this.currentMediaItem = mediaItemType.none;
+			}
+			else if (type.startsWith("image")){
 				this.currentMediaItem = mediaItemType.image;
 			}
 			else if (type.startsWith("audio")){

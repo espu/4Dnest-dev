@@ -76,6 +76,20 @@ public class SendQueueService extends IntentService {
 	public static void sendEgg(Context context, Egg egg, boolean isDraft) {
 		FourDNestApplication app = (FourDNestApplication)context; 
 		
+		// If egg has no gps location info, try to add it
+		if(egg.getLatitude() == 0 || egg.getLongitude() == 0) {
+			LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			Criteria crit = new Criteria();
+			crit.setAccuracy(Criteria.ACCURACY_FINE);
+			String provider = lm.getBestProvider(crit, true);
+			Location loc = lm.getLastKnownLocation(provider);
+			
+			if(loc != null) {
+				egg.setLatitude(loc.getLatitude());
+				egg.setLongitude(loc.getLongitude());
+			}			
+		}
+		
 		Egg savedEgg;
 		if(!isDraft) {
 			Nest currentNest = app.getCurrentNest();		
@@ -91,20 +105,7 @@ public class SendQueueService extends IntentService {
 			savedEgg = egg;
 		}
 		
-		// If egg has no location info, try to add it
-		if(egg.getLatitude() == 0 || egg.getLongitude() == 0) {
-			LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-			Criteria crit = new Criteria();
-			crit.setAccuracy(Criteria.ACCURACY_FINE);
-			String provider = lm.getBestProvider(crit, true);
-			Location loc = lm.getLastKnownLocation(provider);
-			
-			if(loc != null) {
-				egg.setLatitude(loc.getLatitude());
-				egg.setLongitude(loc.getLongitude());
-			}
-			
-		}
+		
 		
 		Intent intent = new Intent(context, SendQueueService.class);
 		intent.addCategory(SendQueueService.SEND_EGG);
