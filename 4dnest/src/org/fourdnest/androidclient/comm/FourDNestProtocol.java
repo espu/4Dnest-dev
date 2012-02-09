@@ -437,8 +437,10 @@ public class FourDNestProtocol implements Protocol {
                 tags.put(egg.getTags().get(i).getName());
             }
             temp.put("tags", tags);
-            temp.put("lon", egg.getLongitude());
-            temp.put("lat", egg.getLatitude());
+            if (egg.getLatitude() != 0 || egg.getLongitude() != 0) {
+                temp.put("lon", egg.getLongitude());
+                temp.put("lat", egg.getLatitude());
+            }
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
