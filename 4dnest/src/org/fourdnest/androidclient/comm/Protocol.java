@@ -70,5 +70,7 @@ public interface Protocol {
      * @param Egg whose thumbnail is in question 
      * @return boolean whether thumbnail can be found in predefined location
      */
-    boolean getThumbnail(Egg egg);
+    boolean getThumbnail(Egg egg, String size);
+    
+    boolean getMedia(Egg egg);
 }

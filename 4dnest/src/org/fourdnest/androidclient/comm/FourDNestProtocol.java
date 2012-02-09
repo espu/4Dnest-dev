@@ -12,16 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicNameValuePair;
@@ -37,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.lang.Character.UnicodeBlock;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -61,26 +51,25 @@ public class FourDNestProtocol implements Protocol {
 	private static final String SIZE_FORMAT = "?limit=";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
-	private static final int HTTP_STATUSCODE_UPDATED = 204;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
-	private static final int CONNECTION_TIMEOUT = 15000;
-	private static final int HTTP_PORT = 80;
-	private static final int HTTPS_PORT = 443;
-	private static final String THUMBNAIL_DEFAULT_SIZE = "-400x400";
 	
-    private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
+	public static final String THUMBNAIL_SIZE_SMALL = "-100x100";
+	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
 
-    /** Location of thumbnails on the server */
-    public static final String THUMBNAIL_PATH = "content/instance/";
+	private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
 
-    /** Thumbnails on the server are in jpg format */
-    private static final String THUMBNAIL_FILETYPE = ".jpg";
+	/** Location of thumbnails on the server */
+	public static final String THUMBNAIL_PATH = "content/instance/";
+
+	/** Thumbnails on the server are in jpg format */
+	private static final String THUMBNAIL_FILETYPE = ".jpg";
 	private Nest nest;
 
 	public FourDNestProtocol() {
 		this.nest = null;
 	}
+
 	/**
 	 * Parses egg's content and sends it in multipart mime format with HTTP
 	 * post.
@@ -110,7 +99,8 @@ public class FourDNestProtocol implements Protocol {
 				pairs.add(new BasicNameValuePair("file", egg.getLocalFileURI()
 						.getPath()));
 
-				String fileMd5 = CommUtils.md5FromFile(egg.getLocalFileURI().getPath());
+				String fileMd5 = CommUtils.md5FromFile(egg.getLocalFileURI()
+						.getPath());
 				Log.d("fileMD5", fileMd5);
 
 				concatedMd5 += fileMd5;
@@ -147,7 +137,7 @@ public class FourDNestProtocol implements Protocol {
 		}
 		HttpClient client = CommUtils.createHttpClient();
 		HttpPut request = new HttpPut(this.nest.getBaseURI()
-				+ EGG_DOWNLOAD_PATH + egg.getExternalId() +"/");
+				+ EGG_DOWNLOAD_PATH + egg.getExternalId() + "/");
 		Log.d("OVERURI", request.getURI().getPath());
 		String metadata = eggToJSONstring(egg);
 
@@ -157,7 +147,7 @@ public class FourDNestProtocol implements Protocol {
 				.getBytes()));
 		int status = 0;
 		try {
-		    StringEntity se = new StringEntity(metadata, HTTP.UTF_8);
+			StringEntity se = new StringEntity(metadata, HTTP.UTF_8);
 			request.addHeader("Content-Type", "application/json");
 			request.setEntity(se);
 			addAuthentication(request, multipartMd5String);
@@ -170,7 +160,7 @@ public class FourDNestProtocol implements Protocol {
 			Log.e(TAG, "Failed to overwrite egg: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to overwrite egg: IOException");
+			Log.e(TAG, "Failed to overwrite egg: IOException");
 		}
 		return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
 	}
@@ -213,7 +203,8 @@ public class FourDNestProtocol implements Protocol {
 		try {
 			request.setURI(new URI(uriPath));
 			addAuthentication(request, "");
-			String jsonStr = CommUtils.responseToString(client.execute(request));
+			String jsonStr = CommUtils
+					.responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
 			JSONArray jsonTags = outer.getJSONArray("objects");
 			for (int i = 0; i < jsonTags.length(); i++) {
@@ -224,16 +215,16 @@ public class FourDNestProtocol implements Protocol {
 			return tags;
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch tags: UriSyntaxException");
+			Log.e(TAG, "Failed to fetch tags: UriSyntaxException");
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch tags: ClientProtocolException");
+			Log.e(TAG, "Failed to fetch tags: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch tags: IoException");
+			Log.e(TAG, "Failed to fetch tags: IoException");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch tags: JSONException");
+			Log.e(TAG, "Failed to fetch tags: JSONException");
 		}
 		return new ArrayList<Tag>();
 	}
@@ -259,12 +250,13 @@ public class FourDNestProtocol implements Protocol {
 		HttpGet request = new HttpGet();
 		String temp = "http://test42.4dnest.org/";
 		String uriPath = temp + EGG_DOWNLOAD_PATH + uid + "/" + JSON_FORMAT;
-		//Log.d("URI", uriPath);
+		// Log.d("URI", uriPath);
 
 		try {
 			request.setURI(new URI(uriPath));
 			addAuthentication(request, "");
-			String jsonStr = CommUtils.responseToString(client.execute(request));
+			String jsonStr = CommUtils
+					.responseToString(client.execute(request));
 			JSONObject js = new JSONObject(jsonStr);
 			return jSONObjectToEgg(js);
 		} catch (IllegalStateException e) {
@@ -272,16 +264,16 @@ public class FourDNestProtocol implements Protocol {
 			Log.e(TAG, "Failed to fetch egg: IllegalStateException");
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch egg: ClientProtocolException");
+			Log.e(TAG, "Failed to fetch egg: ClientProtocolException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch egg: IOException");
+			Log.e(TAG, "Failed to fetch egg: IOException");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch egg: JSONException");
+			Log.e(TAG, "Failed to fetch egg: JSONException");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-		    Log.e(TAG, "Failed to fetch egg: UriSyntaxException");
+			Log.e(TAG, "Failed to fetch egg: UriSyntaxException");
 		}
 		return null;
 	}
@@ -297,18 +289,20 @@ public class FourDNestProtocol implements Protocol {
 		ArrayList<Egg> eggList = new ArrayList<Egg>();
 		HttpClient client = CommUtils.createHttpClient();
 		HttpGet request = new HttpGet();
-		String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + SIZE_FORMAT + size;
-		//Log.d("URIStream", uriPath);
+		String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH
+				+ SIZE_FORMAT + size;
+		// Log.d("URIStream", uriPath);
 		try {
 			request.setURI(new URI(uriPath));
 			addAuthentication(request, "");
-			String jsonStr = CommUtils.responseToString(client.execute(request));
+			String jsonStr = CommUtils
+					.responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
 			JSONArray jsonArr = outer.getJSONArray("objects");
 			for (int i = 0; i < jsonArr.length(); i++) {
 				current = jSONObjectToEgg(jsonArr.getJSONObject(i));
 				if (current != null) {
-					//Log.d("CURRENTEGG", current.getExternalId());
+					// Log.d("CURRENTEGG", current.getExternalId());
 					eggList.add(current);
 				}
 			}
@@ -380,10 +374,10 @@ public class FourDNestProtocol implements Protocol {
 		Date date = new Date();
 		String stringToSign = verb + "\n" + "" + "\n" + multipartMd5 + "\n"
 				+ "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
-		//Log.d("stringtosign", stringToSign);
+		// Log.d("stringtosign", stringToSign);
 
 		String authHead = user + ":" + computeSignature(stringToSign, key);
-		//Log.d("HASH", authHead);
+		// Log.d("HASH", authHead);
 		base.setHeader("Authorization", authHead);
 
 		base.setHeader("Date", DateUtils.formatDate(date));
@@ -407,6 +401,7 @@ public class FourDNestProtocol implements Protocol {
 			HttpGet request = new HttpGet(new URI(uri));
 			addAuthentication(request, "");
 			HttpResponse resp = client.execute(request);
+			Log.d(TAG, String.valueOf(resp.getStatusLine().getStatusCode()));
 			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
 				return false;
 			}
@@ -425,37 +420,40 @@ public class FourDNestProtocol implements Protocol {
 		return false;
 
 	}
-	
-    /**
-     * Turns egg into a JSON formatted string
-     * @param egg
-     * @return JSON formatted string, containing egg metadata
-     */
-    public static String eggToJSONstring(Egg egg) {
-    	JSONObject temp = new JSONObject();
-    	try {
+
+	/**
+	 * Turns egg into a JSON formatted string
+	 * 
+	 * @param egg
+	 * @return JSON formatted string, containing egg metadata
+	 */
+	public static String eggToJSONstring(Egg egg) {
+		JSONObject temp = new JSONObject();
+		try {
 			temp.put("author", egg.getAuthor());
 			temp.put("caption", egg.getCaption());
 			JSONArray tags = new JSONArray();
-            for (int i = 0; i<egg.getTags().size(); i++) {
-                tags.put(new String(egg.getTags().get(i).getName()));
-            }
-            temp.put("tags", tags);
+			for (int i = 0; i < egg.getTags().size(); i++) {
+				tags.put(new String(egg.getTags().get(i).getName()));
+			}
+			temp.put("tags", tags);
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	return "";
-    }
-    
-    /**
-     * Turns a JSONObject into an egg object
-     * @param js The JSONobject
-     * @return created egg
-     */
-    private Egg jSONObjectToEgg(JSONObject js) {
-    	try {
+		return "";
+	}
+
+	/**
+	 * Turns a JSONObject into an egg object
+	 * 
+	 * @param js
+	 *            The JSONobject
+	 * @return created egg
+	 */
+	private Egg jSONObjectToEgg(JSONObject js) {
+		try {
 			String caption = js.getString("caption");
 			String externalFileUriStr;
 			Uri externalFileUri = null;
@@ -463,7 +461,8 @@ public class FourDNestProtocol implements Protocol {
 				externalFileUriStr = js.getString("content_uri");
 				externalFileUri = Uri.parse(externalFileUriStr);
 			} catch (Exception e) {
-				//No content_uri means text egg, so we leave the external file uri as null
+				// No content_uri means text egg, so we leave the external file
+				// uri as null
 			}
 			String author = js.getString("author");
 			String thumbnailUriStr = null;
@@ -486,58 +485,85 @@ public class FourDNestProtocol implements Protocol {
 				// No tags
 			}
 			String dateStr = js.getString("created");
-			//Log.d("DATESTR", dateStr);
-			DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss"));
+			// Log.d("DATESTR", dateStr);
+			DateFormat formatter = new SimpleDateFormat(
+					("yyyy-MM-dd'T'HH:mm:ss"));
 			Date date;
-            try {
-                date = (Date) formatter.parse(dateStr);
-            } catch (ParseException e) {
-               Log.e(TAG, "Failed to parse date");
-               date = null;
-            }
-			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0, date);
+			try {
+				date = (Date) formatter.parse(dateStr);
+			} catch (ParseException e) {
+				Log.e(TAG, "Failed to parse date");
+				date = null;
+			}
+			Egg egg = new Egg(0, this.nest.getId(), author, null,
+					externalFileUri, thumbNailUri, caption, tags, 0, date);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			return egg;
 		} catch (JSONException e) {
 			Log.e("JSONTOEGG", "Got JSONexception");
 		}
-    	return null;
-    }
-    /**
-     * Can be called to make sure thumbnail is in memory card, thumbnail is downloaded from 4dnest server or
-     * OSM static maps api when applicable.
-     * 
-     * @param Egg whose thumbnail is in question
-     * 
-     * @return boolean whether thumbnail can be found in predefined location
-     */
-    public boolean getThumbnail(Egg egg) {
-        String path = ThumbnailManager.getThumbnailUriString(egg);
-        boolean res = true;
-        FourDNestApplication app = FourDNestApplication.getApplication();
-        if (!ThumbnailManager.thumbNailExists(egg)) {
-            if (egg.getMimeType() == Egg.fileType.ROUTE) {
-                StaticMapGetter mapGetter = new OsmStaticMapGetter();
-                res = mapGetter.getStaticMap(egg);
-            }else {
-                String externalUriString = app.getCurrentNest().getBaseURI()
-                        + THUMBNAIL_PATH + egg.getExternalId()
-                        + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
-                String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
-                if (!new File(thumbnail_dir).exists()) {
-                    new File(thumbnail_dir).mkdirs();
-                }
-                Log.d("SAVELOC", path);
-                if (app.getCurrentNest().getProtocol().getMediaFile(externalUriString, path)) {
-                    Log.d(TAG, "Thumbnail written succesfully");
-                    res = true;
-                }else {
-                    Log.d(TAG, "Thumbnail failed to write");
-                    res = false;
-                }
-            }
-        }
-        return res;
-    }
+		return null;
+	}
+
+	/**
+	 * Can be called to make sure thumbnail is in memory card, thumbnail is
+	 * downloaded from 4dnest server or OSM static maps api when applicable.
+	 * 
+	 * @param Egg
+	 *            whose thumbnail is in question
+	 * @param size is thumbnail size from protocol public static field THUMBNAIL_SIZE_(LARGE or SMALL)
+	 * 
+	 * @return boolean whether thumbnail can be found in predefined location
+	 */
+	public boolean getThumbnail(Egg egg, String size) {
+		String path = ThumbnailManager.getThumbnailUriString(egg, size);
+		boolean res = true;
+		FourDNestApplication app = FourDNestApplication.getApplication();
+		if (!ThumbnailManager.thumbNailExists(egg, size)) {
+			if (egg.getMimeType() == Egg.fileType.ROUTE) {
+				StaticMapGetter mapGetter = new OsmStaticMapGetter();
+				res = mapGetter.getStaticMap(egg);
+			} else {
+				String externalUriString = app.getCurrentNest().getBaseURI()
+						+ THUMBNAIL_PATH + egg.getExternalId()
+						+ size + THUMBNAIL_FILETYPE;
+				Log.d(TAG, externalUriString);
+				String thumbnail_dir = Environment
+						.getExternalStorageDirectory().getAbsolutePath()
+						+ File.separator + THUMBNAIL_LOCATION;
+				if (!new File(thumbnail_dir).exists()) {
+					new File(thumbnail_dir).mkdirs();
+				}
+				Log.d("SAVELOC", path);
+				if (app.getCurrentNest().getProtocol()
+						.getMediaFile(externalUriString, path)) {
+					Log.d(TAG, "Thumbnail written succesfully");
+					res = true;
+				} else {
+					Log.d(TAG, "Thumbnail failed to write");
+					res = false;
+				}
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Can be called to make sure thumbnail is in memory card, thumbnail is
+	 * downloaded from 4dnest server or OSM static maps api when applicable.
+	 * 
+	 * @param Egg
+	 *            whose thumbnail is in question
+	 * 
+	 * @return boolean whether thumbnail can be found in predefined location
+	 */
+	public boolean getMedia(Egg egg) {
+		String path = MediaManager.getMediaUriString(egg);
+		FourDNestApplication app = FourDNestApplication.getApplication();
+		boolean res = app.getCurrentNest().getProtocol()
+				.getMediaFile(egg.getRemoteFileURI().toString(), path);
+		return res;
+	}
+
 }
