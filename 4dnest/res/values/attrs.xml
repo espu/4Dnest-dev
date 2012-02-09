@@ -13,5 +13,6 @@
         <attr name="layout_newLine" format="boolean"/>
         <attr name="layout_horizontalSpacing" format="dimension"/>
         <attr name="layout_verticalSpacing" format="dimension"/>
-    </declare-styleable>
+    </declare-styleable><string name="egg_element_large_margin">6dip</string>
+    
 </resources>
