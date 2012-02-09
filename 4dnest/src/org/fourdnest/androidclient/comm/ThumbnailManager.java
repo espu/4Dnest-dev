@@ -31,11 +31,7 @@ public class ThumbnailManager {
      */
     public static boolean thumbNailExists(Egg egg) {
         String path = getThumbnailUriString(egg);
-        if ((new File(path)).exists()) {
-            return true;
-        }else {
-            return false;   
-        }
+        return new File(path).exists();
     }
     
     /**
