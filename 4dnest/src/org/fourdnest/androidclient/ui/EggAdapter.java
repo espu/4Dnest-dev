@@ -127,8 +127,6 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView date = (TextView) view.findViewById(R.id.date);
 
-		// TODO: Proper implementation after thumbnail fetching
-		// functionality.
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
 		if (egg.getMimeType() != Egg.fileType.TEXT) {
 			thumbnail.setImageURI(Uri.parse(ThumbnailManager
