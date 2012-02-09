@@ -331,8 +331,28 @@ public class NewEggActivity extends NestSpecificActivity{
 			thumbNailView.setVisibility(View.VISIBLE);
 			upperButtons.setVisibility(View.GONE);
 			thumbNailView.setImageResource(R.drawable.roll1);
-			File audioFile = new  File(fileURL);
-			realFileURL = audioFile.getAbsolutePath();
+			File videoFile = new  File(fileURL);
+			realFileURL = videoFile.getAbsolutePath();
+			
+				
+			String[] proj = {
+					MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DATA
+				};
+				Cursor cursor = managedQuery(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, 
+				                                    proj, MediaStore.Video.Media.DISPLAY_NAME+"=?",new String[] {videoFile.getName()}, null);
+				try{
+					cursor.moveToFirst();
+				int fileID = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID));
+				ContentResolver crThumb = getContentResolver();
+				BitmapFactory.Options options=new BitmapFactory.Options();
+				options.inSampleSize = 1;
+				Bitmap curThumb = MediaStore.Video.Thumbnails.getThumbnail(crThumb, fileID, MediaStore.Video.Thumbnails.MINI_KIND, options);
+				thumbNailView.setImageBitmap(curThumb);
+				} catch (Exception ex){
+					thumbNailView.setImageResource(R.drawable.roll1);
+				}
+			
+			
 		}
 	
 	}

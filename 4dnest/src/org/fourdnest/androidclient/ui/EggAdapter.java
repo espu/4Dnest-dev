@@ -1,15 +1,17 @@
 package org.fourdnest.androidclient.ui;
 
-import java.sql.Time;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
+import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,6 +121,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
 		Egg egg = (Egg) this.getItem(arg0);
+		fileType type = egg.getMimeType();
+		Log.d("FILETYPE", type.toString());
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView date = (TextView) view.findViewById(R.id.date);
 
@@ -129,11 +133,11 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		//TextView time = (TextView) view.findViewById(R.id.time);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		
-		thumbnail.setImageURI(Uri.parse(FourDNestThumbnailManager.getThumbnailUriString(egg)));
+		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
 
 		//author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
-		date.setText(DateFormat.getDateInstance().format(egg.getCreationDate()));
+		date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
 		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {

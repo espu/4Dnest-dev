@@ -29,7 +29,7 @@ public class EggManager {
     
     private static final String TAG = EggManager.class.getSimpleName();
     
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 7;
     
     // Table columns
     private static final String TABLE = "egg";
@@ -42,13 +42,15 @@ public class EggManager {
     private static final String C_LASTUPLOAD = "last_upload";
     private static final String C_TAGS = "tags";
     private static final String C_DATE = "date";
+    private static final String C_REMOTETHUMBNAILURI = "remote_thumbnail_uri";
+    private static final String C_LONGITUDE = "longitude";
+    private static final String C_LATITUDE = "latitude";
     
     private static final String TAG_LIST_SEPARATOR = ",";
     
-    private static final String[] ALL_COLUMNS = new String[]{
-        C_ID, C_NESTID, C_AUTHOR, C_LOCALFILEURI,
-        C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD, C_TAGS, C_DATE
-    };
+    private static final String[] ALL_COLUMNS = new String[] { C_ID, C_NESTID,
+            C_AUTHOR, C_LOCALFILEURI, C_REMOTEFILEURI, C_CAPTION, C_LASTUPLOAD,
+            C_TAGS, C_DATE, C_REMOTETHUMBNAILURI, C_LONGITUDE, C_LATITUDE };
         
     private final EggDatabase eggDb;
     private String dbName;
@@ -239,6 +241,11 @@ public class EggManager {
 	        }else {
 	            values.put(C_DATE, "");
 	        }
+            values.put(C_REMOTETHUMBNAILURI,
+                    egg.getRemoteThumbnailUri() != null ? egg
+                            .getRemoteThumbnailUri().toString() : null);
+            values.put(C_LONGITUDE, egg.getLongitude());
+            values.put(C_LATITUDE, egg.getLatitude());
 	        
 	        // API level 8 would have insertWithOnConflict, have to work around it
 	        // and check for conflict and then either insert or update
@@ -343,11 +350,26 @@ public class EggManager {
            Log.e(TAG, "Failed to parse date");
            date = null;
         }
-        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, caption, tagList, lastUpload, date);
-        
+        Uri remoteThumbnail = null;
+        if (cursor.getString(9) != null) {
+        	remoteThumbnail = Uri.parse(cursor.getString(9));
+        }
+        double longitude = 0;
+        if (!cursor.isNull(10)) {
+            longitude = cursor.getDouble(10);
+        }
+        double latitude = 0;
+        if (!cursor.isNull(11)) {
+            longitude = cursor.getDouble(11);
+        }
+        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload, date);
+        egg.setLongitude(longitude);
+        egg.setLatitude(latitude);
         
         return egg;
+
     }
+
     
     
     /**
@@ -377,7 +399,10 @@ public class EggManager {
                         "%s text DEFAULT NULL," +
                         "%s long DEFAULT NULL," +
                         "%s text DEFAULT NULL," +
-                        "%s datetime DEFAULT NULL)",
+                        "%s datetime DEFAULT NULL," +
+                        "%s text DEFAULT NULL," +
+                        "%s double DEFAULT NULL," +
+                        "%s double DEFAULT NULL)",
                         TABLE,
                         C_ID,
                         C_NESTID,
@@ -387,7 +412,10 @@ public class EggManager {
                         C_CAPTION,
                         C_LASTUPLOAD,
                         C_TAGS,
-                        C_DATE
+                        C_DATE,
+                        C_REMOTETHUMBNAILURI,
+                        C_LONGITUDE,
+                        C_LATITUDE
             );
             
             db.execSQL(tableCreateQuery);

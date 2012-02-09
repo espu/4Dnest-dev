@@ -56,6 +56,10 @@ public class Egg {
 	/**Time the egg was created in the server */
 	private Date creationDate;
 	
+	private double longitude;
+	
+	private double latitude;
+	
 	// FIXME: automatic metadata.
 	
 	
@@ -74,16 +78,19 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload, Date date) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, Uri remoteThumbailUri, String caption, List<Tag> tags, long lastUpload, Date date) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
 		this.localFileURI = localFileURI;
 		this.remoteFileURI = remoteFileURI;
+		this.setRemoteThumbnailUri(remoteThumbailUri);
 		this.caption = caption;
 		this.tags = tags;
 		this.lastUpload = lastUpload;
 		this.setCreationDate(date);
+		this.longitude = 0;
+		this.latitude = 0;
 	}
 	
 	@Override
@@ -305,6 +312,30 @@ public class Egg {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+	public Uri getRemoteThumbnailUri() {
+		return remoteThumbnailUri;
+	}
+
+	public void setRemoteThumbnailUri(Uri remoteThumbnailUri) {
+		this.remoteThumbnailUri = remoteThumbnailUri;
+	}
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 	
 }

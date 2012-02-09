@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.comm;
 
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import org.apache.commons.codec.binary.Base64;
@@ -27,6 +28,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.NameValuePair;
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.tools.*;
@@ -65,6 +67,15 @@ public class FourDNestProtocol implements Protocol {
 	private static final int CONNECTION_TIMEOUT = 15000;
 	private static final int HTTP_PORT = 80;
 	private static final int HTTPS_PORT = 443;
+	private static final String THUMBNAIL_DEFAULT_SIZE = "-400x400";
+	
+    private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
+
+    /** Location of thumbnails on the server */
+    public static final String THUMBNAIL_PATH = "content/instance/";
+
+    /** Thumbnails on the server are in jpg format */
+    private static final String THUMBNAIL_FILETYPE = ".jpg";
 	private Nest nest;
 
 	public FourDNestProtocol() {
@@ -446,8 +457,25 @@ public class FourDNestProtocol implements Protocol {
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
 			String caption = js.getString("caption");
-			String externalFileUri = js.getString("content_uri");
+			String externalFileUriStr;
+			Uri externalFileUri = null;
+			try {
+				externalFileUriStr = js.getString("content_uri");
+				externalFileUri = Uri.parse(externalFileUriStr);
+			} catch (Exception e) {
+				//No content_uri means text egg, so we leave the external file uri as null
+			}
 			String author = js.getString("author");
+			String thumbnailUriStr = null;
+			try {
+				thumbnailUriStr = js.getString("thumbnail_uri");
+			} catch (JSONException e) {
+				thumbnailUriStr = null;
+			}
+			Uri thumbNailUri = null;
+			if (thumbnailUriStr != null) {
+				thumbNailUri = Uri.parse(thumbnailUriStr);
+			}
 			ArrayList<Tag> tags = new ArrayList<Tag>();
 			try {
 				JSONArray tagar = js.getJSONArray("tags");
@@ -467,13 +495,61 @@ public class FourDNestProtocol implements Protocol {
                Log.e(TAG, "Failed to parse date");
                date = null;
             }
-			Egg egg = new Egg(0, this.nest.getId(), author, null, Uri.parse(externalFileUri), caption, tags, 0, date);
+            double latitude = 0;
+            double longitude = 0;
+            try {
+                latitude = js.getDouble("lat");
+                longitude = js.getDouble("lon");
+                Log.d(TAG, "succesfully parsed location data");
+            }catch (JSONException e) {
+                // No location information
+            }
+			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0, date);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
+			egg.setLatitude(latitude);
+			egg.setLongitude(longitude);
+			Log.d("EGGLATI", ":" + egg.getLatitude());
 			return egg;
 		} catch (JSONException e) {
 			Log.e("JSONTOEGG", "Got JSONexception");
 		}
     	return null;
+    }
+    /**
+     * Can be called to make sure thumbnail is in memory card, thumbnail is downloaded from 4dnest server or
+     * OSM static maps api when applicable.
+     * 
+     * @param Egg whose thumbnail is in question
+     * 
+     * @return boolean whether thumbnail can be found in predefined location
+     */
+    public boolean getThumbnail(Egg egg) {
+        String path = ThumbnailManager.getThumbnailUriString(egg);
+        boolean res = true;
+        FourDNestApplication app = FourDNestApplication.getApplication();
+        if (!ThumbnailManager.thumbNailExists(egg)) {
+            if (egg.getMimeType() == Egg.fileType.ROUTE) {
+                StaticMapGetter mapGetter = new OsmStaticMapGetter();
+                res = mapGetter.getStaticMap(egg);
+            }else {
+                String externalUriString = app.getCurrentNest().getBaseURI()
+                        + THUMBNAIL_PATH + egg.getExternalId()
+                        + THUMBNAIL_DEFAULT_SIZE + THUMBNAIL_FILETYPE;
+                String thumbnail_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
+                if (!new File(thumbnail_dir).exists()) {
+                    new File(thumbnail_dir).mkdirs();
+                }
+                Log.d("SAVELOC", path);
+                if (app.getCurrentNest().getProtocol().getMediaFile(externalUriString, path)) {
+                    Log.d(TAG, "Thumbnail written succesfully");
+                    res = true;
+                }else {
+                    Log.d(TAG, "Thumbnail failed to write");
+                    res = false;
+                }
+            }
+        }
+        return res;
     }
 }

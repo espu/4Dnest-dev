@@ -36,5 +36,10 @@ public class SendQueueTestProtocol implements Protocol {
 	public ProtocolResult overwriteEgg(Egg egg) {
 		return new ProtocolResult(null, 200);
 	}
+    @Override
+    public boolean getThumbnail(Egg egg) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
 
