@@ -136,6 +136,18 @@ public class FourDNestApplication extends Application
         if(key.startsWith("nest_")) {
             this.handleNestPrefChanges();
         }
+        if (key.equals("stream_frequency")) {
+        	Intent i = new Intent(this, StreamReaderService.class);
+        	i.addCategory(StreamReaderService.STREAM_FREQ);
+        	i.putExtra(StreamReaderService.NEW_FREQUENCY, this.prefs.getString("stream_frequency", ""));
+        	startService(i);
+        }
+        if (key.equals("stream_size")) {
+        	Intent i = new Intent(this, StreamReaderService.class);
+        	i.addCategory(StreamReaderService.STREAM_SIZE);
+        	i.putExtra(StreamReaderService.NEW_STREAM_SIZE, this.prefs.getString("stream_size", ""));
+        	//startService(i);
+        }
     }
     
     /**

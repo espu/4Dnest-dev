@@ -45,7 +45,7 @@ public interface Protocol {
      * FIXME Errorhandling!
      * @return The Eggs currently in the stream, or an empty list if unable to retrieve stream.
      */
-    List<Egg> getStream();
+    List<Egg> getStream(int size);
     /**
      * Attempts to retrieve the top tags from the Nest that this Protocol is bound to.
      * FIXME Errorhandling!
@@ -63,4 +63,12 @@ public interface Protocol {
      * @return the protocol id.
      */
 	int getProtocolId();
+	
+    /**
+     * Can be called to make sure thumbnail is in memory card, thumbnail is downloaded from 4dnest server or
+     * OSM static maps api when applicable.
+     * @param Egg whose thumbnail is in question 
+     * @return boolean whether thumbnail can be found in predefined location
+     */
+    boolean getThumbnail(Egg egg);
 }

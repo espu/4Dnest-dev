@@ -8,22 +8,32 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        >"
         
         <ToggleButton
             android:id="@+id/route_tracker_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="1"
+            android:paddingTop="2dp"
             android:textOn="@string/stream_reader_gps_button_tracking"
-        	android:textOff="@string/stream_reader_gps_button_nottracking"/>
+        	android:textOff="@string/stream_reader_gps_button_nottracking"
+        	android:gravity="center_horizontal"
+        	/>
 
         <Button
             android:id="@+id/create_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="45dp" 
             android:layout_weight="1"
-            android:text="@string/read_stream_create_button"/>
+            android:paddingTop="2dp"
+            android:text="@string/read_stream_create_button"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            />
     </LinearLayout>
 
     <LinearLayout

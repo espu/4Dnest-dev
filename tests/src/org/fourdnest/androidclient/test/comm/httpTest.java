@@ -54,7 +54,7 @@ public class httpTest extends AndroidTestCase {
 		Log.v("Path", uri.getPath());
 
 
-		Egg egg = new Egg(5, 10, "Meitsi", uri, null, "tägei tulee", tags, 100, new Date());
+		Egg egg = new Egg(5, 10, "Meitsi", uri, null, null, "tägei tulee", tags, 100, new Date());
 		Log.d("EGGTYPE", egg.getMimeType().toString());
 
         /* SELECT to use local or web server */
@@ -82,7 +82,7 @@ public class httpTest extends AndroidTestCase {
 		tags.add(new Tag("Video Games"));
 		MemoryCardInitializer.initialize(this.getContext());
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
-		Egg egg = new Egg(5, 10, "Old author", uri, null, "Before overwrite, should not be seen", tags, 100, new Date());
+		Egg egg = new Egg(5, 10, "Old author", uri, null, null, "Before overwrite, should not be seen", tags, 100, new Date());
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
@@ -109,7 +109,7 @@ public class httpTest extends AndroidTestCase {
 		MemoryCardInitializer.initialize(this.getContext());
 		String eggId = "";
 		Uri uri = Uri.parse("/sdcard/kuva.jpg");
-		Egg egg = new Egg(5, 10, "Egg sender", uri, null, "Sending egg to test retrieve with tags", tags, 100, new Date());
+		Egg egg = new Egg(5, 10, "Egg sender", uri, null, null, "Sending egg to test retrieve with tags", tags, 100, new Date());
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
@@ -129,7 +129,7 @@ public class httpTest extends AndroidTestCase {
 		Nest nest = new Nest(007, "testNest", "testNest", new URI("http://test42.4dnest.org/"), ProtocolFactory.PROTOCOL_4DNEST, "testuser", "secretkey");
 		Protocol protocol = nest.getProtocol();
 		protocol.setNest(nest);
-		List<Egg> eggList = protocol.getStream();
+		List<Egg> eggList = protocol.getStream(10);
 		assertTrue(eggList.size() > 0);
 	}
 	

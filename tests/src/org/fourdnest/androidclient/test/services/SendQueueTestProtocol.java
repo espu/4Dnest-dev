@@ -25,7 +25,7 @@ public class SendQueueTestProtocol implements Protocol {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public List<Egg> getStream() {
+	public List<Egg> getStream(int size) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -36,5 +36,10 @@ public class SendQueueTestProtocol implements Protocol {
 	public ProtocolResult overwriteEgg(Egg egg) {
 		return new ProtocolResult(null, 200);
 	}
+    @Override
+    public boolean getThumbnail(Egg egg) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
 

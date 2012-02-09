@@ -40,25 +40,27 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:gravity="center_vertical"
+        android:paddingTop="5pt">
 
         <ImageButton
             android:id="@+id/edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon" />
+            android:src="@drawable/ic_menu_delete" />
 
         <ImageButton
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon" />
+            android:src="@drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon" />
+            android:src="@drawable/ic_menu_send" />
     </LinearLayout>
 
 </LinearLayout>

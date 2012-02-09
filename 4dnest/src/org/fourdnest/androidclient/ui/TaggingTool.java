@@ -19,6 +19,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 /**
  * An UI element for attaching tags to the Egg that is being edited.
@@ -125,6 +128,14 @@ public class TaggingTool extends LinearLayout {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {}
+		});
+
+       	//Handle pressing enter
+       	this.tagTextView.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				TaggingTool.this.addTagFromTextView();
+				return true; // consume the enter
+			}
 		});
       	
 		this.setOrientation(VERTICAL);

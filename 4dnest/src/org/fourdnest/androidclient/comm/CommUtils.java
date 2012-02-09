@@ -173,7 +173,7 @@ public class CommUtils {
 		return entity;
 	}
 
-	public static boolean getMediaFile(Uri uri, Uri localUri) {
+	public static boolean getNetFile(Uri uri, Uri localUri) {
 		HttpClient client = CommUtils.createHttpClient();
 		try {
 			HttpGet request = new HttpGet(new URI(uri.toString()));

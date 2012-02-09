@@ -27,9 +27,6 @@ public class EggManagerTest extends AndroidTestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		
-		this.eggManager.close();
-		this.eggManager2.close();
 	}
 	
 	public void testSaveAndGetEgg() {
@@ -41,6 +38,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			1,
 			"Matti",
+			null,
 			null,
 			null,
 			"TestCaption",
@@ -64,6 +62,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			1,
 			"Matti",
+			null,
 			null,
 			null,
 			"TestCaption",
@@ -93,6 +92,7 @@ public class EggManagerTest extends AndroidTestCase {
 			"Matti",
 			null,
 			null,
+			null,
 			"CaptionForEgg",
 			tags,
 			now,
@@ -106,6 +106,7 @@ public class EggManagerTest extends AndroidTestCase {
 			"Matti",
 			null,
 			null,
+			null,
 			"CaptionToo!",
 			tags,
 			now,
@@ -117,6 +118,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			10,
 			"Matti",
+			null,
 			null,
 			null,
 			null,
@@ -142,6 +144,7 @@ public class EggManagerTest extends AndroidTestCase {
 				0,
 				1,
 				"Matti",
+				null,
 				null,
 				null,
 				"CaptionForEgg",
@@ -170,6 +173,7 @@ public class EggManagerTest extends AndroidTestCase {
 				"Matti",
 				null,
 				null,
+				null,
 				"CaptionForEgg",
 				tags,
 				now,
@@ -181,6 +185,7 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				2,
 				"Matti",
+				null,
 				null,
 				null,
 				"CaptionToo!",

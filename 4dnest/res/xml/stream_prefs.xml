@@ -34,5 +34,23 @@
         android:summaryOff="@string/pref_kiosk_descr_off"
         android:title="@string/pref_kiosk_title" >
 	</CheckBoxPreference>
+	
+	<!--Stream frequency can only be selected from a pre-derminated list, because Alarmmanager's
+	setInexactRepeating requires a specific value-->
+	<ListPreference
+    	android:key="stream_frequency"
+    	android:summary="@string/stream_update_frequency_descr"
+    	android:title="@string/stream_update_frequency_title"
+    	android:entries="@array/listStreamFrequencies"
+    	android:entryValues="@array/listStreamValues"
+    	android:defaultValue = "30"/>
+    	
+    <EditTextPreference
+    	android:key="stream_size"
+    	android:summary="@string/stream_size_descr"
+    	android:title="@string/stream_size_title"
+    	android:inputType="number"
+    	android:defaultValue = "50">
+    </EditTextPreference>
 
 </PreferenceScreen>

@@ -1,11 +1,12 @@
 package org.fourdnest.androidclient.test.comm;
 
-import org.fourdnest.androidclient.comm.Protocol;
-import org.fourdnest.androidclient.comm.ProtocolFactory;
+import org.fourdnest.androidclient.comm.CommUtils;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import android.net.Uri;
 import android.test.AndroidTestCase;
 
 public class GetTest extends AndroidTestCase {
@@ -21,8 +22,7 @@ public class GetTest extends AndroidTestCase {
 	
 	@Test
 	public void testGetMediaFile() throws Exception {
-		Protocol protocol = ProtocolFactory.createProtocol(ProtocolFactory.PROTOCOL_4DNEST);
-		boolean res = protocol.getMediaFile("http://users.tkk.fi/~aetolone/test.jpg", "/sdcard/test.jpg");
+		boolean res = CommUtils.getNetFile(Uri.parse("http://users.tkk.fi/~aetolone/test.jpg"), Uri.parse("/sdcard/test.jpg"));
 		assertTrue(res);
 	}
 

@@ -36,6 +36,10 @@ public class Egg {
 	/** URI to remote media file (uploaded to a nest). Is null for text only Eggs
 	 * and Eggs that have not been successfully uploaded yet*/
 	private Uri remoteFileURI;
+	
+	/**URI to remote media file thumbnail. Is null for text only Eggs and audio Eggs
+	 */
+	private Uri remoteThumbnailUri;
 		
 	/** Caption text. */
 	private String caption;
@@ -51,6 +55,10 @@ public class Egg {
 	
 	/**Time the egg was created in the server */
 	private Date creationDate;
+	
+	private double longitude;
+	
+	private double latitude;
 	
 	// FIXME: automatic metadata.
 	
@@ -70,16 +78,19 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload, Date date) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, Uri remoteThumbailUri, String caption, List<Tag> tags, long lastUpload, Date date) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
 		this.localFileURI = localFileURI;
 		this.remoteFileURI = remoteFileURI;
+		this.setRemoteThumbnailUri(remoteThumbailUri);
 		this.caption = caption;
 		this.tags = tags;
 		this.lastUpload = lastUpload;
 		this.setCreationDate(date);
+		this.longitude = 0;
+		this.latitude = 0;
 	}
 	
 	@Override
@@ -256,36 +267,44 @@ public class Egg {
 	public String getExternalId() {
 		return this.externalId;
 	}
-	
-	/**
-	 * Returns MIME type for Egg's local file URI
-	 * @return
-	 */
+
+    /**
+     * Returns MIME type for Egg's local file URI
+     * 
+     * @return
+     */
     public fileType getMimeType() {
-        if (this.getLocalFileURI() != null) {
-            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI()
-                            .toString()));
+        String mime = "";
+        if (this.localFileURI != null || this.remoteFileURI != null) {
+            if (this.getLocalFileURI() != null) {
+                mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                        MimeTypeMap.getFileExtensionFromUrl(this
+                                .getLocalFileURI().toString()));
+            } else {
+                mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                        MimeTypeMap.getFileExtensionFromUrl(this
+                                .getRemoteFileURI().toString()));
+            }
             if (mime != null) {
                 String[] fileTArray = mime.split("/");
                 String fileT = fileTArray[0];
                 if (fileT.equals("image")) {
                     return fileType.IMAGE;
-                }else if (fileT.equals("audio")) {
+                } else if (fileT.equals("audio")) {
                     return fileType.AUDIO;
-                }else if (fileT.equals("video")) {
+                } else if (fileT.equals("video")) {
                     return fileType.VIDEO;
-                }else if (fileT.equals("text")) {
+                } else if (fileT.equals("text")) {
                     return fileType.TEXT;
-                }else if (fileTArray[2].equals("json")) { // string is application/json
+                }else if (fileTArray[1].equals("json")) { // string is application/json
                 	return fileType.ROUTE;
                 }else {
                     return fileType.NOT_SUPPORTED;
                 }
             }
-	   }
-        return fileType.NOT_SUPPORTED;
-	}
+        }
+        return fileType.TEXT;
+    }
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
@@ -293,6 +312,30 @@ public class Egg {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+	public Uri getRemoteThumbnailUri() {
+		return remoteThumbnailUri;
+	}
+
+	public void setRemoteThumbnailUri(Uri remoteThumbnailUri) {
+		this.remoteThumbnailUri = remoteThumbnailUri;
+	}
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 	
 }
