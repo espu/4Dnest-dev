@@ -441,6 +441,8 @@ public class FourDNestProtocol implements Protocol {
                 tags.put(new String(egg.getTags().get(i).getName()));
             }
             temp.put("tags", tags);
+            temp.put("lon", egg.getLongitude());
+            temp.put("lat", egg.getLatitude());
 			return temp.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -463,6 +465,7 @@ public class FourDNestProtocol implements Protocol {
 				externalFileUriStr = js.getString("content_uri");
 				externalFileUri = Uri.parse(externalFileUriStr);
 			} catch (Exception e) {
+			    externalFileUri = null;
 				//No content_uri means text egg, so we leave the external file uri as null
 			}
 			String author = js.getString("author");
