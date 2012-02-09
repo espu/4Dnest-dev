@@ -530,29 +530,19 @@ public class FourDNestProtocol implements Protocol {
 		return null;
 	}
 
+
+
+
+
+
 	/**
-	 * Can be called to make sure thumbnail is in memory card, thumbnail is
-	 * downloaded from 4dnest server or OSM static maps api when applicable.
+	 * Checks whether the media file for the egg is in local storage and gets the file from 4dnest server if it isn't
 	 * 
 	 * @param Egg
-	 *            whose thumbnail is in question
-	 * @param size is thumbnail size from protocol public static field THUMBNAIL_SIZE_(LARGE or SMALL)
+	 *            whose media file is in question
 	 * 
-	 * @return boolean whether thumbnail can be found in predefined location
+	 * @return boolean whether media file can be found in predefined location
 	 */
-
-
-
-
-/**
- * Can be called to make sure thumbnail is in memory card, thumbnail is
- * downloaded from 4dnest server or OSM static maps api when applicable.
- * 
- * @param Egg
- *            whose thumbnail is in question
- * 
- * @return boolean whether thumbnail can be found in predefined location
- */
 	public boolean getMedia(Egg egg) {
 		String path = MediaManager.getMediaUriString(egg);
 		FourDNestApplication app = FourDNestApplication.getApplication();
@@ -561,34 +551,38 @@ public class FourDNestProtocol implements Protocol {
 		return res;
 	}
 	
+	/**
+	 * Checks whether the thumbnail for the egg is in local storage and gets the file from 4dnest server if it isn't
+	 * 
+	 * @param Egg
+	 *            whose thumbnail is in question
+	 * @param size is thumbnail size from protocol public static field THUMBNAIL_SIZE_(LARGE or SMALL)
+	 * 
+	 * @return boolean whether thumbnail can be found in predefined location
+	 */
+	
 	public boolean getThumbnail(Egg egg, String size) {
 		String path = ThumbnailManager.getThumbnailUriString(egg, size);
 		boolean res = true;
 		FourDNestApplication app = FourDNestApplication.getApplication();
 		if (!ThumbnailManager.thumbNailExists(egg, size)) {
-			if (egg.getMimeType() == Egg.fileType.ROUTE) {
-				StaticMapGetter mapGetter = new OsmStaticMapGetter();
-				res = mapGetter.getStaticMap(egg);
+			String externalUriString = app.getCurrentNest().getBaseURI()
+					+ THUMBNAIL_PATH + egg.getExternalId() + size
+					+ THUMBNAIL_FILETYPE;
+			Log.d(TAG, externalUriString);
+			String thumbnail_dir = Environment.getExternalStorageDirectory()
+					.getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
+			if (!new File(thumbnail_dir).exists()) {
+				new File(thumbnail_dir).mkdirs();
+			}
+			Log.d("SAVELOC", path);
+			if (app.getCurrentNest().getProtocol()
+					.getMediaFile(externalUriString, path)) {
+				Log.d(TAG, "Thumbnail written succesfully");
+				res = true;
 			} else {
-				String externalUriString = app.getCurrentNest().getBaseURI()
-						+ THUMBNAIL_PATH + egg.getExternalId()
-						+ size + THUMBNAIL_FILETYPE;
-				Log.d(TAG, externalUriString);
-				String thumbnail_dir = Environment
-						.getExternalStorageDirectory().getAbsolutePath()
-						+ File.separator + THUMBNAIL_LOCATION;
-				if (!new File(thumbnail_dir).exists()) {
-					new File(thumbnail_dir).mkdirs();
-				}
-				Log.d("SAVELOC", path);
-				if (app.getCurrentNest().getProtocol()
-						.getMediaFile(externalUriString, path)) {
-					Log.d(TAG, "Thumbnail written succesfully");
-					res = true;
-				} else {
-					Log.d(TAG, "Thumbnail failed to write");
-					res = false;
-				}
+				Log.d(TAG, "Thumbnail failed to write");
+				res = false;
 			}
 		}
 		return res;
