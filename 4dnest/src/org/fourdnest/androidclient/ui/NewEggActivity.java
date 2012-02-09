@@ -70,6 +70,8 @@ public class NewEggActivity extends NestSpecificActivity{
 	static final int DIALOG_ASK_VIDEO = 2;
 	//static final int DIALOG_GAMEOVER_ID = 1;
 	
+	public static final String EXTRA_EGG_ID = "eggID";
+	
 
 	private String fileURL = "";
 	private String realFileURL = "";
@@ -97,8 +99,8 @@ public class NewEggActivity extends NestSpecificActivity{
 			/*
 			 * I really don't want NULL pointer exceptions. 
 			 */
-			if(extras.containsKey("eggID")){
-				currentEggID = extras.getString("eggID");
+			if(extras.containsKey(EXTRA_EGG_ID)){
+				currentEggID = extras.getString(EXTRA_EGG_ID);
 				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
 			}
 			if(extras.containsKey("pictureURL")){

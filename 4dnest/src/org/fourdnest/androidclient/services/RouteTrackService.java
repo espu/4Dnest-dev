@@ -7,23 +7,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
+import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
+import org.fourdnest.androidclient.ui.NewEggActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.text.format.DateFormat;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -44,6 +53,11 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * Output file
 	 */
 	private File outputFile;
+	
+	/**
+	 * Start date of track, used for file name & egg
+	 */
+	private Date startDate;
 	
 	private String provider = "gps"; // Fixed provider
 	
@@ -90,6 +104,9 @@ public class RouteTrackService extends Service implements LocationListener {
 		// Prepare notification message for status bar
 		this.notification = new Notification(R.drawable.icon, getText(R.string.gps_notification_on), System.currentTimeMillis());
 
+		// Initialize start date to current time
+		this.startDate = new Date();
+				
 		// Prepare intent to start desired activity when notification is clicked
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
 
@@ -107,6 +124,8 @@ public class RouteTrackService extends Service implements LocationListener {
 			stopSelf();
 		}
 		
+		
+		
 		// Check last known location, if it's more recent than max delay specifies, add it as first point
 		Location lastKnownLocation = this.locationManager.getLastKnownLocation(this.provider);
 		if(lastKnownLocation != null && lastKnownLocation.getTime() < LATEST_LOC_MAX_DELAY) {
@@ -119,6 +138,7 @@ public class RouteTrackService extends Service implements LocationListener {
 	
 	@Override
 	public void onDestroy() {
+		
 		Log.d(TAG, "onDestroy");
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
@@ -127,6 +147,24 @@ public class RouteTrackService extends Service implements LocationListener {
 		if(getSystemService(ACTIVITY_SERVICE) != null) {
 			this.stopForeground(true);
 		}
+		
+		// Create and save draft egg
+		Egg egg = this.createEggForCurrentRoute();
+		if(egg == null) {
+			this.displayToast(getText(R.string.gps_egg_create_fail));
+		} else {
+			
+			// Launch intent to edit route egg
+			Intent editIntent = new Intent(this.getApplication(), NewEggActivity.class);
+			editIntent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId().toString());
+			editIntent.setAction(Intent.ACTION_VIEW);
+			editIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			
+			this.getApplication().startActivity(editIntent);
+		}
+		
+
 	}
 
 	public void onLocationChanged(Location location) {
@@ -250,11 +288,39 @@ public class RouteTrackService extends Service implements LocationListener {
 	 * @return string filename
 	 */
 	private String getFileName(int duplicateNum) {
-		String f = DateFormat.format("yyyy-MM-dd_HHmmss", new Date()).toString();
+		String f = DateFormat.format("yyyy-MM-dd_hhmmss", this.startDate).toString();
 		if(duplicateNum > 0) f += "_" + duplicateNum;
 		
 		f += FILE_EXTENSION;
 		return f;
+	}
+	
+	/**
+	 * Creates egg for current route and saves it to draft database
+	 * @return saved Egg or null on failure
+	 */
+	private Egg createEggForCurrentRoute() {
+		if(this.outputFile == null) return null;
+		
+		FourDNestApplication app = (FourDNestApplication)this.getApplication(); 
+		Nest currentNest = app.getCurrentNest();		
+		if(currentNest == null) {
+			Log.e(TAG, "Active nest not set, egg cannot be created");
+			return null;
+		}
+		
+		// Create the egg
+		Egg e = new Egg();
+		e.setAuthor(currentNest.getUserName());
+		e.setCaption("");
+		e.setCreationDate(this.startDate);		
+		e.setLocalFileURI(Uri.fromFile(this.outputFile));
+		e.setNestId(currentNest.getId());
+		e.setTags(new ArrayList<Tag>());
+		
+		e = app.getDraftEggManager().saveEgg(e);
+		
+		return e;
 	}
 	
 }

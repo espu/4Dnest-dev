@@ -42,6 +42,7 @@
     <string name="gps_error_gps_disabled">GPS disabled, please enable to track</string>
     <string name="gps_file_save_success">Route saved to file</string>
     <string name="gps_file_save_failure">Route saving failed</string>
+    <string name="gps_egg_create_fail">Error creating draft route</string>
     <string name="gps_empty_route_not_saved">No locations received, route not saved</string>
     <string name="gps_error_file_open">Error opening track output file. Exiting.</string>
     <string name="sendqueue_statusbar_title">Sending item</string>

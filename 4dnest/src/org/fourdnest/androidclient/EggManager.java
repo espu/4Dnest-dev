@@ -98,7 +98,7 @@ public class EggManager {
 	            } 
 	        }
     	} catch(Exception e) {
-    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    		Log.e(TAG, "ListEggs: " + e.getMessage() + ": " + e.getStackTrace().toString());
     	} finally {
     		if(result != null && !result.isClosed()) {
     			result.close();
@@ -140,7 +140,7 @@ public class EggManager {
 	            Log.d(TAG, "Egg with id " + id + " not found");
 	        }
     	} catch(Exception e) {
-    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    		Log.e(TAG, "GetEgg(" + id + "): " + e.getMessage() + ": " + e.getStackTrace().toString());
     	} finally {
     		if(result != null && !result.isClosed()) {
     			result.close();
@@ -168,7 +168,7 @@ public class EggManager {
         
         	result = db.delete(TABLE, C_ID + "==" + id, null);
         } catch(Exception e) {
-        	Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+        	Log.e(TAG, "DeleteEgg(" + id + "): " + e.getMessage() + ": " + e.getStackTrace().toString());
         } finally {
         	if(db != null && db.isOpen()) {
     			db.close();
@@ -190,7 +190,7 @@ public class EggManager {
         	db = this.eggDb.getWritableDatabase();
         	result = db.delete(TABLE, null, null);
         } catch(Exception e) {
-        	Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+        	Log.e(TAG, "DeleteAllEggs: " + e.getMessage() + ": " + e.getStackTrace().toString());
         } finally {
         	if(db != null && db.isOpen()) {
     			db.close();
@@ -226,9 +226,11 @@ public class EggManager {
 	        
 	        // Serialize tags to a separated string
 	        String tagString = "";
-	        for(Tag t : egg.getTags()) {
-	            tagString += t.getName();
-	            tagString += TAG_LIST_SEPARATOR;
+	        if(egg.getTags() != null) {
+		        for(Tag t : egg.getTags()) {
+		            tagString += t.getName();
+		            tagString += TAG_LIST_SEPARATOR;
+		        }
 	        }
 	        values.put(C_TAGS, tagString);
 	        
@@ -286,7 +288,7 @@ public class EggManager {
 	        
 	        egg.setId((int)rowid);
     	} catch(Exception e) {
-    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    		Log.e(TAG, "InsertEgg: " + e.getMessage() + ": " + e.getStackTrace().toString());
     	} finally {
     		if(db != null && db.isOpen()) {
     			db.close();
