@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 public class NewEggActivity extends NestSpecificActivity{
 
@@ -187,7 +189,12 @@ public class NewEggActivity extends NestSpecificActivity{
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				applicationTemp.getDraftEggManager().saveEgg(egg);
 				TagSuggestionService.setLastUsedTags(getApplication(), tags);
-				
+				Context context = getApplicationContext();
+				String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, saveAsDraftToast, duration);
+				toast.show();
+
 				// Go to ListStreamActivity after finishing
 				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
 				//v.getContext();
@@ -322,8 +329,28 @@ public class NewEggActivity extends NestSpecificActivity{
 			thumbNailView.setVisibility(View.VISIBLE);
 			upperButtons.setVisibility(View.GONE);
 			thumbNailView.setImageResource(R.drawable.roll1);
-			File audioFile = new  File(fileURL);
-			realFileURL = audioFile.getAbsolutePath();
+			File videoFile = new  File(fileURL);
+			realFileURL = videoFile.getAbsolutePath();
+			
+				
+			String[] proj = {
+					MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DATA
+				};
+				Cursor cursor = managedQuery(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, 
+				                                    proj, MediaStore.Video.Media.DISPLAY_NAME+"=?",new String[] {videoFile.getName()}, null);
+				try{
+					cursor.moveToFirst();
+				int fileID = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID));
+				ContentResolver crThumb = getContentResolver();
+				BitmapFactory.Options options=new BitmapFactory.Options();
+				options.inSampleSize = 1;
+				Bitmap curThumb = MediaStore.Video.Thumbnails.getThumbnail(crThumb, fileID, MediaStore.Video.Thumbnails.MINI_KIND, options);
+				thumbNailView.setImageBitmap(curThumb);
+				} catch (Exception ex){
+					thumbNailView.setImageResource(R.drawable.roll1);
+				}
+			
+			
 		}
 	
 	}

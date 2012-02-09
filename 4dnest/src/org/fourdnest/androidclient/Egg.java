@@ -36,6 +36,10 @@ public class Egg {
 	/** URI to remote media file (uploaded to a nest). Is null for text only Eggs
 	 * and Eggs that have not been successfully uploaded yet*/
 	private Uri remoteFileURI;
+	
+	/**URI to remote media file thumbnail. Is null for text only Eggs and audio Eggs
+	 */
+	private Uri remoteThumbnailUri;
 		
 	/** Caption text. */
 	private String caption;
@@ -256,36 +260,44 @@ public class Egg {
 	public String getExternalId() {
 		return this.externalId;
 	}
-	
-	/**
-	 * Returns MIME type for Egg's local file URI
-	 * @return
-	 */
+
+    /**
+     * Returns MIME type for Egg's local file URI
+     * 
+     * @return
+     */
     public fileType getMimeType() {
-        if (this.getLocalFileURI() != null) {
-            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI()
-                            .toString()));
+        String mime = "";
+        if (this.localFileURI != null || this.remoteFileURI != null) {
+            if (this.getLocalFileURI() != null) {
+                mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                        MimeTypeMap.getFileExtensionFromUrl(this
+                                .getLocalFileURI().toString()));
+            } else {
+                mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                        MimeTypeMap.getFileExtensionFromUrl(this
+                                .getRemoteFileURI().toString()));
+            }
             if (mime != null) {
                 String[] fileTArray = mime.split("/");
                 String fileT = fileTArray[0];
                 if (fileT.equals("image")) {
                     return fileType.IMAGE;
-                }else if (fileT.equals("audio")) {
+                } else if (fileT.equals("audio")) {
                     return fileType.AUDIO;
-                }else if (fileT.equals("video")) {
+                } else if (fileT.equals("video")) {
                     return fileType.VIDEO;
-                }else if (fileT.equals("text")) {
+                } else if (fileT.equals("text")) {
                     return fileType.TEXT;
-                }else if (fileTArray[2].equals("json")) { // string is application/json
+                }else if (fileTArray[1].equals("json")) { // string is application/json
                 	return fileType.ROUTE;
                 }else {
                     return fileType.NOT_SUPPORTED;
                 }
             }
-	   }
-        return fileType.NOT_SUPPORTED;
-	}
+        }
+        return fileType.TEXT;
+    }
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;

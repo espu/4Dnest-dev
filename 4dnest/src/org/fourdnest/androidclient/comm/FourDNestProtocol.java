@@ -446,7 +446,7 @@ public class FourDNestProtocol implements Protocol {
     private Egg jSONObjectToEgg(JSONObject js) {
     	try {
 			String caption = js.getString("caption");
-			String externalFileUri = js.getString("resource_uri");
+			String externalFileUri = js.getString("content_uri");
 			String author = js.getString("author");
 			ArrayList<Tag> tags = new ArrayList<Tag>();
 			try {

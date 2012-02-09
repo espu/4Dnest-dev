@@ -6,6 +6,7 @@ import java.util.Date;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
 import org.fourdnest.androidclient.comm.StaticMapGetter;
 
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +34,14 @@ public class ViewEggActivity extends NestSpecificActivity {
 				.get(EggItemOnClickListener.INTENT_EGG_ID);
 		
 		super.onCreate(savedInstanceState);
+		
+		final Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        });
 		
 		//TODO: Inflate based on egg type
 
@@ -84,10 +94,11 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		ImageView map = (ImageView) view.findViewById(R.id.map);
+		ImageView thumbnail= (ImageView) view.findViewById(R.id.file_thumbnail);
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
+		thumbnail.setImageURI(Uri.parse(FourDNestThumbnailManager.getThumbnailUriString(egg)));
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
 			for (Tag current : egg.getTags()) {
@@ -95,14 +106,6 @@ public class ViewEggActivity extends NestSpecificActivity {
 			}
 			tags.setText(tagList);
 		}
-		
-		StaticMapGetter mapGetter = new OsmStaticMapGetter();
-		Uri mapUri = Uri.parse("/sdcard/testfile");
-		boolean val = mapGetter.getStaticMap(egg);
-		if (val) {
-			map.setImageURI(mapUri);
-		}
-
 		return view;
 	}
 

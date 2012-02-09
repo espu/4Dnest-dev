@@ -1,7 +1,5 @@
 package org.fourdnest.androidclient.services;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -11,13 +9,13 @@ import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class StreamReaderService extends IntentService {
@@ -30,26 +28,25 @@ public class StreamReaderService extends IntentService {
     public static final String NEW_FREQUENCY = "NEW_FRQUENCY";
     public static final String STREAM_SIZE = "STREAM_SIZE_CATEGORY";
     public static final String NEW_STREAM_SIZE = "NEW_STREAM_SIZE";
+
+    /** Broadcast has this action when stream has been updated */
+    public static final String ACTION_STREAM_UPDATED = "org.fourdnest.androidclient.STREAM_UPDATED";
     
     /**How long we initially wait before fetching the Stream*/
     public static final long FIRST_INTERVAL = 0;
     
- 
-    
     public static final String THUMBNAIL_SAVE_LOCATION = "thumbnails";
-    
-
-    
-
     
     /** Default Frequency in seconds, as a String so it can be used in the getPreference method*/
     private static final String DEFAULT_FREQUENCY = "600";
     
     /** Default Frequency in seconds, as a String so it can be used in the getPreference method*/
     private static final String DEFAULT_SIZE = "10";
+
     
     private FourDNestApplication app;
     private int size = Integer.parseInt(DEFAULT_SIZE);
+    private LocalBroadcastManager mLocalBroadcastManager;
     
     public StreamReaderService() {
         super(StreamReaderService.class.getName());
@@ -86,13 +83,32 @@ public class StreamReaderService extends IntentService {
                         0
                 )
         );
+        this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
+ 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
+		return START_STICKY;
+	}
     
     @Override
     public void onDestroy() {
     	Log.d(TAG, "onDestroy");
     }
 
+    /**
+     * Requests an immediate update
+     * @param context The application context
+     */
+    public static void requestUpdate(Context context) {
+    	Intent intent = new Intent(context, StreamReaderService.class);
+		intent.addCategory(READ_STREAM);
+		context.startService(intent);
+    }
+    
     @Override
     protected void onHandleIntent(Intent intent) {
     	Log.d(TAG, "Handling intent");
@@ -102,7 +118,6 @@ public class StreamReaderService extends IntentService {
             em.deleteAllEggs();
             List<Egg> eggList = app.getCurrentNest().getProtocol().getStream(size);
             Log.d(TAG, "Egglist size: " + eggList.size());
-            em.deleteAllEggs();
             ThumbnailManager thumbnailManager = new FourDNestThumbnailManager();
             for (int i = 0; i < eggList.size(); i++) {
 
@@ -114,6 +129,10 @@ public class StreamReaderService extends IntentService {
             Log.d(TAG, "Saved eggs");
             List<Egg> eggs = em.listEggs();
             Log.d("EGGAMOUNT2", String.valueOf(eggs.size()));
+            
+            // broadcast that the stream is updated
+            Intent broadcastIntent = new Intent(ACTION_STREAM_UPDATED);
+            mLocalBroadcastManager.sendBroadcast(broadcastIntent);
         }
         if (intent.hasCategory(STREAM_FREQ)) {
         	Log.d(TAG, "Got updated frequency");
