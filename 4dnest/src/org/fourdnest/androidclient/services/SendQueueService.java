@@ -12,6 +12,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -86,6 +89,21 @@ public class SendQueueService extends IntentService {
 			savedEgg = app.getDraftEggManager().saveEgg(egg);
 		} else {
 			savedEgg = egg;
+		}
+		
+		// If egg has no location info, try to add it
+		if(egg.getLatitude() == 0 || egg.getLongitude() == 0) {
+			LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			Criteria crit = new Criteria();
+			crit.setAccuracy(Criteria.ACCURACY_FINE);
+			String provider = lm.getBestProvider(crit, true);
+			Location loc = lm.getLastKnownLocation(provider);
+			
+			if(loc != null) {
+				egg.setLatitude(loc.getLatitude());
+				egg.setLongitude(loc.getLongitude());
+			}
+			
 		}
 		
 		Intent intent = new Intent(context, SendQueueService.class);

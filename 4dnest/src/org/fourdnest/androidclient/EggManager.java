@@ -72,7 +72,7 @@ public class EggManager {
      * 
      * @return ArrayList<Nest> List of saved nests
      */
-    public List<Egg> listEggs() {
+    public synchronized List<Egg> listEggs() {
     	List<Egg> eggs = new ArrayList<Egg>();
         	
     	SQLiteDatabase db = null;

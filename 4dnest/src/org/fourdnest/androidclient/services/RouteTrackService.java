@@ -55,6 +55,11 @@ public class RouteTrackService extends Service implements LocationListener {
 	private File outputFile;
 	
 	/**
+	 * Last known location
+	 */
+	private Location lastLocation;
+	
+	/**
 	 * Start date of track, used for file name & egg
 	 */
 	private Date startDate;
@@ -89,6 +94,7 @@ public class RouteTrackService extends Service implements LocationListener {
         		);
         
         this.outputFile = null;
+        this.lastLocation = null;
 	}
 	
 	@Override
@@ -173,6 +179,7 @@ public class RouteTrackService extends Service implements LocationListener {
 		
 		// Add some sanity checks, for now just write to output file
 		this.writeLocation(location, this.outputFile);
+		this.lastLocation = location;
 	}
 
 	public void onProviderDisabled(String provider) {
@@ -317,6 +324,11 @@ public class RouteTrackService extends Service implements LocationListener {
 		e.setLocalFileURI(Uri.fromFile(this.outputFile));
 		e.setNestId(currentNest.getId());
 		e.setTags(new ArrayList<Tag>());
+		
+		if(this.lastLocation != null) {
+			e.setLatitude(this.lastLocation.getLatitude());
+			e.setLongitude(this.lastLocation.getLongitude());
+		}
 		
 		e = app.getDraftEggManager().saveEgg(e);
 		
