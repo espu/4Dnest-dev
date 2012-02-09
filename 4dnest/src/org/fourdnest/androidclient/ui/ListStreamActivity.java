@@ -1,4 +1,3 @@
-
 package org.fourdnest.androidclient.ui;
 
 import java.util.List;
@@ -50,27 +49,28 @@ public class ListStreamActivity extends NestSpecificActivity {
 		super.onCreate(savedInstanceState);
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		IntentFilter filter = new IntentFilter();
-        filter.addAction(StreamReaderService.ACTION_STREAM_UPDATED);
-        this.mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-            	Log.d(TAG, "BroadcastReceiver.onReceive");
-            	if (intent.getAction().equals(StreamReaderService.ACTION_STREAM_UPDATED)) {
-            		refreshStreamList();
-            	}
-            }
-        };
-        Log.d(TAG, "Registering the broadcast receiver");
-        mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+		filter.addAction(StreamReaderService.ACTION_STREAM_UPDATED);
+		this.mReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.d(TAG, "BroadcastReceiver.onReceive");
+				if (intent.getAction().equals(
+						StreamReaderService.ACTION_STREAM_UPDATED)) {
+					refreshStreamList();
+				}
+			}
+		};
+		Log.d(TAG, "Registering the broadcast receiver");
+		mLocalBroadcastManager.registerReceiver(mReceiver, filter);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		Log.d(TAG, "Requesting update in onResume");
 		StreamReaderService.requestUpdate(this);
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -105,10 +105,12 @@ public class ListStreamActivity extends NestSpecificActivity {
 		EggAdapter adapter = new EggAdapter(streamListView,
 				R.layout.egg_element_large, manager.listEggs());
 		streamListView.setAdapter(adapter);
-		((EggAdapter)streamListView.getAdapter()).sort(new EggTimeComparator());
-		((EggAdapter)streamListView.getAdapter()).notifyDataSetChanged();
-		streamListView.setOnItemClickListener(new EggItemOnClickListener(
-				streamListView));
+		((EggAdapter) streamListView.getAdapter())
+				.sort(new EggTimeComparator());
+		((EggAdapter) streamListView.getAdapter()).notifyDataSetChanged();
+		streamListView
+				.setOnItemClickListener(new StreamListOnItemClickListener(
+						streamListView));
 	}
 
 	/**

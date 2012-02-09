@@ -36,18 +36,19 @@
             />
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dip"
+        android:text="@string/stream_reader_title" />
+    
+        <LinearLayout
         android:id="@+id/create_screen_text_margin"
         android:layout_width="fill_parent"
         android:layout_height="2px"
         android:layout_below="@+id/create_screen_navigation_bar"
         android:background="#000000"
         android:orientation="vertical" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stream_reader_title" />
 
     <ListView
         android:id="@+id/egg_list"

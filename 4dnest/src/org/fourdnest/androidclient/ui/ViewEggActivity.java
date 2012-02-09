@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
@@ -31,7 +32,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		
 		Bundle startingExtras = getIntent().getExtras();
 		this.eggID = (Integer) startingExtras
-				.get(EggItemOnClickListener.INTENT_EGG_ID);
+				.get(StreamListOnItemClickListener.INTENT_EGG_ID);
 		
 		super.onCreate(savedInstanceState);
 		
@@ -96,7 +97,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		ImageView thumbnail= (ImageView) view.findViewById(R.id.file_thumbnail);
 
-		timestamp.setText(new Date(egg.getLastUpload()).toString());
+		timestamp.setText(DateFormat.getDateTimeInstance().format(egg.getCreationDate()));
 		message.setText(egg.getCaption());
 		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
 		if (!egg.getTags().isEmpty()) {

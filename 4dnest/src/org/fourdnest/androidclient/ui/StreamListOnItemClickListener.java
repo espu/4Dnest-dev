@@ -6,19 +6,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class EggItemOnClickListener implements OnItemClickListener {
+public class StreamListOnItemClickListener implements OnItemClickListener {
 
 	public static final String INTENT_EGG_ID = "INTENT_EGG_ID";
 	private ListView streamList;
 
-	public EggItemOnClickListener(ListView streamList) {
+	public StreamListOnItemClickListener(ListView streamList) {
 		this.streamList = streamList;
 	}
 
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent intent = new Intent(arg1.getContext(), ViewEggActivity.class);
-		intent.putExtra(INTENT_EGG_ID, ((EggAdapter)streamList.getAdapter()).getItem(arg2).getId());
+		intent.putExtra(INTENT_EGG_ID, ((EggAdapter) streamList.getAdapter())
+				.getItem(arg2).getId());
 		arg0.getContext().startActivity(intent);
 
 	}
