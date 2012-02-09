@@ -235,7 +235,7 @@ public class EggManager {
 	        values.put(C_TAGS, tagString);
 	        
 	        if (egg.getCreationDate() != null) {
-	            values.put(C_DATE, DateFormat.format("yyyy-MM-dd hh:mm:ss", egg.getCreationDate()).toString());
+	            values.put(C_DATE, DateFormat.format("yyyy-MM-dd HH:mm:ss", egg.getCreationDate()).toString());
 	        }else {
 	            values.put(C_DATE, "");
 	        }
@@ -340,7 +340,7 @@ public class EggManager {
         }
         
         String dateStr = cursor.getString(8);
-        java.text.DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd hh:mm:ss"));
+        java.text.DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd HH:mm:ss"));
         Date date;
         try {
             date = (Date) formatter.parse(dateStr);

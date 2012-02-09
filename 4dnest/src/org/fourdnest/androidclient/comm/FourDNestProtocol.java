@@ -196,14 +196,19 @@ public class FourDNestProtocol implements Protocol {
 		}
 	}
 
-	// FIXME: Count not yet implemented here, because no implementation server
-	// side
+	/**
+	 * Fetches the top tags from the server
+	 * @param count
+	 *         The amount of tags fetched from the server
+	 * @return
+	 *         A list of tags received, or empty list if exception occurred
+	 */
 	public List<Tag> topTags(int count) {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		HttpClient client = CommUtils.createHttpClient();
 		HttpGet request = new HttpGet();
 		String uriPath = this.nest.getBaseURI() + TAG_DOWNLOAD_PATH
-				+ JSON_FORMAT;
+				+ SIZE_FORMAT + count;
 		Log.d("TAGURI", uriPath);
 
 		try {
