@@ -61,11 +61,7 @@ public class EggManager {
      * allow running multiple parallel EggManagers 
      * @param context
      */
-    public EggManager(Context context, String uniqueRole) {
-        if(uniqueRole == null ||  uniqueRole != uniqueRole.replaceAll("[^a-z]", "")) {
-            //throw new IllegalArgumentException("Invalid uniqueRole: non-null string with only a-z required");
-        }
-        
+    public EggManager(Context context, String uniqueRole) {        
         this.dbName = "org.4dnest.androidclient.eggs." + uniqueRole + ".db";   
         this.eggDb = new EggDatabase(context, this.dbName);
         
@@ -76,35 +72,43 @@ public class EggManager {
      * 
      * @return ArrayList<Nest> List of saved nests
      */
-    public synchronized List<Egg> listEggs() {
-        
-        SQLiteDatabase db = this.eggDb.getReadableDatabase();
-        
-        Cursor result = db.query(TABLE,
-                ALL_COLUMNS, // Columns
-                null, // No WHERE
-                null, // No arguments in selection
-                null, // No GROUP BY
-                null, // No HAVING
-                C_DATE, // Order by date
-                "100"); // Limit 100
-        
-        List<Egg> eggs = new ArrayList<Egg>();
-        
-        if(result.getCount() > 0) {
-            result.moveToFirst();
-            
-            while(!result.isAfterLast()) {
-                Egg egg = this.extractEggFromCursor(result);
-                
-                eggs.add(egg);
-                
-                result.moveToNext();
-            } 
-        }
-        
-        result.close();
-        db.close();
+    public List<Egg> listEggs() {
+    	List<Egg> eggs = new ArrayList<Egg>();
+        	
+    	SQLiteDatabase db = null;
+    	Cursor result = null;
+    	try {
+	        db = this.eggDb.getReadableDatabase();
+	        result = db.query(TABLE,
+	                ALL_COLUMNS, // Columns
+	                null, // No WHERE
+	                null, // No arguments in selection
+	                null, // No GROUP BY
+	                null, // No HAVING
+	                C_DATE, // Order by date
+	                "100"); // Limit 100
+	        
+	        if(result.getCount() > 0) {
+	            result.moveToFirst();
+	            
+	            while(!result.isAfterLast()) {
+	                Egg egg = this.extractEggFromCursor(result);
+	                
+	                eggs.add(egg);
+	                
+	                result.moveToNext();
+	            } 
+	        }
+    	} catch(Exception e) {
+    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    	} finally {
+    		if(result != null && !result.isClosed()) {
+    			result.close();
+    		}
+    		if(db != null && db.isOpen()) {
+    			db.close();
+    		}
+    	}
         
         return eggs;
     }
@@ -115,28 +119,38 @@ public class EggManager {
      * @return Nest with specified id or null
      */
     public synchronized Egg getEgg(int id) {
+    	
+    	Egg egg = null;
+    	SQLiteDatabase db = null;
+    	Cursor result = null;
 
-        SQLiteDatabase db = this.eggDb.getReadableDatabase();
-        Cursor result = db.query(TABLE,
-                ALL_COLUMNS, // Columns
-                C_ID + "==" + id, // Where
-                null, // No arguments in selection
-                null, // No GROUP BY
-                null, // No HAVING
-                null, //No ORDER BY
-                "1"); // Limit 1
-        
-        
-        Egg egg = null;
-        if(result.getCount() > 0) {
-            result.moveToFirst();
-            egg = this.extractEggFromCursor(result);            
-        } else {
-            Log.d(TAG, "Egg with id " + id + " not found");
-        }
-        
-        result.close();
-        db.close();
+    	try {
+	        db = this.eggDb.getReadableDatabase();
+	        result = db.query(TABLE,
+	                ALL_COLUMNS, // Columns
+	                C_ID + "==" + id, // Where
+	                null, // No arguments in selection
+	                null, // No GROUP BY
+	                null, // No HAVING
+	                null, //No ORDER BY
+	                "1"); // Limit 1
+	        
+	        if(result.getCount() > 0) {
+	            result.moveToFirst();
+	            egg = this.extractEggFromCursor(result);            
+	        } else {
+	            Log.d(TAG, "Egg with id " + id + " not found");
+	        }
+    	} catch(Exception e) {
+    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    	} finally {
+    		if(result != null && !result.isClosed()) {
+    			result.close();
+    		}
+    		if(db != null && db.isOpen()) {
+    			db.close();
+    		}
+    	}
         
         return egg;
         
@@ -148,11 +162,20 @@ public class EggManager {
      * @return 1 if deletion was successful, 0 if not
      */
     public synchronized int deleteEgg(int id) {
-        SQLiteDatabase db = this.eggDb.getWritableDatabase();
+    	SQLiteDatabase db = null;
+        int result = 0;
         
-        int result = db.delete(TABLE, C_ID + "==" + id, null);
+        try {
+        	db = this.eggDb.getWritableDatabase();
         
-        db.close();
+        	result = db.delete(TABLE, C_ID + "==" + id, null);
+        } catch(Exception e) {
+        	Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+        } finally {
+        	if(db != null && db.isOpen()) {
+    			db.close();
+    		}
+        }
         
         return result;
     }
@@ -162,13 +185,117 @@ public class EggManager {
      * @return number of deleted Eggs
      */
     public synchronized int deleteAllEggs() {
-        SQLiteDatabase db = this.eggDb.getWritableDatabase();
+        SQLiteDatabase db = null;
+        int result = 0;
         
-        int result = db.delete(TABLE, null, null);
-        
-        db.close();
+        try {
+        	db = this.eggDb.getWritableDatabase();
+        	result = db.delete(TABLE, null, null);
+        } catch(Exception e) {
+        	Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+        } finally {
+        	if(db != null && db.isOpen()) {
+    			db.close();
+    		}
+        }
         
         return result;
+    }
+    
+    /**
+     * Saves Egg to database, updating existing Egg with same id
+     * and creating new one if necessary 
+     * @param egg object to save
+     * @return Egg with updated info (id)
+     */
+    public synchronized Egg saveEgg(Egg egg) {
+    	SQLiteDatabase db = null;    	
+    	try {
+	        db = this.eggDb.getWritableDatabase();
+	        
+	        // Create ContentValues object for Nest
+	        ContentValues values = new ContentValues();
+	        //values.put(C_ID, egg.getId());
+	        values.put(C_NESTID, egg.getNestId());
+	        
+	        values.put(C_AUTHOR, egg.getAuthor());
+	        
+	        values.put(C_LOCALFILEURI, egg.getLocalFileURI() != null ? egg.getLocalFileURI().toString() : null);
+	        values.put(C_REMOTEFILEURI, egg.getRemoteFileURI() != null ? egg.getRemoteFileURI().toString() : null);
+	        
+	        values.put(C_CAPTION, egg.getCaption());
+	        values.put(C_LASTUPLOAD, egg.getLastUpload());
+	        
+	        // Serialize tags to a separated string
+	        String tagString = "";
+	        for(Tag t : egg.getTags()) {
+	            tagString += t.getName();
+	            tagString += TAG_LIST_SEPARATOR;
+	        }
+	        values.put(C_TAGS, tagString);
+	        
+	        if (egg.getCreationDate() != null) {
+	            values.put(C_DATE, DateFormat.format("yyyy-MM-dd hh:mm:ss", egg.getCreationDate()).toString());
+	        }else {
+	            values.put(C_DATE, "");
+	        }
+	        
+	        // API level 8 would have insertWithOnConflict, have to work around it
+	        // and check for conflict and then either insert or update
+	
+	        // Check if nest with id exists
+	        boolean insertNew = true;
+	        if(egg.getId() != null) {
+	            Cursor result = db.query(TABLE,
+	                    new String[] {C_ID},
+	                    C_ID + "==" + egg.getId(),
+	                    null, // No selection args
+	                    null, // No GROUP BY
+	                    null, // No HAVING
+	                    null, // No ORDER BY
+	                    "1"); // LIMIT 1
+	            if(result.getCount() > 0) {
+	                insertNew = false;
+	            }
+	            
+	            if(result.isClosed()) {
+	            	result.close();
+	            }
+	        }
+	        
+	        
+	        long rowid;
+	        if(!insertNew) {
+	            // Update existing
+	            rowid = db.replace(TABLE, null, values);
+	            
+	            if(rowid < 0) {
+	                throw new SQLiteException("Error replacing existing Egg with id + "
+	                        + egg.getId() + " in database");
+	            }
+	            
+	            Log.d(TAG, "Updated Egg in db");
+	            
+	        } else {
+	            // Insert new row           
+	            rowid = db.insert(TABLE, null, values);
+	            if(rowid < 0) {
+	                throw new SQLiteException("Error inserting new Egg to database");
+	            }
+	            
+	            Log.d(TAG, "Inserted new Egg to db");
+	        }
+	        
+	        egg.setId((int)rowid);
+    	} catch(Exception e) {
+    		Log.e(TAG, e.getMessage() + ": " + e.getStackTrace());
+    	} finally {
+    		if(db != null && db.isOpen()) {
+    			db.close();
+    		}
+    	}
+        
+        return egg;
     }
     
     /**
@@ -225,95 +352,6 @@ public class EggManager {
         
         return egg;
     }
-    
-    /**
-     * Saves Egg to database, updating existing Egg with same id
-     * and creating new one if necessary 
-     * @param egg object to save
-     * @return Egg with updated info (id)
-     */
-    public synchronized Egg saveEgg(Egg egg) {
-        
-        
-        SQLiteDatabase db = this.eggDb.getWritableDatabase();
-        
-        // Create ContentValues object for Nest
-        ContentValues values = new ContentValues();
-        //values.put(C_ID, egg.getId());
-        values.put(C_NESTID, egg.getNestId());
-        
-        values.put(C_AUTHOR, egg.getAuthor());
-        
-        values.put(C_LOCALFILEURI, egg.getLocalFileURI() != null ? egg.getLocalFileURI().toString() : null);
-        values.put(C_REMOTEFILEURI, egg.getRemoteFileURI() != null ? egg.getRemoteFileURI().toString() : null);
-        
-        values.put(C_CAPTION, egg.getCaption());
-        values.put(C_LASTUPLOAD, egg.getLastUpload());
-        
-        // Serialize tags to a separated string
-        String tagString = "";
-        for(Tag t : egg.getTags()) {
-            tagString += t.getName();
-            tagString += TAG_LIST_SEPARATOR;
-        }
-        values.put(C_TAGS, tagString);
-        
-        if (egg.getCreationDate() != null) {
-            values.put(C_DATE, DateFormat.format("yyyy-MM-dd hh:mm:ss", egg.getCreationDate()).toString());
-        }else {
-            values.put(C_DATE, "");
-        }
-        values.put(C_REMOTETHUMBNAILURI, egg.getRemoteThumbnailUri() != null ? egg.getRemoteThumbnailUri().toString() : null);
-        
-        // API level 8 would have insertWithOnConflict, have to work around it
-        // and check for conflict and then either insert or update
-
-        // Check if nest with id exists
-        boolean insertNew = true;
-        if(egg.getId() != null) {
-            Cursor result = db.query(TABLE,
-                    new String[] {C_ID},
-                    C_ID + "==" + egg.getId(),
-                    null, // No selection args
-                    null, // No GROUP BY
-                    null, // No HAVING
-                    null, // No ORDER BY
-                    "1"); // LIMIT 1
-            if(result.getCount() > 0) {
-                insertNew = false;
-            }
-        }
-        
-        
-        long rowid;
-        if(!insertNew) {
-            // Update existing
-            rowid = db.replace(TABLE, null, values);
-            
-            if(rowid < 0) {
-                throw new SQLiteException("Error replacing existing Egg with id + "
-                        + egg.getId() + " in database");
-            }
-            
-            Log.d(TAG, "Updated Egg in db");
-            
-        } else {
-            // Insert new row           
-            rowid = db.insert(TABLE, null, values);
-            if(rowid < 0) {
-                throw new SQLiteException("Error inserting new Egg to database");
-            }
-            
-            Log.d(TAG, "Inserted new Egg to db");
-        }
-        
-        
-        egg.setId((Integer)(int)rowid);
-        
-        db.close();
-        
-        return egg;
-    }
 
     
     /**
@@ -321,7 +359,7 @@ public class EggManager {
      */
     public synchronized void close() {
         Log.d(TAG, "db closed");
-        this.eggDb.close();
+        //this.eggDb.close();
     }
     
     
