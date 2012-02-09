@@ -235,10 +235,12 @@ public class EggManager {
 	        values.put(C_TAGS, tagString);
 	        
 	        if (egg.getCreationDate() != null) {
-	            values.put(C_DATE, DateFormat.format("yyyy-MM-dd HH:mm:ss", egg.getCreationDate()).toString());
+	            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	            values.put(C_DATE, df.format(egg.getCreationDate()).toString());
 	        }else {
 	            values.put(C_DATE, "");
 	        }
+	        
             values.put(C_REMOTETHUMBNAILURI,
                     egg.getRemoteThumbnailUri() != null ? egg
                             .getRemoteThumbnailUri().toString() : null);
@@ -340,14 +342,16 @@ public class EggManager {
         }
         
         String dateStr = cursor.getString(8);
-        java.text.DateFormat formatter = new SimpleDateFormat(("yyyy-MM-dd HH:mm:ss"));
+        Log.d(TAG, "datestr: " + dateStr);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date;
         try {
-            date = (Date) formatter.parse(dateStr);
+            date = (Date) df.parse(dateStr);
         } catch (ParseException e) {
            Log.e(TAG, "Failed to parse date");
            date = null;
         }
+        Log.d(TAG, "date: " + date.toString());
         Uri remoteThumbnail = null;
         if (cursor.getString(9) != null) {
         	remoteThumbnail = Uri.parse(cursor.getString(9));

@@ -137,7 +137,9 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		//author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
-		date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
+		if (egg.getCreationDate() != null) {
+		      date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
+		}
 		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
 
 		if (egg.getTags().size() > 0) {
