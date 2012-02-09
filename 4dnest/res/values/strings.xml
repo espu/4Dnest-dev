@@ -64,7 +64,7 @@
 	<string name="prefs_nest_password_descr">Password</string>
 	<string name="prefs_nest_accept_all_certs_title">Accept all SSL certs</string>
 	<string name="prefs_nest_accept_all_certs_descr">Accept all SSL certificates even if they have been self-signed</string>
-	<string name="prefs_nest_accept_all_certs_offdescr">Only valid certificates are allowed</string>
+	<string name="prefs_nest_accept_all_certs_offdescr">Only signed certificates are allowed</string>
 	<string name="prefs_nest_accept_all_certs_ondescr">All certificates are allowed</string>
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
