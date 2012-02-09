@@ -1,25 +1,10 @@
 package org.fourdnest.androidclient.ui;
 
-import java.util.List;
-
 import org.fourdnest.androidclient.FourDNestApplication;
-import org.fourdnest.androidclient.Nest;
-import org.fourdnest.androidclient.R;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 /**
  * Activity that places a button on the top of the screen. The button displays
@@ -35,58 +20,10 @@ public abstract class NestSpecificActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		this.application = ((FourDNestApplication) getApplication());
-		setContentView(R.layout.nest_specific_view);
-
-		inflateNestView();
-
-		this.contentLayout = (FrameLayout) findViewById(R.id.content_view);
-
-		LayoutInflater inflater = LayoutInflater.from(contentLayout.getContext());
-		View view = inflater.inflate(getLayoutId(), contentLayout, false);
-		contentLayout.addView(getContentLayout(view));
 	}
 
-	/** Called when the activity is resumed. */
-	@Override
-	protected void onResume() {
-		inflateNestView();
-		super.onResume();
-	}
-
-	/**
-	 * Initializes the main content view. The main content view is the entire
-	 * area under the Nest display.
-	 * 
-	 * @param view
-	 *            The ViewGroup where you want to display your functional
-	 *            content.
-	 */
-	public abstract View getContentLayout(View view);
-
-	/**
-	 * Returns the id of the layout definition that is used to fill the content
-	 * layout. Acquired with R.layout.your_layout_id.
-	 * 
-	 * @return An integer representing the id of the specified layout.
-	 */
-	public abstract int getLayoutId();
-
-	/**
-	 * Inflates the nest_view in nest_specific_view with the appropriate view,
-	 * depending on kiosk settings.
-	 */
-	private void inflateNestView() {
-		String nestName = this.application.getCurrentNest().getName();
-		Button nestButton;
-		FrameLayout nestView = (FrameLayout) findViewById(R.id.nest_view);
-		nestView.removeAllViews();
-		LayoutInflater inflater = LayoutInflater.from(nestView.getContext());
-		inflater.inflate(R.layout.nest_buttons_view, nestView);
-		nestButton = (Button) nestView.findViewById(R.id.nest_button);
-		nestButton.setText(nestName);
-
+	// Code for hiding elements in kiosk mode (orphaned because the method it was in was refactored out 
+	/*
 		if (this.application.getKioskModeEnabled()) {
 			nestButton.setVisibility(View.GONE);
 		} else {
@@ -100,7 +37,11 @@ public abstract class NestSpecificActivity extends Activity {
 			}
 		}
 	}
+	*/
 
+	// code for multi-nest ui-elements in top bar.
+	// Disabled, because client did not want multi-nest at this point
+	/*
 	public void setNestSpecificOnClickListener(Button nestButton) {
 		nestButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -118,11 +59,13 @@ public abstract class NestSpecificActivity extends Activity {
 				.setOnItemSelectedListener(new nestSpinnerOnItemSelectedListener(
 						this.application, nestAdapter));
 	}
+	*/
 
 	/**
 	 * A simple ArrayAdapter implementation for displaying a spinner list of
 	 * configured Nests.
 	 */
+	/*
 	private class NestAdapter extends ArrayAdapter<Nest> {
 
 		private Spinner spinner;
@@ -189,5 +132,6 @@ public abstract class NestSpecificActivity extends Activity {
 		}
 
 	}
+	*/
 
 }

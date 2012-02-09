@@ -87,9 +87,8 @@ public class NewEggActivity extends NestSpecificActivity{
 	 */
 	
 	@Override
-	public View getContentLayout(View view) {
-		//super.onCreate(savedInstanceState);
-		//setContentView(R.layout.new_egg_view);
+	public void onCreate(Bundle savedInstanceState) {
+		setContentView(R.layout.new_egg_view);
 		this.getApplicationContext();
 		Bundle extras = getIntent().getExtras(); 
 		if(extras !=null)
@@ -107,8 +106,8 @@ public class NewEggActivity extends NestSpecificActivity{
 		}
 		
 		this.kioskMode = super.application.getKioskModeEnabled();
-		this.upperButtons = (RelativeLayout) view.findViewById(R.id.new_egg_upper_buttons);
-		this.thumbNailView = (ImageView) view.findViewById(R.id.new_photo_egg_thumbnail_view);
+		this.upperButtons = (RelativeLayout) findViewById(R.id.new_egg_upper_buttons);
+		this.thumbNailView = (ImageView) findViewById(R.id.new_photo_egg_thumbnail_view);
 		/*
 		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
 		 */
@@ -145,7 +144,7 @@ public class NewEggActivity extends NestSpecificActivity{
          * the server
          */
         
-        Button sendButton = (Button) view.findViewById(R.id.new_photo_egg_send_egg_button);
+        Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {		
@@ -173,7 +172,7 @@ public class NewEggActivity extends NestSpecificActivity{
          * Adds on click listener to draft button, that handles drafting the egg
          */
         
-        Button draftButton = (Button) view.findViewById(R.id.edit_egg_save_draft_button);
+        Button draftButton = (Button) findViewById(R.id.edit_egg_save_draft_button);
         final FourDNestApplication applicationTemp = super.application; //needs to define this outside of the onClickListerer or awfull thinks will happen
         draftButton.setOnClickListener(new OnClickListener() {
 			
@@ -209,7 +208,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		* open the image gallery or the camera
 		 */
         
-    	((ImageButton) view.findViewById(R.id.select_image))
+    	((ImageButton) findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				/*
@@ -229,7 +228,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		 * to open the audio gallery or the audio recorder.
 		 */
     	
-       	((ImageButton) view.findViewById(R.id.select_audio))
+       	((ImageButton) findViewById(R.id.select_audio))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
@@ -249,7 +248,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		 */
         
        	
-       	((ImageButton) view.findViewById(R.id.select_video))
+       	((ImageButton) findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
     			public void onClick(View arg0) {
     				if(kioskMode){
@@ -260,15 +259,16 @@ public class NewEggActivity extends NestSpecificActivity{
     				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
-       	LinearLayout inputsLinearLayout = (LinearLayout) view.findViewById(R.id.new_photo_egg_caption_and_tag_part);
+       	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
-       	return view;
+       	
+       	super.onCreate(savedInstanceState);
 	}
 	
 	
 	/**
 	 * 
-	 * Destroys the activity. Over-riden so we get rid of the tagging tool
+	 * Destroys the activity. Overridden so we get rid of the tagging tool
 	 */
 	
     @Override
