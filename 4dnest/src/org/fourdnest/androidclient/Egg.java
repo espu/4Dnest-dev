@@ -74,12 +74,13 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, String caption, List<Tag> tags, long lastUpload, Date date) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, Uri remoteThumbailUri, String caption, List<Tag> tags, long lastUpload, Date date) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
 		this.localFileURI = localFileURI;
 		this.remoteFileURI = remoteFileURI;
+		this.setRemoteThumbnailUri(remoteThumbailUri);
 		this.caption = caption;
 		this.tags = tags;
 		this.lastUpload = lastUpload;
@@ -306,5 +307,13 @@ public class Egg {
     public Date getCreationDate() {
         return creationDate;
     }
+
+	public Uri getRemoteThumbnailUri() {
+		return remoteThumbnailUri;
+	}
+
+	public void setRemoteThumbnailUri(Uri remoteThumbnailUri) {
+		this.remoteThumbnailUri = remoteThumbnailUri;
+	}
 	
 }

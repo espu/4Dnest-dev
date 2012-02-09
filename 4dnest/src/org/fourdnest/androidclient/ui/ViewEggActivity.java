@@ -6,9 +6,9 @@ import java.util.Date;
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.comm.FourDNestThumbnailManager;
 import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
 import org.fourdnest.androidclient.comm.StaticMapGetter;
+import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -98,7 +98,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 
 		timestamp.setText(new Date(egg.getLastUpload()).toString());
 		message.setText(egg.getCaption());
-		thumbnail.setImageURI(Uri.parse(FourDNestThumbnailManager.getThumbnailUriString(egg)));
+		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
 			for (Tag current : egg.getTags()) {

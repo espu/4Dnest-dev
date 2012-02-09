@@ -13,7 +13,7 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	
 
 	public boolean getStaticMap(Egg egg) {
-		String internalUriString = FourDNestThumbnailManager.getThumbnailUriString(egg);
+		String internalUriString = ThumbnailManager.getThumbnailUriString(egg);
 		String uriString = BASEURI;
 		uriString = setBoundBox(uriString, 15, 65, 20, 63);
 		uriString = setWidth(uriString, 400);
