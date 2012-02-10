@@ -83,27 +83,32 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		Egg egg = (Egg) this.getItem(arg0);
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		if(egg.getCaption().length()>0){ //if caption is empty, leave default message (no message)
+		if (egg.getCaption().length() > 0) { // if caption is empty, leave
+												// default message (no message)
 			message.setText(egg.getCaption());
 		}
 		List<Tag> tagList = egg.getTags();
-		if(tagList.size()>0){ //if there are no tags, leave default message (no tags)
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+									// (no tags)
 			String tagListString = "";
-			
-			for (int i = 0; i <tagList.size(); i++){ //No join in Android java ? Could not find it
-				if(i==0){
-					tagListString = tagListString.concat(tagList.get(0).getName());
+
+			for (int i = 0; i < tagList.size(); i++) { // No join in Android
+														// java ? Could not find
+														// it
+				if (i == 0) {
+					tagListString = tagListString.concat(tagList.get(0)
+							.getName());
+				} else {
+					tagListString = tagListString.concat(", "
+							+ tagList.get(i).getName());
 				}
-				else {
-					tagListString = tagListString.concat(", "+tagList.get(i).getName());
-				}
-				
-				}
-			tags.setText(tagListString);
+
 			}
-		
-		return view;
+			tags.setText(tagListString);
 		}
+
+		return view;
+	}
 
 	/**
 	 * Binds and returns a large egg view element. Layout defined in
@@ -135,12 +140,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		
 
 		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
 		if (egg.getCreationDate() != null) {
-		      date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
+			//Note: Custom-defined time format does not support locales
+			date.setText(new SimpleDateFormat("dd.MM. kk:mm").format(egg
+					.getCreationDate()));
 		}
 
 		if (egg.getTags().size() > 0) {

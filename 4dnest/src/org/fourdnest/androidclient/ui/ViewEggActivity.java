@@ -1,5 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
@@ -44,7 +45,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 		TextView message = (TextView) findViewById(R.id.message);
 		TextView tags = (TextView) findViewById(R.id.tags);
 
-		timestamp.setText(new Date(egg.getLastUpload()).toString());
+		timestamp.setText(DateFormat.getDateTimeInstance().format(egg.getCreationDate()));
 		message.setText(egg.getCaption());
 		
 		if (egg.getMimeType() != Egg.fileType.TEXT) {
