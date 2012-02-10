@@ -23,8 +23,8 @@ public class LocationHelper {
 	private static final String JSON_ACCURACY = "accuracy";
 	private static final String JSON_ALTITUDE = "altitude";
 	private static final String JSON_BEARING = "bearing";
-	private static final String JSON_LATITUDE = "latitude";
-	private static final String JSON_LONGITUDE = "longitude";
+	public static final String JSON_LATITUDE = "latitude";
+	public static final String JSON_LONGITUDE = "longitude";
 	private static final String JSON_SPEED = "speed";
 	private static final String JSON_TIME = "time";
 	private static final String JSON_LOCATIONARRAY = "locations";
