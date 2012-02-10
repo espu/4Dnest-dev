@@ -506,7 +506,7 @@ public class FourDNestProtocol implements Protocol {
                 date = (Date) formatter.parse(dateStr);
             } catch (ParseException e) {
                Log.e(TAG, "Failed to parse date");
-               date = null;
+               date = new Date();
             }
             double latitude = 0;
             double longitude = 0;
@@ -517,11 +517,12 @@ public class FourDNestProtocol implements Protocol {
             }catch (JSONException e) {
                 // No location information
             }
-			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0, date);
+			Egg egg = new Egg(0, this.nest.getId(), author, null, externalFileUri,thumbNailUri, caption, tags, 0);
 			String uid = js.getString("uid");
 			egg.setExternalId(uid);
 			egg.setLatitude(latitude);
 			egg.setLongitude(longitude);
+			egg.setCreationDate(date);
 			Log.d("EGGLATI", ":" + egg.getLatitude());
 			return egg;
 		} catch (JSONException e) {

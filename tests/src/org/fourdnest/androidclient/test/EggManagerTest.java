@@ -43,8 +43,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now,
-			new Date()
+			now
 		);
 		
 		e = this.eggManager.saveEgg(e);
@@ -67,8 +66,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"TestCaption",
 			tags,
-			now,
-			new Date()
+			now
 		);
 		Egg e2 = e;
 		
@@ -95,8 +93,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionForEgg",
 			tags,
-			now,
-			new Date()
+			now
 		);
 		e1 = this.eggManager.saveEgg(e1);
 		
@@ -109,8 +106,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			"CaptionToo!",
 			tags,
-			now,
-			new Date()
+			now
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		
@@ -123,8 +119,7 @@ public class EggManagerTest extends AndroidTestCase {
 			null,
 			null,
 			tags,
-			now,
-			new Date()
+			now
 		);
 		e3 = this.eggManager.saveEgg(e3);
 		
@@ -149,8 +144,7 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now,
-				new Date()
+				now
 		);
 		e1 = this.eggManager.saveEgg(e1);
 		
@@ -176,8 +170,7 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionForEgg",
 				tags,
-				now,
-				new Date()
+				now
 		);
 		e1 = this.eggManager.saveEgg(e1);
 			
@@ -190,8 +183,7 @@ public class EggManagerTest extends AndroidTestCase {
 				null,
 				"CaptionToo!",
 				tags,
-				now,
-				new Date()
+				now
 		);
 		e2 = this.eggManager.saveEgg(e2);
 		

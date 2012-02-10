@@ -78,7 +78,7 @@ public class Egg {
 	 * @param caption Caption text
 	 * @param tags Tag list
 	 */
-	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, Uri remoteThumbailUri, String caption, List<Tag> tags, long lastUpload, Date date) {
+	public Egg(Integer id, int nestId, String author, Uri localFileURI, Uri remoteFileURI, Uri remoteThumbailUri, String caption, List<Tag> tags, long lastUpload) {
 		this.id = id;
 		this.nestId = nestId;
 		this.author = author;
@@ -88,7 +88,7 @@ public class Egg {
 		this.caption = caption;
 		this.tags = tags;
 		this.lastUpload = lastUpload;
-		this.setCreationDate(date);
+		this.setCreationDate(new Date());
 		this.longitude = 0;
 		this.latitude = 0;
 	}
