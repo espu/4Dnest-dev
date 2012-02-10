@@ -351,7 +351,17 @@ public class EggManager {
             date = (Date) df.parse(dateStr);
         } catch (ParseException e) {
            Log.e(TAG, "Failed to parse date");
+           //Failed to parse the date, set a date to avoid null values
            date = null;
+        }
+        if (date == null) {
+        	try {
+        		date = (Date) df.parse("2012-02-02 02:02:02");
+        	}catch (ParseException e) {
+        		Log.e(TAG, "Something wrong with the parser, failing should not be possible");
+        		//This code should never be reached, but we still want to avoid null values
+        		date = new Date();
+        	}
         }
         Log.d(TAG, "date: " + date.toString());
         Uri remoteThumbnail = null;
@@ -370,10 +380,11 @@ public class EggManager {
         if (!cursor.isNull(12)) {
         	exId = cursor.getString(12);
         }
-        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload, date);
+        Egg egg = new Egg(id, nestId, author, localURI, remoteURI, remoteThumbnail, caption, tagList, lastUpload);
         egg.setLongitude(longitude);
         egg.setLatitude(latitude);
         egg.setExternalId(exId);
+        egg.setCreationDate(date);
         
         return egg;
 
