@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -284,6 +285,7 @@ public class NewEggActivity extends NestSpecificActivity{
 		NewEggActivity.this.taggingTool.addTagFromTextView();
 		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
+		egg.setCreationDate(new Date());
 		TagSuggestionService.setLastUsedTags(getApplication(), tags);
     }
 	
