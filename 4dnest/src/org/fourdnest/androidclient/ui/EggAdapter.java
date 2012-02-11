@@ -244,9 +244,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			FourDNestApplication.getApplication().getDraftEggManager()
 					.deleteEgg(egg.getId());
-			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent, R.layout.egg_element_draft, FourDNestApplication.getApplication()
-					.getDraftEggManager().listEggs());
-			((ListView)EggAdapter.this.parent).setAdapter(newAdapter);
+			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
+					EggAdapter.this.resourceId, FourDNestApplication
+							.getApplication().getDraftEggManager().listEggs());
+			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
 			newAdapter.notifyDataSetChanged();
 		}
 	}
