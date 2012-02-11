@@ -280,7 +280,8 @@ public class NewEggActivity extends NestSpecificActivity{
      * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
     private void eggEditingDone(Egg egg) {
-		// Author is set by SendQueueService
+		egg.setAuthor(FourDNestApplication.getApplication().getCurrentNest().getUserName());
+		egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
 		egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 		NewEggActivity.this.taggingTool.addTagFromTextView();
