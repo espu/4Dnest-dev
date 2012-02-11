@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="40pt"
-        android:layout_height="40pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginRight="6dip"
         android:adjustViewBounds="true"
         android:src="@drawable/icon" />

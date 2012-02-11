@@ -11,9 +11,8 @@
         android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_marginRight="6dip"
         android:adjustViewBounds="true"
-        android:maxHeight="50pt"
         android:src="@drawable/icon" />
 
     <LinearLayout
