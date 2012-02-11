@@ -61,7 +61,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
-	protected String currentEggID = "0"; //0 if new egg
+	protected int currentEggID = 0; //0 if new egg
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -101,7 +101,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			 * I really don't want NULL pointer exceptions. 
 			 */
 			if(extras.containsKey("eggID")){
-				currentEggID = extras.getString("eggID");
+				currentEggID = extras.getInt("eggID");
 				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
 			}
 			if(extras.containsKey("pictureURL")){
@@ -605,7 +605,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	 */
 	
 	private void recoverDataFromExistingEGG(){
-		int eggIDInt = Integer.valueOf(currentEggID);
+		int eggIDInt = currentEggID;
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
 		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
@@ -638,7 +638,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	 * @return true if new Egg, false if editing existing Egg
 	 */
 	private boolean isNewEgg() {
-		return currentEggID.equals("0");
+		return currentEggID == 0;
 	}
 	
 	

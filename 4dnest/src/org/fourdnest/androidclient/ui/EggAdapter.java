@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Egg.fileType;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
@@ -83,8 +84,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
 
-		// final because anonymous inner classes demand it.
-		final Egg egg = (Egg) this.getItem(arg0);
+		Egg egg = (Egg) this.getItem(arg0);
+		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+		if (egg.getMimeType() != Egg.fileType.TEXT) {
+			thumbnail.setImageURI(Uri.parse(ThumbnailManager
+					.getThumbnailUriString(egg,
+							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
+		}
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		if (egg.getCaption().length() > 0) { // if caption is empty, leave
@@ -111,37 +117,14 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			tags.setText(tagListString);
 		}
 
-		arg1.findViewById(R.id.edit_button).setOnClickListener(
-				new OnClickListener() {
+		view.findViewById(R.id.edit_button).setOnClickListener(
+				new EditButtonOnClickListener(egg));
 
-					public void onClick(View v) {
-						Intent intent = new Intent(v.getContext(),
-								ListStreamActivity.class);
-						intent.putExtra("eggID", egg.getId());
-						EggAdapter.this.parent.getContext().startActivity(
-								intent);
+		view.findViewById(R.id.delete_button).setOnClickListener(
+				new DeleteButtonOnClickListener(egg));
 
-					}
-				});
-
-		arg1.findViewById(R.id.delete_button).setOnClickListener(
-				new OnClickListener() {
-
-					public void onClick(View v) {
-						EggAdapter.this.remove(egg);
-						EggAdapter.this.notifyDataSetChanged();
-					}
-				});
-
-		arg1.findViewById(R.id.send_button).setOnClickListener(
-				new OnClickListener() {
-
-					public void onClick(View v) {
-						SendQueueService.sendEgg(getContext(), egg, true);
-						EggAdapter.this.remove(egg);
-						EggAdapter.this.notifyDataSetChanged();
-					}
-				});
+		view.findViewById(R.id.send_button).setOnClickListener(
+				new SendButtonOnClickListener(egg));
 
 		return view;
 	}
@@ -230,6 +213,56 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	public final ViewGroup getParent() {
 		return parent;
+	}
+
+	private class SendButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public SendButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
+					egg, true);
+			EggAdapter.this.eggs = FourDNestApplication.getApplication()
+					.getDraftEggManager().listEggs();
+			EggAdapter.this.notifyDataSetChanged();
+		}
+	}
+
+	private class DeleteButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public DeleteButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			FourDNestApplication.getApplication().getDraftEggManager()
+					.deleteEgg(egg.getId());
+			EggAdapter.this.eggs = FourDNestApplication.getApplication()
+					.getDraftEggManager().listEggs();
+			EggAdapter.this.notifyDataSetChanged();
+		}
+	}
+
+	private class EditButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public EditButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			Intent intent = new Intent(v.getContext(), NewEggActivity.class);
+			intent.putExtra("eggID", egg.getId());
+			EggAdapter.this.parent.getContext().startActivity(intent);
+
+		}
 	}
 
 }

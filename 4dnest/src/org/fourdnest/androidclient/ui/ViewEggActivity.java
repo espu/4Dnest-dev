@@ -1,7 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
 import java.text.DateFormat;
-import java.util.Date;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
@@ -9,6 +8,7 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
