@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -243,9 +244,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			FourDNestApplication.getApplication().getDraftEggManager()
 					.deleteEgg(egg.getId());
-			EggAdapter.this.eggs = FourDNestApplication.getApplication()
-					.getDraftEggManager().listEggs();
-			EggAdapter.this.notifyDataSetChanged();
+			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent, R.layout.egg_element_draft, FourDNestApplication.getApplication()
+					.getDraftEggManager().listEggs());
+			((ListView)EggAdapter.this.parent).setAdapter(newAdapter);
+			newAdapter.notifyDataSetChanged();
 		}
 	}
 
