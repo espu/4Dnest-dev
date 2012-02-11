@@ -183,6 +183,7 @@ public class NewEggActivity extends NestSpecificActivity{
 				//TODO: Proper implementation
 				Egg egg = new Egg();
 				eggEditingDone(egg);
+				egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				applicationTemp.getDraftEggManager().saveEgg(egg);
 				Context context = getApplicationContext();

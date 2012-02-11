@@ -227,9 +227,11 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
 					egg, true);
-			EggAdapter.this.eggs = FourDNestApplication.getApplication()
-					.getDraftEggManager().listEggs();
-			EggAdapter.this.notifyDataSetChanged();
+			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
+					EggAdapter.this.resourceId, FourDNestApplication
+							.getApplication().getDraftEggManager().listEggs());
+			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
+			newAdapter.notifyDataSetChanged();
 		}
 	}
 
