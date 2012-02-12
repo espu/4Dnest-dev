@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -227,9 +228,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
 					egg, true);
+			ArrayList<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
+			newList.remove(egg);
 			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
-					EggAdapter.this.resourceId, FourDNestApplication
-							.getApplication().getDraftEggManager().listEggs());
+					EggAdapter.this.resourceId, newList);
 			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
 			newAdapter.notifyDataSetChanged();
 		}
