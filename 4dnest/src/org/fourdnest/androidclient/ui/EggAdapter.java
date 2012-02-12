@@ -264,7 +264,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		public void onClick(View v) {
 			Intent intent = new Intent(v.getContext(), NewEggActivity.class);
-			intent.putExtra("eggID", egg.getId());
+			intent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId());
 			EggAdapter.this.parent.getContext().startActivity(intent);
 
 		}

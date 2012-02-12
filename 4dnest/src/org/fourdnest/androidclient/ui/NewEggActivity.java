@@ -85,6 +85,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
 	private boolean kioskMode; //tells us what ever kiosk mode is on, set up in getContentLayout
+	private Egg editableEgg;
 
 	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
@@ -156,7 +157,10 @@ public class NewEggActivity extends NestSpecificActivity{
 				//TODO: Proper implementation, don't create new egg
 				// but fetch the actual given egg if provided (=Edit existing egg, for example
 				// when launched from RouteTrackService
-				Egg egg = new Egg();
+				Egg egg = NewEggActivity.this.editableEgg;
+				if (NewEggActivity.this.editableEgg == null) {
+					egg = new Egg();
+				}
 				eggEditingDone(egg);
 
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
@@ -641,6 +645,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			fileURL = uri.toString();
 			this.refreshElements();
 		}
+		this.editableEgg = existingEgg;
 		
 	}
 
