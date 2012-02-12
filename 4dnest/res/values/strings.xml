@@ -37,9 +37,11 @@
     <string name="gps_notification_on">GPS tracking started</string>
     <string name="gps_notification_off">GPS tracking disabled</string>
     <string name="gps_statusbar_title">4DNest</string>
+    <string name="gps_tracking_initialized">Waiting for GPS lock</string>
     <string name="gps_statusbar_tracking_active">Route tracking active</string>
-    <string name="gps_statusbar_last_location_received">Last location received</string>
-    <string name="gps_error_gps_disabled">GPS disabled, please enable to track</string>
+    <string name="gps_error_outofservice">GPS out of service, please enable to track</string>
+    <string name="gps_error_temporarilydisabled">GPS temporarily disabled</string>
+    <string name="gps_available">GPS available</string>
     <string name="gps_file_save_success">Route saved to file</string>
     <string name="gps_file_save_failure">Route saving failed</string>
     <string name="gps_egg_create_fail">Error creating draft route</string>

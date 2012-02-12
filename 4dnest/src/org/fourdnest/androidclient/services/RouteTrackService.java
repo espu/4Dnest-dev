@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -103,12 +104,12 @@ public class RouteTrackService extends Service implements LocationListener {
 		// If gps provider does not exist or is disabled, show error and die
 		if(this.locationManager.getProvider(this.provider) == null ||
 			!this.locationManager.getProviders(true).contains(this.provider)) {			
-			this.displayToast(getText(R.string.gps_error_gps_disabled));
+			this.displayToast(getText(R.string.gps_error_outofservice));
 			stopSelf();
 		}
 
 		// Prepare notification message for status bar
-		this.notification = new Notification(R.drawable.icon, getText(R.string.gps_notification_on), System.currentTimeMillis());
+		this.notification = new Notification(R.drawable.icon, getText(R.string.gps_tracking_initialized), System.currentTimeMillis());
 
 		// Initialize start date to current time
 		this.startDate = new Date();
@@ -117,7 +118,7 @@ public class RouteTrackService extends Service implements LocationListener {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ListStreamActivity.class), 0);        
 
         // Set status bar info
-		this.notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_statusbar_tracking_active), contentIntent);
+		this.notification.setLatestEventInfo(this, getText(R.string.gps_statusbar_title), getText(R.string.gps_tracking_initialized), contentIntent);
 
         // Start service in foreground, checking for null to avoid Android testing bug
         if(getSystemService(ACTIVITY_SERVICE) != null) {
@@ -162,7 +163,7 @@ public class RouteTrackService extends Service implements LocationListener {
 			
 			// Launch intent to edit route egg
 			Intent editIntent = new Intent(this.getApplication(), NewEggActivity.class);
-			editIntent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId().toString());
+			editIntent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId());
 			editIntent.setAction(Intent.ACTION_VIEW);
 			editIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -175,7 +176,7 @@ public class RouteTrackService extends Service implements LocationListener {
 
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged: " + LocationHelper.locationToJSON(location).toString());
-		this.displayNotification(getText(R.string.gps_statusbar_last_location_received));
+		this.displayNotification(getText(R.string.gps_statusbar_tracking_active));
 		
 		// Add some sanity checks, for now just write to output file
 		this.writeLocation(location, this.outputFile);
@@ -184,17 +185,35 @@ public class RouteTrackService extends Service implements LocationListener {
 
 	public void onProviderDisabled(String provider) {
 		Log.d(TAG, "onProviderDisabled: " + provider);
-		this.displayToast("onProviderDisabled: " + provider);
 	}
 
 	public void onProviderEnabled(String provider) {
-		Log.d(TAG, "onProviderEnabled: " + provider);
-		this.displayToast("onProviderEnabled: " + provider);
+		Log.d(TAG, "onProviderEnabled: " + provider);		
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		Log.d(TAG, "onStatusChanged, provider: " + provider + ", status: " + status);
-		this.displayToast("onStatusChanged " + provider + ", status: " + status);
+		
+		if(provider == this.provider) {
+			CharSequence message = "";
+			
+			switch(status) {
+			case LocationProvider.OUT_OF_SERVICE:
+				message = getText(R.string.gps_error_outofservice);
+				break;
+			case LocationProvider.TEMPORARILY_UNAVAILABLE:
+				message = getText(R.string.gps_error_temporarilydisabled);
+				break;
+			case LocationProvider.AVAILABLE:
+				message = getText(R.string.gps_available);
+				break;
+			default:
+				return;
+			}
+			
+			this.displayNotification(message);
+			this.displayToast(message);
+		}
 	}
 	
 	/**
