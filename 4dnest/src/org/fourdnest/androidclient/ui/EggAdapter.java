@@ -8,6 +8,7 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.FourDNestProtocol;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.net.Uri;
@@ -126,19 +127,21 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView date = (TextView) view.findViewById(R.id.date);
 
-		// TODO: Proper implementation after thumbnail fetching
-		// functionality.
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-		//TextView author = (TextView) view.findViewById(R.id.author);
-		//TextView time = (TextView) view.findViewById(R.id.time);
+		if (egg.getMimeType() != Egg.fileType.TEXT) {
+			thumbnail.setImageURI(Uri.parse(ThumbnailManager
+					.getThumbnailUriString(egg,
+							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
+		}
+		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
 		
-		thumbnail.setImageURI(Uri.parse(ThumbnailManager.getThumbnailUriString(egg)));
 
-		//author.setText(egg.getAuthor());
+		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
-		date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
-		//time.setText(DateFormat.getTimeInstance().format(egg.getCreationDate()));
+		if (egg.getCreationDate() != null) {
+		      date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
+		}
 
 		if (egg.getTags().size() > 0) {
 			String eggTags = "";

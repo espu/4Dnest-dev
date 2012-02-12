@@ -152,7 +152,9 @@ public class NewEggActivity extends NestSpecificActivity{
         sendButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {		
-				//TODO: Proper implementation
+				//TODO: Proper implementation, don't create new egg
+				// but fetch the actual given egg if provided (=Edit existing egg, for example
+				// when launched from RouteTrackService
 				Egg egg = new Egg();
 				eggEditingDone(egg);
 
