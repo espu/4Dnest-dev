@@ -1,23 +1,27 @@
 package org.fourdnest.androidclient.ui;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Egg.fileType;
+import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
+import org.fourdnest.androidclient.services.SendQueueService;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -80,30 +84,51 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
 			view = inflater.inflate(this.resourceId, getParent(), false);
 		}
+
 		Egg egg = (Egg) this.getItem(arg0);
+		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+		if (egg.getMimeType() != Egg.fileType.TEXT) {
+			thumbnail.setImageURI(Uri.parse(ThumbnailManager
+					.getThumbnailUriString(egg,
+							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
+		}
 		TextView message = (TextView) view.findViewById(R.id.message);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		if(egg.getCaption().length()>0){ //if caption is empty, leave default message (no message)
+		if (egg.getCaption().length() > 0) { // if caption is empty, leave
+												// default message (no message)
 			message.setText(egg.getCaption());
 		}
 		List<Tag> tagList = egg.getTags();
-		if(tagList.size()>0){ //if there are no tags, leave default message (no tags)
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+									// (no tags)
 			String tagListString = "";
-			
-			for (int i = 0; i <tagList.size(); i++){ //No join in Android java ? Could not find it
-				if(i==0){
-					tagListString = tagListString.concat(tagList.get(0).getName());
+
+			for (int i = 0; i < tagList.size(); i++) { // No join in Android
+														// java ? Could not find
+														// it
+				if (i == 0) {
+					tagListString = tagListString.concat(tagList.get(0)
+							.getName());
+				} else {
+					tagListString = tagListString.concat(", "
+							+ tagList.get(i).getName());
 				}
-				else {
-					tagListString = tagListString.concat(", "+tagList.get(i).getName());
-				}
-				
-				}
-			tags.setText(tagListString);
+
 			}
-		
-		return view;
+			tags.setText(tagListString);
 		}
+
+		view.findViewById(R.id.edit_button).setOnClickListener(
+				new EditButtonOnClickListener(egg));
+
+		view.findViewById(R.id.delete_button).setOnClickListener(
+				new DeleteButtonOnClickListener(egg));
+
+		view.findViewById(R.id.send_button).setOnClickListener(
+				new SendButtonOnClickListener(egg));
+
+		return view;
+	}
 
 	/**
 	 * Binds and returns a large egg view element. Layout defined in
@@ -135,12 +160,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
-		
 
 		author.setText(egg.getAuthor());
 		message.setText(egg.getCaption());
 		if (egg.getCreationDate() != null) {
-		      date.setText(new SimpleDateFormat("dd/MM HH:mm").format(egg.getCreationDate()));
+			// Note: Custom-defined time format does not support locales
+			date.setText(new SimpleDateFormat("dd.MM. kk:mm").format(egg
+					.getCreationDate()));
 		}
 
 		if (egg.getTags().size() > 0) {
@@ -188,6 +214,60 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	public final ViewGroup getParent() {
 		return parent;
+	}
+
+	private class SendButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public SendButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
+					egg, true);
+			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
+					EggAdapter.this.resourceId, FourDNestApplication
+							.getApplication().getDraftEggManager().listEggs());
+			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
+			newAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private class DeleteButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public DeleteButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			FourDNestApplication.getApplication().getDraftEggManager()
+					.deleteEgg(egg.getId());
+			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
+					EggAdapter.this.resourceId, FourDNestApplication
+							.getApplication().getDraftEggManager().listEggs());
+			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
+			newAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private class EditButtonOnClickListener implements OnClickListener {
+
+		private Egg egg;
+
+		public EditButtonOnClickListener(Egg egg) {
+			this.egg = egg;
+		}
+
+		public void onClick(View v) {
+			Intent intent = new Intent(v.getContext(), NewEggActivity.class);
+			intent.putExtra("eggID", egg.getId());
+			EggAdapter.this.parent.getContext().startActivity(intent);
+
+		}
 	}
 
 }

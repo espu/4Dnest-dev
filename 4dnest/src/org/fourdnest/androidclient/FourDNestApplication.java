@@ -276,7 +276,7 @@ public class FourDNestApplication extends Application
         prefEditor.putBoolean("nest_accept_all_certs", val);
     }
 
-	public TagCache getTagCache() {
+	public synchronized TagCache getTagCache() {
 		return this.tagCache;
 	}
     

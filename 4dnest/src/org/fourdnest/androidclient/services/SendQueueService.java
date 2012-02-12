@@ -97,9 +97,6 @@ public class SendQueueService extends IntentService {
 				Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
 				return;
 			}
-			
-			egg.setAuthor(currentNest.getUserName());
-			egg.setNestId(currentNest.getId());
 			savedEgg = app.getDraftEggManager().saveEgg(egg);
 		} else {
 			savedEgg = egg;

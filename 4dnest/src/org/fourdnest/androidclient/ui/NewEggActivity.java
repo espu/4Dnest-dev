@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
@@ -60,7 +61,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
-	protected String currentEggID = "0"; //0 if new egg
+	protected int currentEggID = 0; //0 if new egg
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -281,12 +282,14 @@ public class NewEggActivity extends NestSpecificActivity{
      * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
     private void eggEditingDone(Egg egg) {
-		// Author is set by SendQueueService
+		egg.setAuthor(FourDNestApplication.getApplication().getCurrentNest().getUserName());
+		egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
 		egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 		NewEggActivity.this.taggingTool.addTagFromTextView();
 		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
+		egg.setCreationDate(new Date());
 		TagSuggestionService.setLastUsedTags(getApplication(), tags);
     }
 	
@@ -611,7 +614,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	 */
 	
 	private void recoverDataFromExistingEGG(){
-		int eggIDInt = Integer.valueOf(currentEggID);
+		int eggIDInt = currentEggID;
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
 		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
@@ -647,7 +650,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	 * @return true if new Egg, false if editing existing Egg
 	 */
 	private boolean isNewEgg() {
-		return currentEggID.equals("0");
+		return currentEggID == 0;
 	}
 	
 	
