@@ -102,7 +102,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			 * I really don't want NULL pointer exceptions. 
 			 */
 			if(extras.containsKey(EXTRA_EGG_ID)){
-				currentEggID = extras.getString(EXTRA_EGG_ID);
+				currentEggID = extras.getInt(EXTRA_EGG_ID);
 				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
 			}
 			if(extras.containsKey("pictureURL")){
