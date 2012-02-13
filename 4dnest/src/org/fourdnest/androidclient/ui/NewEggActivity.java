@@ -5,13 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.services.SendQueueService;
-import org.fourdnest.androidclient.services.StreamReaderService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
 import android.app.AlertDialog;
@@ -28,15 +27,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +70,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	static final int DIALOG_ASK_AUDIO = 0;
 	static final int DIALOG_ASK_IMAGE = 1;
 	static final int DIALOG_ASK_VIDEO = 2;
+	static final int DIALOG_BACK = 3;
 	//static final int DIALOG_GAMEOVER_ID = 1;
 	
 	public static final String EXTRA_EGG_ID = "eggID";
@@ -204,29 +202,7 @@ public class NewEggActivity extends NestSpecificActivity{
         draftButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				//TODO: Proper implementation
-				
-				Egg egg = null;
-				if (NewEggActivity.this.editableEgg == null) {
-					egg = new Egg();
-				}
-				else{
-					 egg = NewEggActivity.this.editableEgg;
-				}
-				eggEditingDone(egg);
-				//FIXME currently supports only editing of drafts, not Eggs from the stream
-				NewEggActivity.this.application.getDraftEggManager().saveEgg(egg);
-				Context context = getApplicationContext();
-				String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(context, saveAsDraftToast, duration);
-				toast.show();
-
-				// Go to ListStreamActivity after finishing
-				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
-				//v.getContext();
-				finish();
-				
+				NewEggActivity.this.saveAsDraft();
 			}
 		});
         
@@ -291,6 +267,32 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 	
+	protected void saveAsDraft() {
+		//TODO: Proper implementation
+		
+		Egg egg = null;
+		if (NewEggActivity.this.editableEgg == null) {
+			egg = new Egg();
+		}
+		else{
+			 egg = NewEggActivity.this.editableEgg;
+		}
+		eggEditingDone(egg);
+		//FIXME currently supports only editing of drafts, not Eggs from the stream
+		NewEggActivity.this.application.getDraftEggManager().saveEgg(egg);
+		Context context = getApplicationContext();
+		String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, saveAsDraftToast, duration);
+		toast.show();
+
+		// Go to ListStreamActivity after finishing
+		//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
+		//v.getContext();
+		finish();
+	}
+
+
 	/**
 	 * 
 	 * Destroys the activity. Overridden so we get rid of the tagging tool
@@ -302,7 +304,8 @@ public class NewEggActivity extends NestSpecificActivity{
     	this.taggingTool.onDestroy();
     	this.taggingTool = null;
     }
-
+    
+    
     /**
      * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
@@ -390,7 +393,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	/**
 	 * 
 	 * This method creates the dialogues that the user uses to make selections on what ever 
-	 * to use the capture device or browse existing items.
+	 * to use the capture device or browse existing items, and the back button dialog.
 	 * 
 	 */
 	
@@ -432,15 +435,49 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	dialog = videoBuilder.create();
 	    	break;
 
-	    	    	
-	    	    
+        case DIALOG_BACK:
+        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+        	backBuilder.setMessage(getString(R.string.new_egg_dialogue_back))
+        	       .setCancelable(true)
+        	       .setPositiveButton(
+        	    		   getString(R.string.new_egg_dialogue_back_save),
+        	    		   new DialogInterface.OnClickListener() {
+        	           public void onClick(DialogInterface dialog, int id) {
+        	        	   NewEggActivity.this.saveAsDraft();
+        	           }
+        	       })
+        	       .setNeutralButton(
+        	    		   getString(R.string.new_egg_dialogue_back_cancel),
+        	    		   new DialogInterface.OnClickListener() {
+        	    	   public void onClick(DialogInterface dialog, int id) {
+        	    		   dialog.cancel();
+        	           }
+        	       })
+        	       .setNegativeButton(
+        	    		   getString(R.string.new_egg_dialogue_back_discard),
+        	    		   new DialogInterface.OnClickListener() {
+        	           public void onClick(DialogInterface dialog, int id) {
+        	        	   NewEggActivity.this.finish();
+        	           }
+        	       });
+        	dialog = backBuilder.create();
+	    	break;
 	    
 	    default:
 	        dialog = null;
 	    }
-	    return dialog; //the requested dialoque is returned for displaying
+	    return dialog; //the requested dialogue is returned for displaying
 	}
-	
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        showDialog(DIALOG_BACK);
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+
 
 	/**
 	 * This method is used once media item has been selected or captured. Request code determines
