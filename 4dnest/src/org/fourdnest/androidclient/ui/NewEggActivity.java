@@ -156,17 +156,28 @@ public class NewEggActivity extends NestSpecificActivity{
         
         Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
-			
 			public void onClick(View v) {		
 				//TODO: Proper implementation, don't create new egg
 				// but fetch the actual given egg if provided (=Edit existing egg, for example
 				// when launched from RouteTrackService
-				Egg egg = NewEggActivity.this.editableEgg;
+				Egg egg = null;
 				if (NewEggActivity.this.editableEgg == null) {
 					egg = new Egg();
 				}
+				else{
+					 egg = NewEggActivity.this.editableEgg;
+				}
 				eggEditingDone(egg);
-
+				
+				/*
+				 * Work around. If egg happens to be a draft, sendEgg service does not actually save it
+				 * but instead sends the old draft. I do not want to touch service side code, so I will simply save
+				 * the egg here instead (as we would do if we saved a draft).
+				 */
+				
+				if(!isNewEgg()){
+					NewEggActivity.this.application.getDraftEggManager().saveEgg(egg);
+				}
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				SendQueueService.sendEgg(getApplication(), egg, !isNewEgg());
 				
@@ -187,15 +198,21 @@ public class NewEggActivity extends NestSpecificActivity{
          */
         
         Button draftButton = (Button) findViewById(R.id.edit_egg_save_draft_button);
-        final FourDNestApplication applicationTemp = this.application; //needs to define this outside of the onClickListerer or awfull thinks will happen
         draftButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
 				//TODO: Proper implementation
-				Egg egg = new Egg();
+				
+				Egg egg = null;
+				if (NewEggActivity.this.editableEgg == null) {
+					egg = new Egg();
+				}
+				else{
+					 egg = NewEggActivity.this.editableEgg;
+				}
 				eggEditingDone(egg);
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
-				applicationTemp.getDraftEggManager().saveEgg(egg);
+				NewEggActivity.this.application.getDraftEggManager().saveEgg(egg);
 				Context context = getApplicationContext();
 				String saveAsDraftToast = getString(R.string.new_egg_draft_toast);
 				int duration = Toast.LENGTH_SHORT;
@@ -291,7 +308,7 @@ public class NewEggActivity extends NestSpecificActivity{
     private void eggEditingDone(Egg egg) {
 		egg.setAuthor(FourDNestApplication.getApplication().getCurrentNest().getUserName());
 		egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
-		egg.setCaption(((EditText)findViewById(R.id.new_photo_egg_caption_view)).getText().toString());
+		egg.setCaption(this.caption.getText().toString());
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 		NewEggActivity.this.taggingTool.addTagFromTextView();
 		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
