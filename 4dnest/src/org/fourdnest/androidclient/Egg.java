@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 /**
  * Represents one Egg, which is the unit of content in the system.
@@ -280,6 +281,9 @@ public class Egg {
                 mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                         MimeTypeMap.getFileExtensionFromUrl(this
                                 .getLocalFileURI().toString()));
+                if (MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI().toString()).equalsIgnoreCase("json")) {
+                	mime = "application/json";
+                }
             } else {
                 mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                         MimeTypeMap.getFileExtensionFromUrl(this
@@ -287,6 +291,7 @@ public class Egg {
             }
             if (mime != null) {
                 String[] fileTArray = mime.split("/");
+                Log.d("mime", mime);
                 String fileT = fileTArray[0];
                 if (fileT.equals("image")) {
                     return fileType.IMAGE;

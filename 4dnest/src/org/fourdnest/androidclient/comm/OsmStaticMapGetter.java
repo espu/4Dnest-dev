@@ -24,7 +24,8 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	private static final String BASEURI = "http://pafciu17.dev.openstreetmap.org/?module=map";
 	private static final String JPG_TYPE = "imgType=jpg";
 	private static final int DEFAULT_SIZE = 600;
-	private static final float MARGIN = 0.001f;
+	private static final float MARGIN = 0.0001f;
+	private static final String FLOAT_TO_STRING_FORMAT = "%.6f";
 
 	
 	/**
@@ -95,10 +96,10 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		
 		// generate request attribute
 		String attribute = "&bbox="
-		 + String.format("%.4f", leftBoundLongitude)
-		 + "," + String.format("%.4f", topBoundLatitude)
-		 + "," + String.format("%.4f", rightBoundLongitude)
-		 + "," + String.format("%.4f", lowBoundLatitude);
+		 + String.format(FLOAT_TO_STRING_FORMAT, leftBoundLongitude)
+		 + "," + String.format(FLOAT_TO_STRING_FORMAT, topBoundLatitude)
+		 + "," + String.format(FLOAT_TO_STRING_FORMAT, rightBoundLongitude)
+		 + "," + String.format(FLOAT_TO_STRING_FORMAT, lowBoundLatitude);
 		
 		return uriString + attribute;
 	}
