@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
 import org.fourdnest.androidclient.comm.ThumbnailManager;
 import org.fourdnest.androidclient.services.SendQueueService;
@@ -18,8 +18,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,6 +47,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	protected ViewGroup parent;
 
+	private ListDraftEggsActivity activity;
+
 	/**
 	 * Constructs a new EggAdapter.
 	 * 
@@ -59,12 +61,33 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 * @param objects
 	 *            List of Eggs that are to be displayed.
 	 */
-	public EggAdapter(ViewGroup parent, int resourceId, List<Egg> objects) {
+	public EggAdapter( ViewGroup parent, int resourceId, List<Egg> objects) {
 		super(parent.getContext(), resourceId, objects);
 		this.resourceId = resourceId;
 		this.parent = parent;
 		this.setNotifyOnChange(true);
 	}
+	/**
+	 * This idiotic function exists because too much internal functionality of the draft listing
+	 * has been delegated to EggAdapter, making them tightly coupled.
+	 * @param activity
+	 */
+	public void setDraftActivity(ListDraftEggsActivity activity) {
+		this.activity = activity;
+	}
+
+	/**
+	 * Refreshes the contents from the database
+	 */
+	public void refreshList() {
+		List<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
+		EggAdapter.this.clear();
+		for(Egg egg : newList) {
+			EggAdapter.this.add(egg);
+		}
+		EggAdapter.this.notifyDataSetChanged();
+	}
+
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 
@@ -102,19 +125,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		List<Tag> tagList = egg.getTags();
 		if (tagList.size() > 0) { // if there are no tags, leave default message
 									// (no tags)
-			String tagListString = "";
+			StringBuilder tagListString = new StringBuilder();
 
-			for (int i = 0; i < tagList.size(); i++) { // No join in Android
-														// java ? Could not find
-														// it
-				if (i == 0) {
-					tagListString = tagListString.concat(tagList.get(0)
-							.getName());
-				} else {
-					tagListString = tagListString.concat(", "
-							+ tagList.get(i).getName());
+			for (int i = 0; i < tagList.size(); i++) {
+				if (i > 0) {
+					tagListString.append(", ");
 				}
-
+				tagListString.append(tagList.get(i).getName());
 			}
 			tags.setText(tagListString);
 		}
@@ -228,12 +245,13 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
 					egg, true);
-			ArrayList<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
+			List<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
 			newList.remove(egg);
-			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
-					EggAdapter.this.resourceId, newList);
-			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
-			newAdapter.notifyDataSetChanged();
+			EggAdapter.this.clear();
+			for(Egg egg : newList) {
+				EggAdapter.this.add(egg);
+			}
+			EggAdapter.this.notifyDataSetChanged();
 		}
 	}
 
@@ -246,13 +264,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 
 		public void onClick(View v) {
-			FourDNestApplication.getApplication().getDraftEggManager()
-					.deleteEgg(egg.getId());
-			EggAdapter newAdapter = new EggAdapter(EggAdapter.this.parent,
-					EggAdapter.this.resourceId, FourDNestApplication
-							.getApplication().getDraftEggManager().listEggs());
-			((ListView) EggAdapter.this.parent).setAdapter(newAdapter);
-			newAdapter.notifyDataSetChanged();
+			EggAdapter.this.activity.askConfirmDeletion(this.egg.getId());
 		}
 	}
 

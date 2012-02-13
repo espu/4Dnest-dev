@@ -82,12 +82,13 @@ public class SendQueueService extends IntentService {
 			Criteria crit = new Criteria();
 			crit.setAccuracy(Criteria.ACCURACY_FINE);
 			String provider = lm.getBestProvider(crit, true);
+			if(provider != null) {
 			Location loc = lm.getLastKnownLocation(provider);
-			
-			if(loc != null) {
-				egg.setLatitude(loc.getLatitude());
-				egg.setLongitude(loc.getLongitude());
-			}			
+				if(loc != null) {
+					egg.setLatitude(loc.getLatitude());
+					egg.setLongitude(loc.getLongitude());
+				}
+			}
 		}
 		
 		Egg savedEgg;
@@ -150,7 +151,7 @@ public class SendQueueService extends IntentService {
 				ProtocolResult res = app.getNestManager().getNest(egg.getNestId()).getProtocol().sendEgg(egg);
 				if(res.getStatusCode() == ProtocolResult.RESOURCE_UPLOADED) {
 					// Display message
-					this.handler.post(new ToastDisplay(app, getString(R.string.sendqueue_egg_send_complete), Toast.LENGTH_SHORT));
+					this.handler.post(new ToastDisplay(app, getString(R.string.sendqueue_egg_send_complete), Toast.LENGTH_LONG));
 					// Delete Egg from drafts
 					app.getDraftEggManager().deleteEgg(eggId);
 					
@@ -177,7 +178,7 @@ public class SendQueueService extends IntentService {
 						break;
 					}
 					// Display message and die
-					this.handler.post(new ToastDisplay(app, "Send failed: " + message, Toast.LENGTH_SHORT));
+					this.handler.post(new ToastDisplay(app, message, Toast.LENGTH_LONG));
 					Log.d(TAG, "Send failed: " + res.getStatusCode());
 				}
 				
