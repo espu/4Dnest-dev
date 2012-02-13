@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
-            android:title="Server Settings">
+            android:title="@string/prefs_category_nest_title">
 
         <CheckBoxPreference
                 android:key="allow_all_certs"
@@ -29,6 +29,7 @@
                 android:title="@string/prefs_nest_password_title">
         </EditTextPreference>
     </PreferenceCategory>
+    
     <PreferenceCategory
             android:title="Application Settings">
         <CheckBoxPreference
@@ -55,5 +56,25 @@
                 android:inputType="number"
                 android:defaultValue = "50">
         </EditTextPreference>
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/prefs_category_gps_title">
+        <ListPreference
+            android:key="gps_update_frequency"
+            android:title="@string/prefs_gps_update_freq_title"
+            android:summary="@string/prefs_gps_update_freq_descr"
+            android:entries="@array/gpsUpdateFrequencyNames"
+            android:entryValues="@array/gpsUpdateFrequencyValues"
+            android:defaultValue="5000"
+            />
+        
+        <ListPreference
+            android:key="gps_update_mindistance"
+            android:title="@string/prefs_gps_update_min_distance_title"
+            android:summary="@string/prefs_gps_update_min_distance_descr"
+            android:entries="@array/gpsUpdateDistanceNames"
+            android:entryValues="@array/gpsUpdateDistanceValues"
+            android:defaultValue="5"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

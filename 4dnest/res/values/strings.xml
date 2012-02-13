@@ -58,9 +58,9 @@
     <string name="new_egg_dialogue_open_photo_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_callery">Open Video Gallery</string>
-    <string name="prefs_category_nest_title">Nest settings</string>
+    <string name="prefs_category_nest_title">Server settings</string>
     <string name="prefs_nest_uri_title">Base URL</string>
-    <string name="prefs_nest_uri_descr">Base URL, e.g. http://nest.host.org/</string>
+    <string name="prefs_nest_uri_descr">Base URL, e.g. http://server.host.org/</string>
     <string name="prefs_nest_username_descr">User name</string>
     <string name="prefs_nest_username_title">User name</string>
 	<string name="prefs_nest_password_title">Password</string>
@@ -72,6 +72,11 @@
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
 	<string name="pref_kiosk_descr_off">Kiosk mode off</string>
+	<string name="prefs_category_gps_title">Location settings</string>
+	<string name="prefs_gps_update_freq_title">Update frequency</string>
+	<string name="prefs_gps_update_freq_descr">How often location info is requested</string>
+	<string name="prefs_gps_update_min_distance_title">Minimum distance</string>
+	<string name="prefs_gps_update_min_distance_descr">Minimum distance from previous point to save location</string>
 	<string name="change_nest_prompt">Change</string>
 	<string name="send_all_drafts_button_text">Send All Drafts</string>
 	<string name="default_no_date">No Date</string>

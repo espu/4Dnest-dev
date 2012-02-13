@@ -24,6 +24,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,12 +34,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.widget.Toast;
 
-public class RouteTrackService extends Service implements LocationListener {
+public class RouteTrackService
+	extends Service
+	implements LocationListener
+	,OnSharedPreferenceChangeListener{
 	
 	/**
 	 * Location manager to access location info
@@ -73,8 +79,11 @@ public class RouteTrackService extends Service implements LocationListener {
 	private static final String JSON_LOC_SEPARATOR = "\n";
 	
 	private final static String TAG = RouteTrackService.class.getSimpleName();
-	private final int LOCATION_MIN_DELAY = 1000; // ms
-	private final float LOCATION_MIN_DISTANCE = 5; // m
+	
+	private final String MIN_DELAY_SETTING_KEY = "gps_update_frequency";
+	private final String MIN_DISTANCE_SETTING_KEY = "gps_update_mindistance";
+	private int minDelay = 1000; // ms
+	private float minDistance = 5; // m
 	private final int LATEST_LOC_MAX_DELAY = 1000 * 60; // 60 sec 
 	
 	@Override
@@ -85,17 +94,17 @@ public class RouteTrackService extends Service implements LocationListener {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
+		// Init pref manager and read relevant config
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		prefs.registerOnSharedPreferenceChangeListener(this);
+		this.readPreferences(prefs);
 		
 		this.locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        this.locationManager.requestLocationUpdates(
-        		this.provider,
-        		LOCATION_MIN_DELAY,
-        		LOCATION_MIN_DISTANCE,
-        		this
-        		);
+		this.registerListener();
         
         this.outputFile = null;
         this.lastLocation = null;
+        
 	}
 	
 	@Override
@@ -214,6 +223,65 @@ public class RouteTrackService extends Service implements LocationListener {
 			this.displayNotification(message);
 			this.displayToast(message);
 		}
+	}
+	
+	/**
+	 * Called whenever preferences change
+	 */
+	public synchronized void onSharedPreferenceChanged(
+            SharedPreferences sharedPreferences, String key) {
+		
+		Log.d(TAG, "onSharedPrefChanged: " + key);
+		if(key.equals(MIN_DELAY_SETTING_KEY) || key.equals(MIN_DISTANCE_SETTING_KEY)) {
+			this.readPreferences(sharedPreferences);
+			this.registerListener();
+		}
+		
+	}
+	
+	/**
+	 * Reads preferences from given preference object, validates them and either uses
+	 * them or reverts invalid values in the pref object
+	 * @param sharedPreferences to read prefs from
+	 */
+	private synchronized void readPreferences(SharedPreferences sharedPreferences) {
+		int newFreq = this.minDelay;
+		try {
+			newFreq = Integer.parseInt(sharedPreferences.getString(MIN_DELAY_SETTING_KEY, ""));
+			if(newFreq >= 1000 && newFreq <= 600000) {
+				this.minDelay = newFreq;
+			} else { // Invalid value, rewrite setting
+				throw new NumberFormatException();
+			}
+		} catch(NumberFormatException e) {
+			sharedPreferences.edit().putInt(MIN_DELAY_SETTING_KEY, this.minDelay).commit();
+		}
+		
+		float newDist = this.minDistance;
+		try {
+			newDist = Float.parseFloat(sharedPreferences.getString(MIN_DISTANCE_SETTING_KEY, ""));
+			if(newDist >= 0 && newDist <= 1000) {
+				this.minDistance = newDist;
+			} else {
+				throw new NumberFormatException();
+			}
+		} catch(NumberFormatException e) {
+			sharedPreferences.edit().putFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance).commit();
+		}
+	}
+	
+	/**
+	 * Unregisters location update listener and re-registers it with current settings
+	 */
+	private synchronized void registerListener() {
+		// Unregister old listening, register new
+		this.locationManager.removeUpdates(this);				
+		this.locationManager.requestLocationUpdates(
+        		this.provider,
+        		this.minDelay,
+        		this.minDistance,
+        		this
+        		);
 	}
 	
 	/**
