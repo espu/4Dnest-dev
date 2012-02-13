@@ -58,6 +58,10 @@
     <string name="new_egg_dialogue_open_photo_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_camera">Open Camera</string>
     <string name="new_egg_dialogue_open_video_callery">Open Video Gallery</string>
+    <string name="new_egg_dialogue_back">Do you want to save the message as a draft?</string>
+	<string name="new_egg_dialogue_back_save">Save</string>
+	<string name="new_egg_dialogue_back_cancel">Go back</string>
+	<string name="new_egg_dialogue_back_discard">Discard</string>
     <string name="prefs_category_nest_title">Nest settings</string>
     <string name="prefs_nest_uri_title">Base URL</string>
     <string name="prefs_nest_uri_descr">Base URL, e.g. http://nest.host.org/</string>
@@ -92,5 +96,7 @@
     <string name="egg_view_no_text">No Text</string>
     <string name="egg_view_no_tags">No Tags</string>
     <string name="new_egg_draft_toast">Saved as draft</string>
-    
+    <string name="draft_list_dialogue_delete">Are you sure you want to delete the message?</string>
+    <string name="draft_list_dialogue_confirm">Delete</string>
+    <string name="draft_list_dialogue_cancel">Cancel</string>
 </resources>
