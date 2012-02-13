@@ -265,8 +265,7 @@ public class NewEggActivity extends NestSpecificActivity{
     		});	
        	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
-       	
-       	super.onCreate(savedInstanceState);
+       	super.onCreate(savedInstanceState); 
 	}
 	
 	

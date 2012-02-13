@@ -25,7 +25,8 @@
         <activity
             android:label="@string/app_name"
             android:name=".ui.NewEggActivity"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar" 
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:label="@string/app_name"
