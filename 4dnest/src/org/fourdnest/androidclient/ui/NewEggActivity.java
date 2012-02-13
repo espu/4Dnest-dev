@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
@@ -41,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewEggActivity extends NestSpecificActivity{
@@ -86,6 +88,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private TaggingTool taggingTool;
 	private boolean kioskMode; //tells us what ever kiosk mode is on, set up in getContentLayout
 	private Egg editableEgg;
+	private TextView caption;
 
 	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
@@ -97,6 +100,14 @@ public class NewEggActivity extends NestSpecificActivity{
 		this.application = (FourDNestApplication) getApplication();
 		setContentView(R.layout.new_egg_view);
 		Bundle extras = getIntent().getExtras(); 
+		this.kioskMode = this.application.getKioskModeEnabled();
+		this.upperButtons = (RelativeLayout) findViewById(R.id.new_egg_upper_buttons);
+		this.thumbNailView = (ImageView) findViewById(R.id.new_photo_egg_thumbnail_view);
+		this.caption = (TextView) findViewById(R.id.new_photo_egg_caption_view);
+		/*
+		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
+		 */
+		
 		if(extras !=null)
 		{
 			/*
@@ -107,16 +118,9 @@ public class NewEggActivity extends NestSpecificActivity{
 				this.recoverDataFromExistingEGG(); //recovers the data from the existing egg
 			}
 			if(extras.containsKey("pictureURL")){
-				fileURL = extras.getString("pictureURL"); //not really sure what this is for but lets hope its useful
+				fileURL = extras.getString("pictureURL"); //Almost sure that this is not used these days
 			}
 		}
-		
-		this.kioskMode = this.application.getKioskModeEnabled();
-		this.upperButtons = (RelativeLayout) findViewById(R.id.new_egg_upper_buttons);
-		this.thumbNailView = (ImageView) findViewById(R.id.new_photo_egg_thumbnail_view);
-		/*
-		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
-		 */
 		
         thumbNailView.setOnClickListener(new OnClickListener() {
 
@@ -328,19 +332,19 @@ public class NewEggActivity extends NestSpecificActivity{
 				}
 			}
 			else if (this.currentMediaItem == mediaItemType.audio){ //audio item is selected
-			thumbNailView.setVisibility(View.VISIBLE);
-			upperButtons.setVisibility(View.GONE);
-			thumbNailView.setImageResource(R.drawable.note1);
-			File audioFile = new  File(fileURL);
-			realFileURL = audioFile.getAbsolutePath();
+				thumbNailView.setVisibility(View.VISIBLE);
+				upperButtons.setVisibility(View.GONE);
+				thumbNailView.setImageResource(R.drawable.note1);
+				File audioFile = new  File(fileURL);
+				realFileURL = audioFile.getAbsolutePath();
 		}
 			
 			else if (this.currentMediaItem == mediaItemType.video){ //video item is selected
-			thumbNailView.setVisibility(View.VISIBLE);
-			upperButtons.setVisibility(View.GONE);
-			thumbNailView.setImageResource(R.drawable.roll1);
-			File videoFile = new  File(fileURL);
-			realFileURL = videoFile.getAbsolutePath();
+				thumbNailView.setVisibility(View.VISIBLE);
+				upperButtons.setVisibility(View.GONE);
+				thumbNailView.setImageResource(R.drawable.roll1);
+				File videoFile = new  File(fileURL);
+				realFileURL = videoFile.getAbsolutePath();
 			
 				
 			String[] proj = {
@@ -621,24 +625,26 @@ public class NewEggActivity extends NestSpecificActivity{
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
 		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
-		Uri uri = existingEgg.getLocalFileURI();	
+		Uri uri = existingEgg.getLocalFileURI();
+		this.caption.setText(existingEgg.getCaption());		
 		if (uri == null){
 			currentMediaItem = mediaItemType.none;
 		}
 		else {
-			ContentResolver cR = this.getContentResolver();
-			MimeTypeMap mime = MimeTypeMap.getSingleton();
-			String type = mime.getExtensionFromMimeType(cR.getType(uri));
-			if(type == null) {
+			fileType eggsFileType = existingEgg.getMimeType();
+			/*
+			 * This could be done with a switch, but I can't get the bloody things to work with predefined types.
+			 */
+			if(eggsFileType == fileType.NOT_SUPPORTED || eggsFileType == fileType.TEXT) {
 				this.currentMediaItem = mediaItemType.none;
 			}
-			else if (type.startsWith("image")){
+			else if (eggsFileType == fileType.IMAGE){
 				this.currentMediaItem = mediaItemType.image;
 			}
-			else if (type.startsWith("audio")){
+			else if (eggsFileType == fileType.AUDIO){
 				this.currentMediaItem = mediaItemType.audio;
 			}
-			else if (type.startsWith("video")){
+			else if (eggsFileType == fileType.VIDEO){
 				this.currentMediaItem = mediaItemType.video;
 			}
 			fileURL = uri.toString();
