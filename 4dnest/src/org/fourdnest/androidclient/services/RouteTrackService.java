@@ -251,7 +251,7 @@ public class RouteTrackService
 	private synchronized void readPreferences(SharedPreferences sharedPreferences) {
 		int newFreq = this.minDelay;
 		try {
-			newFreq = Integer.parseInt(sharedPreferences.getString(MIN_DELAY_SETTING_KEY, ""));
+			newFreq = sharedPreferences.getInt(MIN_DELAY_SETTING_KEY, this.minDelay);
 			if(newFreq >= 1000 && newFreq <= 600000) {
 				this.minDelay = newFreq;
 			} else { // Invalid value, rewrite setting
@@ -263,7 +263,7 @@ public class RouteTrackService
 		
 		float newDist = this.minDistance;
 		try {
-			newDist = Float.parseFloat(sharedPreferences.getString(MIN_DISTANCE_SETTING_KEY, ""));
+			newDist = sharedPreferences.getFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance);
 			if(newDist >= 0 && newDist <= 1000) {
 				this.minDistance = newDist;
 			} else {
