@@ -12,6 +12,10 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.FourDNestProtocol;
+import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
+import org.fourdnest.androidclient.comm.StaticMapGetter;
+import org.fourdnest.androidclient.comm.ThumbnailManager;
 import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
 import org.fourdnest.androidclient.ui.NewEggActivity;
@@ -341,6 +345,7 @@ public class RouteTrackService extends Service implements LocationListener {
 		e.setCaption("");
 		e.setCreationDate(this.startDate);		
 		e.setLocalFileURI(Uri.fromFile(this.outputFile));
+		Log.d(TAG, Uri.fromFile(this.outputFile).toString());
 		e.setNestId(currentNest.getId());
 		e.setTags(new ArrayList<Tag>());
 		
@@ -350,6 +355,11 @@ public class RouteTrackService extends Service implements LocationListener {
 		}
 		
 		e = app.getDraftEggManager().saveEgg(e);
+		
+		// Retrieve static map of the route as a thumbnail
+		
+		StaticMapGetter smg = new OsmStaticMapGetter();
+		smg.getStaticMap(e);
 		
 		return e;
 	}
