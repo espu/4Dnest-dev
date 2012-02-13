@@ -104,6 +104,9 @@ public class NewEggActivity extends NestSpecificActivity{
 		this.upperButtons = (RelativeLayout) findViewById(R.id.new_egg_upper_buttons);
 		this.thumbNailView = (ImageView) findViewById(R.id.new_photo_egg_thumbnail_view);
 		this.caption = (TextView) findViewById(R.id.new_photo_egg_caption_view);
+       	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
+       	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
+
 		/*
 		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
 		 */
@@ -284,8 +287,6 @@ public class NewEggActivity extends NestSpecificActivity{
     				showDialog(DIALOG_ASK_VIDEO);
     			}
     		});	
-       	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
-       	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
        	super.onCreate(savedInstanceState); 
 	}
 	
@@ -643,7 +644,11 @@ public class NewEggActivity extends NestSpecificActivity{
 		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
 		Uri uri = existingEgg.getLocalFileURI();
-		this.caption.setText(existingEgg.getCaption());		
+		this.caption.setText(existingEgg.getCaption());	
+		List<Tag> tagList =  existingEgg.getTags();
+		for(int i = 0; i<tagList.size(); i++){
+			this.taggingTool.addTag(tagList.get(i), true);
+		}
 		if (uri == null){
 			currentMediaItem = mediaItemType.none;
 		}
