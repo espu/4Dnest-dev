@@ -251,7 +251,7 @@ public class RouteTrackService
 	private synchronized void readPreferences(SharedPreferences sharedPreferences) {
 		int newFreq = this.minDelay;
 		try {
-			newFreq = sharedPreferences.getInt(MIN_DELAY_SETTING_KEY, this.minDelay);
+			newFreq = Integer.parseInt(sharedPreferences.getString(MIN_DELAY_SETTING_KEY, ""));
 			if(newFreq >= 1000 && newFreq <= 600000) {
 				this.minDelay = newFreq;
 			} else { // Invalid value, rewrite setting
@@ -259,17 +259,21 @@ public class RouteTrackService
 			}
 		} catch(NumberFormatException e) {
 			sharedPreferences.edit().putInt(MIN_DELAY_SETTING_KEY, this.minDelay).commit();
+		} catch(ClassCastException e) {
+			sharedPreferences.edit().putInt(MIN_DELAY_SETTING_KEY, this.minDelay).commit();
 		}
 		
 		float newDist = this.minDistance;
 		try {
-			newDist = sharedPreferences.getFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance);
+			newDist = Float.parseFloat(sharedPreferences.getString(MIN_DISTANCE_SETTING_KEY, ""));
 			if(newDist >= 0 && newDist <= 1000) {
 				this.minDistance = newDist;
 			} else {
 				throw new NumberFormatException();
 			}
 		} catch(NumberFormatException e) {
+			sharedPreferences.edit().putFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance).commit();
+		} catch(ClassCastException e) {
 			sharedPreferences.edit().putFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance).commit();
 		}
 	}
