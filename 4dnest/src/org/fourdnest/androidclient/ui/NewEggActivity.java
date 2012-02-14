@@ -725,6 +725,7 @@ public class NewEggActivity extends NestSpecificActivity{
 				this.currentMediaItem = mediaItemType.video;
 			}
 			else if (eggsFileType == fileType.ROUTE) {
+				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
 				this.thumbnailUriString = ThumbnailManager.getThumbnailUriString(existingEgg, null);
 				this.realFileURL = existingEgg.getLocalFileURI().toString();
