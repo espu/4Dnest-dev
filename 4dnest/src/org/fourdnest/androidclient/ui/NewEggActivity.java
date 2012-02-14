@@ -146,6 +146,9 @@ public class NewEggActivity extends NestSpecificActivity{
             	else if(currentMediaItem==mediaItemType.video){
                 	i.setDataAndType(Uri.parse("file://"+realFileURL), "video/*");
             	}
+            	else if(currentMediaItem==mediaItemType.route) {
+            		i.setDataAndType(Uri.parse("file://"+realFileURL), "image/*");
+            	}
             	startActivity(i);
             }
         });
@@ -350,6 +353,7 @@ public class NewEggActivity extends NestSpecificActivity{
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
 				String thumbnailUriString = ThumbnailManager.getThumbnailUriString(NewEggActivity.this.editableEgg, null);
 				thumbNailView.setImageURI(Uri.parse(thumbnailUriString));
+				realFileURL = thumbnailUriString;
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
 			else if(this.currentMediaItem == mediaItemType.none){ //no media item is currently selected
