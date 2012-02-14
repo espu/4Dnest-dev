@@ -693,6 +693,11 @@ public class NewEggActivity extends NestSpecificActivity{
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
 		EggManager draftManager = this.application.getDraftEggManager();
 		Egg existingEgg = draftManager.getEgg(eggIDInt);
+		if (existingEgg == null) {
+			this.startActivity(new Intent(this, ListDraftEggsActivity.class));
+			finish();
+			return;
+		}
 		Uri uri = existingEgg.getLocalFileURI();
 		this.caption.setText(existingEgg.getCaption());	
 		List<Tag> tagList =  existingEgg.getTags();
