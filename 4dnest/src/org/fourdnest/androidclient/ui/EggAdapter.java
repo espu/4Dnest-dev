@@ -175,6 +175,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			thumbnail.setImageURI(Uri.parse(ThumbnailManager
 					.getThumbnailUriString(egg,
 							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
+		} else {
+			thumbnail.setVisibility(View.INVISIBLE);
 		}
 		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
