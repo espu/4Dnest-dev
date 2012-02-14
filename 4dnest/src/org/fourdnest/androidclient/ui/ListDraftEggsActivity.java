@@ -98,7 +98,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 	 * This idiotic function exists because too much internal functionality of this class
 	 * has been delegated to EggAdapter, making them tightly coupled.
 	 */
-	protected void confirmedDelete() {
+	public void confirmedDelete() {
 		FourDNestApplication.getApplication().getDraftEggManager()
 		.deleteEgg(this.eggBeingDeletedId);
 		this.adapter.refreshList();

@@ -107,10 +107,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 	private View bindDraftEggView(int arg0, View arg1) {
 		View view = arg1;
-		if (view == null) {
-			LayoutInflater inflater = LayoutInflater.from(getContext());
-			view = inflater.inflate(this.resourceId, getParent(), false);
-		}
+		LayoutInflater inflater = LayoutInflater.from(getContext());
+		view = inflater.inflate(this.resourceId, getParent(), false);
 
 		Egg egg = (Egg) this.getItem(arg0);
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
@@ -163,10 +161,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	private View bindLargeEggView(int arg0, View arg1) {
 		View view = arg1;
-		
+
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 		view = inflater.inflate(this.resourceId, getParent(), false);
-		
+
 		Egg egg = (Egg) this.getItem(arg0);
 		fileType type = egg.getMimeType();
 		Log.d("FILETYPE", type.toString());
@@ -215,10 +213,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	private View bindSmallEggView(int arg0, View arg1) {
 		View view = arg1;
-		if (view == null) {
-			LayoutInflater inflater = LayoutInflater.from(getContext());
-			view = inflater.inflate(this.resourceId, getParent(), false);
-		}
+		LayoutInflater inflater = LayoutInflater.from(getContext());
+		view = inflater.inflate(this.resourceId, getParent(), false);
 		// TODO: Value binding
 		Egg egg = (Egg) this.getItem(arg0);
 		TextView message = (TextView) view.findViewById(R.id.message);
