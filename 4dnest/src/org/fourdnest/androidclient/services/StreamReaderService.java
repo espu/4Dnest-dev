@@ -3,6 +3,7 @@ package org.fourdnest.androidclient.services;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
@@ -131,10 +132,9 @@ public class StreamReaderService extends IntentService {
 			for (int i = 0; i < eggList.size(); i++) {
 
 				Egg egg = eggList.get(i);
-				
-				if (egg.getMimeType() != Egg.fileType.TEXT) {
+				em.saveEgg(egg);
+				if (egg.getRemoteThumbnailUri() != null) {
 					Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
-					em.saveEgg(egg);
 					app.getCurrentNest()
 							.getProtocol()
 							.getThumbnail(egg,

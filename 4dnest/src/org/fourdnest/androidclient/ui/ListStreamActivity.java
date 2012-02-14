@@ -12,10 +12,12 @@ import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.StreamReaderService;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -156,13 +158,24 @@ public class ListStreamActivity extends NestSpecificActivity {
 		trackButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(),
-						RouteTrackService.class);
-				if (Util.isServiceRunning(v.getContext(),
-						RouteTrackService.class)) {
-					v.getContext().stopService(intent);
+				
+				LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+				if(lm.getProvider("gps") == null || !lm.getProviders(true).contains("gps")) {
+					Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+					try {
+						startActivityForResult(intent, -1);
+					} catch(ActivityNotFoundException e) {
+						Log.e(TAG, "Location source setting activity not found");
+					}
 				} else {
-					v.getContext().startService(intent);
+					Intent intent = new Intent(v.getContext(),
+							RouteTrackService.class);
+					if (Util.isServiceRunning(v.getContext(),
+							RouteTrackService.class)) {
+						v.getContext().stopService(intent);
+					} else {
+						v.getContext().startService(intent);
+					}
 				}
 			}
 		});

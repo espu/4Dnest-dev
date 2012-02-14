@@ -61,15 +61,18 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 * @param objects
 	 *            List of Eggs that are to be displayed.
 	 */
-	public EggAdapter( ViewGroup parent, int resourceId, List<Egg> objects) {
+	public EggAdapter(ViewGroup parent, int resourceId, List<Egg> objects) {
 		super(parent.getContext(), resourceId, objects);
 		this.resourceId = resourceId;
 		this.parent = parent;
 		this.setNotifyOnChange(true);
 	}
+
 	/**
-	 * This idiotic function exists because too much internal functionality of the draft listing
-	 * has been delegated to EggAdapter, making them tightly coupled.
+	 * This idiotic function exists because too much internal functionality of
+	 * the draft listing has been delegated to EggAdapter, making them tightly
+	 * coupled.
+	 * 
 	 * @param activity
 	 */
 	public void setDraftActivity(ListDraftEggsActivity activity) {
@@ -80,14 +83,14 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 * Refreshes the contents from the database
 	 */
 	public void refreshList() {
-		List<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
+		List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
+				.getApplication().getDraftEggManager().listEggs());
 		EggAdapter.this.clear();
-		for(Egg egg : newList) {
+		for (Egg egg : newList) {
 			EggAdapter.this.add(egg);
 		}
 		EggAdapter.this.notifyDataSetChanged();
 	}
-
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 
@@ -160,10 +163,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	 */
 	private View bindLargeEggView(int arg0, View arg1) {
 		View view = arg1;
-		if (view == null) {
-			LayoutInflater inflater = LayoutInflater.from(getContext());
-			view = inflater.inflate(this.resourceId, getParent(), false);
-		}
+		
+		LayoutInflater inflater = LayoutInflater.from(getContext());
+		view = inflater.inflate(this.resourceId, getParent(), false);
+		
 		Egg egg = (Egg) this.getItem(arg0);
 		fileType type = egg.getMimeType();
 		Log.d("FILETYPE", type.toString());
@@ -175,6 +178,8 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 			thumbnail.setImageURI(Uri.parse(ThumbnailManager
 					.getThumbnailUriString(egg,
 							FourDNestProtocol.THUMBNAIL_SIZE_SMALL)));
+		} else {
+			thumbnail.setVisibility(View.INVISIBLE);
 		}
 		TextView author = (TextView) view.findViewById(R.id.author);
 		TextView tags = (TextView) view.findViewById(R.id.tags);
@@ -245,10 +250,11 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		public void onClick(View v) {
 			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
 					egg, true);
-			List<Egg> newList = new ArrayList<Egg>(FourDNestApplication.getApplication().getDraftEggManager().listEggs());
+			List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
+					.getApplication().getDraftEggManager().listEggs());
 			newList.remove(egg);
 			EggAdapter.this.clear();
-			for(Egg egg : newList) {
+			for (Egg egg : newList) {
 				EggAdapter.this.add(egg);
 			}
 			EggAdapter.this.notifyDataSetChanged();

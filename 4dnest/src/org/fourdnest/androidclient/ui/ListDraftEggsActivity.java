@@ -1,5 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
+import java.util.List;
+
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
@@ -103,6 +105,12 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 	}
 
 	private void initializeDraftList(EggManager manager, ListView draftListView) {
+		List<Egg> draftEggs = manager.listEggs();
+		if (draftEggs.isEmpty()) {
+			findViewById(R.id.no_drafts_overlay).setVisibility(View.VISIBLE);
+		} else {
+			findViewById(R.id.no_drafts_overlay).setVisibility(View.GONE);
+		}
 		this.adapter = new EggAdapter(draftListView,
 				R.layout.egg_element_draft, manager.listEggs());
 		this.adapter.setDraftActivity(this);
