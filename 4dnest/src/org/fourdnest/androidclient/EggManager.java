@@ -216,7 +216,10 @@ public class EggManager {
 	        
 	        // Create ContentValues object for Nest
 	        ContentValues values = new ContentValues();
-	        //values.put(C_ID, egg.getId());
+	        
+	        if(egg.getId() != null) {
+	        	values.put(C_ID, egg.getId());
+	        }
 	        values.put(C_NESTID, egg.getNestId());
 	        
 	        values.put(C_AUTHOR, egg.getAuthor());

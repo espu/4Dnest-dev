@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.cookie.DateUtils;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -382,7 +384,7 @@ public class FourDNestProtocol implements Protocol {
 				+ "" + "\n" + DateUtils.formatDate(date) + "\n" + requestUri;
 		// Log.d("stringtosign", stringToSign);
 
-		String authHead = user + ":" + computeSignature(stringToSign, key);
+		String authHead = URLEncoder.encode(user) + ":" + computeSignature(stringToSign, key);
 		// Log.d("HASH", authHead);
 		base.setHeader("Authorization", authHead);
 
