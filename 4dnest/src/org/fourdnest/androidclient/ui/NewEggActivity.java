@@ -181,7 +181,6 @@ public class NewEggActivity extends NestSpecificActivity{
 				}
 				//FIXME currently supports only editing of drafts, not Eggs from the stream
 				SendQueueService.sendEgg(getApplication(), egg, !isNewEgg());
-				NewEggActivity.this.application.getDraftEggManager().deleteEgg(egg.getId());
 				
 				// Go to ListStreamActivity after finishing
 				//v.getContext().startActivity(new Intent(v.getContext(), ListStreamActivity.class));
