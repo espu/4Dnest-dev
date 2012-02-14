@@ -706,7 +706,9 @@ public class NewEggActivity extends NestSpecificActivity{
 			else if (eggsFileType == fileType.VIDEO){
 				this.currentMediaItem = mediaItemType.video;
 			}
-			fileURL = uri.toString();
+			String uriTemp = uri.toString();
+			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 
+			fileURL = uriTemp;
 			this.refreshElements();
 		}
 		this.editableEgg = existingEgg;
