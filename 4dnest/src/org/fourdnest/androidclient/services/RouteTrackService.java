@@ -12,6 +12,10 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.comm.FourDNestProtocol;
+import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
+import org.fourdnest.androidclient.comm.StaticMapGetter;
+import org.fourdnest.androidclient.comm.ThumbnailManager;
 import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
 import org.fourdnest.androidclient.ui.NewEggActivity;
@@ -255,6 +259,8 @@ public class RouteTrackService
 			}
 		} catch(NumberFormatException e) {
 			sharedPreferences.edit().putInt(MIN_DELAY_SETTING_KEY, this.minDelay).commit();
+		} catch(ClassCastException e) {
+			sharedPreferences.edit().putInt(MIN_DELAY_SETTING_KEY, this.minDelay).commit();
 		}
 		
 		float newDist = this.minDistance;
@@ -266,6 +272,8 @@ public class RouteTrackService
 				throw new NumberFormatException();
 			}
 		} catch(NumberFormatException e) {
+			sharedPreferences.edit().putFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance).commit();
+		} catch(ClassCastException e) {
 			sharedPreferences.edit().putFloat(MIN_DISTANCE_SETTING_KEY, this.minDistance).commit();
 		}
 	}
@@ -409,6 +417,7 @@ public class RouteTrackService
 		e.setCaption("");
 		e.setCreationDate(this.startDate);		
 		e.setLocalFileURI(Uri.fromFile(this.outputFile));
+		Log.d(TAG, Uri.fromFile(this.outputFile).toString());
 		e.setNestId(currentNest.getId());
 		e.setTags(new ArrayList<Tag>());
 		
@@ -418,6 +427,11 @@ public class RouteTrackService
 		}
 		
 		e = app.getDraftEggManager().saveEgg(e);
+		
+		// Retrieve static map of the route as a thumbnail
+		
+		StaticMapGetter smg = new OsmStaticMapGetter();
+		smg.getStaticMap(e);
 		
 		return e;
 	}

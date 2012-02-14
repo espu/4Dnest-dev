@@ -46,24 +46,27 @@ public class ThumbnailManager {
 	 * @return String of egg's thumbnail's Uri
 	 */
 	public static String getThumbnailUriString(Egg egg, String size) {
-		if (egg.getRemoteFileURI() != null) {
-			return Environment.getExternalStorageDirectory()
-					+ THUMBNAIL_LOCATION
-					+ egg.getId()
-					+ CommUtils
-							.md5FromString(egg.getRemoteFileURI().toString())
-					+ size + THUMBNAIL_FILETYPE;
-		} else if (egg.getMimeType() == Egg.fileType.ROUTE) {
-			return Environment.getExternalStorageDirectory()
-					+ THUMBNAIL_LOCATION + egg.getId()
-					+ CommUtils.md5FromFile(egg.getLocalFileURI().toString()) + THUMBNAIL_FILETYPE;
-		} else {
-			// egg has only textual content (shouldn't get this far) or is local
-			return Environment.getExternalStorageDirectory()
-					+ THUMBNAIL_LOCATION + egg.getId()
-					+ CommUtils.md5FromString(egg.getCaption())
-					+ THUMBNAIL_FILETYPE;
+		if (egg != null) {
+			if (egg.getRemoteFileURI() != null) {
+				return Environment.getExternalStorageDirectory()
+						+ THUMBNAIL_LOCATION
+						+ egg.getId()
+						+ CommUtils.md5FromString(egg.getRemoteFileURI()
+								.toString()) + size + THUMBNAIL_FILETYPE;
+			} else if (egg.getMimeType() == Egg.fileType.ROUTE) { // egg is local and route
+				return Environment.getExternalStorageDirectory()
+						+ THUMBNAIL_LOCATION
+						+ egg.getId()
+						+ CommUtils.md5FromFile(egg.getLocalFileURI()
+								.toString()) + THUMBNAIL_FILETYPE;
+			} else {
+				// egg has only textual content (shouldn't get this far) or is local
+				return Environment.getExternalStorageDirectory()
+						+ THUMBNAIL_LOCATION + egg.getId()
+						+ CommUtils.md5FromString(egg.getCaption())
+						+ THUMBNAIL_FILETYPE;
+			}
 		}
-
+		return Environment.getExternalStorageDirectory() + THUMBNAIL_LOCATION + "dump";
 	}
 }
