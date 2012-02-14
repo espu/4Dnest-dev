@@ -5,6 +5,19 @@
     android:background="@color/background"
     android:orientation="vertical" >
 
+    <!--
+    The following TextView covers up the entire drafts view when set visible
+    Used for displaying a cover-up when there are no drafts
+    -->
+
+    <TextView
+        android:id="@+id/no_drafts_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/no_drafts_text"
+        android:visibility="gone" />
+
     <ListView
         android:id="@+id/draft_list"
         android:layout_width="fill_parent"

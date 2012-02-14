@@ -104,4 +104,5 @@
     <string name="draft_list_dialogue_delete">Are you sure you want to delete the message?</string>
     <string name="draft_list_dialogue_confirm">Delete</string>
     <string name="draft_list_dialogue_cancel">Cancel</string>
+    <string name="no_drafts_text">You have no saved drafts.</string>
 </resources>
