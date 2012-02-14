@@ -90,8 +90,8 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		}
 		// add margins, static at the moment
 		topBoundLatitude = topBoundLatitude + MARGIN;
-		lowBoundLatitude = lowBoundLatitude + MARGIN;
-		leftBoundLongitude = leftBoundLongitude + MARGIN;
+		lowBoundLatitude = lowBoundLatitude - MARGIN;
+		leftBoundLongitude = leftBoundLongitude - MARGIN;
 		rightBoundLongitude = rightBoundLongitude + MARGIN;
 		
 		// generate request attribute
@@ -149,9 +149,9 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		try {
 			while ((line = buffRead.readLine()) != null) {
 				JSONObject temp = new JSONObject(line);
-				String lat = temp.optString(LocationHelper.JSON_LATITUDE);
-				String lon = temp.optString(LocationHelper.JSON_LONGITUDE);
-				locList.add(lat + "," + lon);			
+				Float lat = Float.valueOf(temp.optString(LocationHelper.JSON_LATITUDE));
+				Float lon = Float.valueOf(temp.optString(LocationHelper.JSON_LONGITUDE));
+				locList.add(String.format(FLOAT_TO_STRING_FORMAT + "," + FLOAT_TO_STRING_FORMAT, lon, lat));			
 			}
 		} catch (JSONException e) {
 			Log.d(TAG, "Could not convert location file line to json object");
