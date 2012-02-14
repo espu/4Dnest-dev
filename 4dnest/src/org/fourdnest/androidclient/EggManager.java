@@ -217,7 +217,7 @@ public class EggManager {
 	        // Create ContentValues object for Nest
 	        ContentValues values = new ContentValues();
 	        
-	        if(egg.getId() != null) {
+	        if(egg.getId() != null && egg.getId() > 0) {
 	        	values.put(C_ID, egg.getId());
 	        }
 	        values.put(C_NESTID, egg.getNestId());
@@ -259,7 +259,7 @@ public class EggManager {
 	
 	        // Check if nest with id exists
 	        boolean insertNew = true;
-	        if(egg.getId() != null) {
+	        if(values.containsKey(C_ID)) {
 	            Cursor result = db.query(TABLE,
 	                    new String[] {C_ID},
 	                    C_ID + "==" + egg.getId(),
