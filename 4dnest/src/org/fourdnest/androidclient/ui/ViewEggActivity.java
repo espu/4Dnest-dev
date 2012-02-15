@@ -111,6 +111,7 @@ public class ViewEggActivity extends NestSpecificActivity {
 			startActivity(new Intent(this, PrefsActivity.class));
 			return true;
 		case R.id.menu_view_help:
+			this.application.helpBrowser();
 			return true;
 		case R.id.menu_view_edit:
 			return true;

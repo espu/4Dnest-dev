@@ -13,6 +13,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -278,6 +279,16 @@ public class FourDNestApplication extends Application
 
 	public synchronized TagCache getTagCache() {
 		return this.tagCache;
+	}
+
+	/**
+	 * Opens the help page for the current Nest in an external browser
+	 */
+	public void helpBrowser() {
+		String url = getCurrentNest().getProtocol().getHelpURL();
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setData(Uri.parse(url));
+		startActivity(i);
 	}
     
 

@@ -210,6 +210,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 			startActivity(new Intent(this, PrefsActivity.class));
 			return true;
 		case R.id.menu_stream_help:
+			this.application.helpBrowser();
 			return true;
 		//case R.id.menu_stream_nests:
 		//	return true;

@@ -72,5 +72,18 @@ public interface Protocol {
      */
     boolean getThumbnail(Egg egg, String size);
     
+    /**
+     * Makes sure the specified media file is cached locally.
+     * @param egg whose media file is in question.
+     * @return whether media file can be found in predefined location.
+     */
     boolean getMedia(Egg egg);
+    
+    /**
+     * The url containing help for using the application with this nest.
+     * The url does not have to point to the domain based on the baseuri,
+     * it can be a hardcoded url if using some non-4Dnest protocol.
+     * @return A full url to a human-readable help webpage.
+     */
+    public String getHelpURL();
 }

@@ -49,6 +49,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
 	private static final String TAG_DOWNLOAD_PATH = "fourdnest/api/v1/tag/";
+	private static final String HELP_PATH = "fourdnest/help/";
 	private static final String JSON_FORMAT = "?format=json";
 	private static final String SIZE_FORMAT = "?limit=";
 	private static final int HTTP_STATUSCODE_OK = 200;
@@ -590,5 +591,12 @@ public class FourDNestProtocol implements Protocol {
 		}
 		return res;
 	}
-
+	
+	/**
+	 * The url containing help for using the application with this nest.
+	 * @return A full url to a human-readable help webpage.
+	 */
+	public String getHelpURL() {
+		return this.nest.getBaseURI() + HELP_PATH;
+	}
 }
