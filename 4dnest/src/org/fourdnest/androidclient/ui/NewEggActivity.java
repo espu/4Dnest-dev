@@ -9,7 +9,7 @@ import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.comm.ThumbnailManager;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.fourdnest.androidclient.services.TagSuggestionService;

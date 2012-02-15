@@ -23,6 +23,7 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.tools.*;
 import org.json.JSONArray;
 import org.json.JSONException;

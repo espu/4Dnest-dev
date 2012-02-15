@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.CommUtils;
 import org.fourdnest.androidclient.tools.LocationHelper;
 import org.json.JSONException;

@@ -6,8 +6,8 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
-import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.content.Intent;
 import android.net.Uri;

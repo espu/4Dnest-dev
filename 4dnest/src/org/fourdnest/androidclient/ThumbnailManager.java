@@ -1,8 +1,8 @@
-package org.fourdnest.androidclient.comm;
+package org.fourdnest.androidclient;
 
 import java.io.File;
 
-import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.comm.CommUtils;
 
 import android.os.Environment;
 
@@ -50,7 +50,7 @@ public class ThumbnailManager {
 			if (egg.getRemoteFileURI() != null) {
 				return Environment.getExternalStorageDirectory()
 						+ THUMBNAIL_LOCATION
-						+ egg.getId()
+						+ egg.getExternalId()	// Egg is remote, use remote id
 						+ CommUtils.md5FromString(egg.getRemoteFileURI()
 								.toString()) + size + THUMBNAIL_FILETYPE;
 			} else if (egg.getMimeType() == Egg.fileType.ROUTE) { // egg is local and route
