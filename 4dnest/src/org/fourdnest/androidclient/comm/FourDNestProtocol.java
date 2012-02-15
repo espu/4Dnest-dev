@@ -257,8 +257,7 @@ public class FourDNestProtocol implements Protocol {
 	public Egg getEgg(String uid) {
 		HttpClient client = CommUtils.createHttpClient();
 		HttpGet request = new HttpGet();
-		String temp = "http://test42.4dnest.org/";
-		String uriPath = temp + EGG_DOWNLOAD_PATH + uid + "/" + JSON_FORMAT;
+		String uriPath = this.nest.getBaseURI() + EGG_DOWNLOAD_PATH + uid + "/" + JSON_FORMAT;
 		// Log.d("URI", uriPath);
 
 		try {
