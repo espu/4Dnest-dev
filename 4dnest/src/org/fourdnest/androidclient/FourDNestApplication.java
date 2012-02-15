@@ -74,9 +74,9 @@ public class FourDNestApplication extends Application
       
       app = this;
       Log.i(TAG, "onCreated");
-      //warm start TagSuggestionService
-      startService(new Intent(this, StreamReaderService.class));
-      startService(new Intent(this, TagSuggestionService.class));
+      //warm start services
+      TagSuggestionService.requestUpdate(this);
+      StreamReaderService.requestUpdate(this);
     }
     
     public static FourDNestApplication getApplication() {
@@ -284,11 +284,11 @@ public class FourDNestApplication extends Application
 	/**
 	 * Opens the help page for the current Nest in an external browser
 	 */
-	public void helpBrowser() {
+	public Intent helpBrowserIntent() {
 		String url = getCurrentNest().getProtocol().getHelpURL();
 		Intent i = new Intent(Intent.ACTION_VIEW);
 		i.setData(Uri.parse(url));
-		startActivity(i);
+		return i;
 	}
     
 

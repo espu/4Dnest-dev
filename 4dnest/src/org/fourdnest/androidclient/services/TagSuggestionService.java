@@ -47,8 +47,11 @@ public class TagSuggestionService extends IntentService {
 	/** Key for tag list in Intent extras */
 	public static final String BUNDLE_TAG_LIST = "BUNDLE_TAG_LIST";
 	
-	/** How long to initially wait before fetching remote tags */
-	private static final long FIRST_INTERVAL = 0;
+	/** How long we initially wait before fetching the remote tags
+	 * This is done each time the service is started (which happens frequently despite START_STICKY,
+	 * not only when initially starting the app. Therefore setting this to 0 will cause double fetching.
+	 */
+	public static final long FIRST_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 	private static final int REMOTE_TAG_COUNT = 1024;
 	
@@ -85,7 +88,7 @@ public class TagSuggestionService extends IntentService {
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 	        am.setInexactRepeating(	//Be power efficient: we don't need exact timing
 	        		AlarmManager.ELAPSED_REALTIME,	// Don't wake up phone just for this
-	        		FIRST_INTERVAL,								
+	        		System.currentTimeMillis() + FIRST_INTERVAL, // Time of first execution,								
 	        		AlarmManager.INTERVAL_FIFTEEN_MINUTES,		// Update frequency
 	        		PendingIntent.getService(
 	        				app,					// The context
@@ -105,7 +108,17 @@ public class TagSuggestionService extends IntentService {
     	Log.d(TAG, "onDestroy");
     }
 	
-	
+	/**
+	 * Requests an immediate update
+	 * 
+	 * @param context
+	 *            The application context
+	 */
+	public static void requestUpdate(Context context) {
+		Intent intent = new Intent(context, TagSuggestionService.class);
+		intent.addCategory(UPDATE_REMOTE_TAGS);
+		context.startService(intent);
+	}	
 	/**
 	 * Request broadcasting of the current tag suggestions
 	 */

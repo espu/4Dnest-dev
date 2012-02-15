@@ -549,10 +549,7 @@ public class FourDNestProtocol implements Protocol {
 	 */
 	public boolean getMedia(Egg egg) {
 		String path = MediaManager.getMediaUriString(egg);
-		FourDNestApplication app = FourDNestApplication.getApplication();
-		boolean res = app.getCurrentNest().getProtocol()
-				.getMediaFile(egg.getRemoteFileURI().toString(), path);
-		return res;
+		return getMediaFile(egg.getRemoteFileURI().toString(), path);
 	}
 	
 	/**
@@ -568,9 +565,8 @@ public class FourDNestProtocol implements Protocol {
 	public boolean getThumbnail(Egg egg, String size) {
 		String path = ThumbnailManager.getThumbnailUriString(egg, size);
 		boolean res = true;
-		FourDNestApplication app = FourDNestApplication.getApplication();
 		if (!ThumbnailManager.thumbNailExists(egg, size)) {
-			String externalUriString = app.getCurrentNest().getBaseURI()
+			String externalUriString = this.nest.getBaseURI()
 					+ THUMBNAIL_PATH + egg.getExternalId() + size
 					+ THUMBNAIL_FILETYPE;
 			Log.d(TAG, externalUriString);
@@ -580,8 +576,7 @@ public class FourDNestProtocol implements Protocol {
 				new File(thumbnail_dir).mkdirs();
 			}
 			Log.d("SAVELOC", path);
-			if (app.getCurrentNest().getProtocol()
-					.getMediaFile(externalUriString, path)) {
+			if (getMediaFile(externalUriString, path)) {
 				Log.d(TAG, "Thumbnail written succesfully");
 				res = true;
 			} else {
