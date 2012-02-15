@@ -110,10 +110,15 @@ public class ViewEggActivity extends NestSpecificActivity {
 		case R.id.menu_view_help:
 			startActivity(this.application.helpBrowserIntent());
 			return true;
+		/*
+		// FIXME Actually these would be better as on-screen buttons instead of menu buttons
 		case R.id.menu_view_edit:
+			//FIXME unimplemented, button hidden. Uncomment from xml when implemented
 			return true;
 		case R.id.menu_view_delete:
+			//FIXME unimplemented, button hidden. Uncomment from xml when implemented
 			return true;
+		*/
 		}
 		return false;
 	}
