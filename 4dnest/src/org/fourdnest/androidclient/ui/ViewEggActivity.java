@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.text.DateFormat;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
@@ -54,14 +55,12 @@ public class ViewEggActivity extends NestSpecificActivity {
 			this.thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
 			new ThumbnailTask().execute(egg);
 		}
-		if (!egg.getTags().isEmpty()) {
-			String tagList = "";
-			for (Tag current : egg.getTags()) {
-				tagList += current.getName() + " ";
-			}
-			tags.setText(tagList);
+		List<Tag> tagList = egg.getTags();
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+			// (no tags)
+			tags.setText(EggAdapter.tagListToString(tagList));
 		}
-		
+				
 		final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

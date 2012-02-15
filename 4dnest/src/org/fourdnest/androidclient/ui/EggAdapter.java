@@ -126,15 +126,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		List<Tag> tagList = egg.getTags();
 		if (tagList.size() > 0) { // if there are no tags, leave default message
 									// (no tags)
-			StringBuilder tagListString = new StringBuilder();
-
-			for (int i = 0; i < tagList.size(); i++) {
-				if (i > 0) {
-					tagListString.append(", ");
-				}
-				tagListString.append(tagList.get(i).getName());
-			}
-			tags.setText(tagListString);
+			tags.setText(tagListToString(tagList));
 		}
 
 		view.findViewById(R.id.edit_button).setOnClickListener(
@@ -190,12 +182,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 					.getCreationDate()));
 		}
 
-		if (egg.getTags().size() > 0) {
-			String eggTags = "";
-			for (Tag current : egg.getTags()) {
-				eggTags += current.getName() + " ";
-			}
-			tags.setText(eggTags);
+		List<Tag> tagList = egg.getTags();
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+			// (no tags)
+			tags.setText(tagListToString(tagList));
 		}
 
 		return view;
@@ -224,6 +214,22 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		// functionality.
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
 		return view;
+	}
+	
+	/**
+	 * Formats a list of tags (comma separated list)
+	 * @param tagList Tags to display
+	 */
+	public static String tagListToString(List<Tag> tagList) {
+		StringBuilder tagListString = new StringBuilder();
+
+		for (int i = 0; i < tagList.size(); i++) {
+			if (i > 0) {
+				tagListString.append(", ");
+			}
+			tagListString.append(tagList.get(i).getName());
+		}
+		return tagListString.toString();
 	}
 
 	/**
