@@ -168,12 +168,14 @@ public class TagSuggestionService extends IntentService {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(TAG, "onStartCommand");
-		if(intent.hasCategory(GET_TAGS)) {
-			broadcastTags(intent);
-		} else if(intent.hasCategory(SET_LAST_USED_TAGS)) {
-			handleLastUsedTags(intent);
-		} else {
-			super.onStartCommand(intent, flags, startId);
+		if(intent != null) {
+			if(intent.hasCategory(GET_TAGS)) {
+				broadcastTags(intent);
+			} else if(intent.hasCategory(SET_LAST_USED_TAGS)) {
+				handleLastUsedTags(intent);
+			} else {
+				super.onStartCommand(intent, flags, startId);
+			}
 		}
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.

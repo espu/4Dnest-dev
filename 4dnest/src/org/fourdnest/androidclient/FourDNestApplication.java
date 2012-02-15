@@ -196,7 +196,7 @@ public class FourDNestApplication extends Application
             newURI = new URI(baseUri);
             new URI("");
         } catch(URISyntaxException e) {
-            this.handler.post(new ToastDisplay("Invalid URI setting", Toast.LENGTH_SHORT));
+            this.handler.post(new ToastDisplay(getString(R.string.application_invalid_uri), Toast.LENGTH_SHORT));
             newURI = defaultURI;
         }
         NestManager m = this.getNestManager();
