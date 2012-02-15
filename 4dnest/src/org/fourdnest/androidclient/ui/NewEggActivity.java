@@ -549,7 +549,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			startActivity(this.application.helpBrowserIntent());
 			return true;
 		case R.id.menu_create_discard:
-			//TODO discard implementation
+			finish();
 			return true;
         case R.id.menu_create_drafts:
             startActivity(new Intent(this, ListDraftEggsActivity.class));

@@ -46,6 +46,11 @@ public class SendQueueTestProtocol implements Protocol {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public String getHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
 
