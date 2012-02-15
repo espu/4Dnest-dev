@@ -59,7 +59,7 @@ public class FourDNestProtocol implements Protocol {
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 
 	
-	public static final String THUMBNAIL_SIZE_SMALL = "-100x100";
+	public static final String THUMBNAIL_SIZE_SMALL = "-100x100-crop";
 	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
 
 	private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
