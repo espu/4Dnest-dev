@@ -11,6 +11,7 @@ import org.fourdnest.androidclient.comm.FourDNestProtocol;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 public class ViewEggActivity extends NestSpecificActivity {
 
 	private int eggID;
+	private ImageView thumbnail;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -49,12 +51,8 @@ public class ViewEggActivity extends NestSpecificActivity {
 		message.setText(egg.getCaption());
 		
 		if (egg.getMimeType() != Egg.fileType.TEXT) {
-			ImageView thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
-			application.getCurrentNest().getProtocol()
-					.getThumbnail(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE);
-			thumbnail.setImageURI(Uri.parse(ThumbnailManager
-					.getThumbnailUriString(egg,
-							FourDNestProtocol.THUMBNAIL_SIZE_LARGE)));
+			this.thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
+			new ThumbnailTask().execute(egg);
 		}
 		if (!egg.getTags().isEmpty()) {
 			String tagList = "";
@@ -120,5 +118,35 @@ public class ViewEggActivity extends NestSpecificActivity {
 		}
 		return false;
 	}
+
+	/**
+	 * Asynchronous task for background retrieval of larger thumbnail
+	 */
+	private class ThumbnailTask extends AsyncTask<Egg, Void, Void> {
+		protected Void doInBackground(Egg... eggs) {
+			Egg egg = eggs[0]; 
+			application.getCurrentNest().getProtocol()
+			.getThumbnail(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE);
+			final Uri thumbUri = Uri.parse(ThumbnailManager.getThumbnailUriString(
+					egg,
+					FourDNestProtocol.THUMBNAIL_SIZE_LARGE
+			));
+			
+			// Android allows only the UI thread to touch views
+			runOnUiThread(new Runnable() {
+			     public void run() {
+			    	 thumbnail.setImageURI(thumbUri);
+			    }
+			});
+
+			return null;	// because Void is an Android placeholder, not true void
+		}
+
+		protected void onProgressUpdate() {
+		}
+
+		protected void onPostExecute() {
+		}
+	 }
 
 }
