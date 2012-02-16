@@ -122,7 +122,7 @@ public class Nest {
 	}
 
 	/**
-	 * @return the protocolId
+	 * @return the protocol object for communicating with this Nest
 	 */
 	public Protocol getProtocol() {
 		return protocol;

@@ -12,6 +12,7 @@ import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.StreamReaderService;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -210,6 +211,7 @@ public class ListStreamActivity extends NestSpecificActivity {
 			startActivity(new Intent(this, PrefsActivity.class));
 			return true;
 		case R.id.menu_stream_help:
+			startActivity(this.application.helpBrowserIntent());
 			return true;
 		//case R.id.menu_stream_nests:
 		//	return true;

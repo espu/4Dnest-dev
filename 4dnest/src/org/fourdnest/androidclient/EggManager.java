@@ -349,7 +349,6 @@ public class EggManager {
         }
         
         String dateStr = cursor.getString(8);
-        Log.d(TAG, "datestr: " + dateStr);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date;
         try {
@@ -368,7 +367,6 @@ public class EggManager {
         		date = new Date();
         	}
         }
-        Log.d(TAG, "date: " + date.toString());
         Uri remoteThumbnail = null;
         if (cursor.getString(9) != null) {
         	remoteThumbnail = Uri.parse(cursor.getString(9));

@@ -73,7 +73,6 @@ public class StreamReaderService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		Log.d(TAG, "Intentcreated");
-
 		app = FourDNestApplication.getApplication();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(app);
@@ -137,7 +136,7 @@ public class StreamReaderService extends IntentService {
 				Egg egg = eggList.get(i);
 				em.saveEgg(egg);
 				if (egg.getRemoteThumbnailUri() != null) {
-					Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
+					//Log.d(TAG, "ThumbailUri" + egg.getRemoteThumbnailUri());
 					app.getCurrentNest()
 							.getProtocol()
 							.getThumbnail(egg,

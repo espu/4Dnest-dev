@@ -8,9 +8,9 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
-import org.fourdnest.androidclient.comm.ThumbnailManager;
 import org.fourdnest.androidclient.services.SendQueueService;
 
 import android.content.Intent;
@@ -126,15 +126,7 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		List<Tag> tagList = egg.getTags();
 		if (tagList.size() > 0) { // if there are no tags, leave default message
 									// (no tags)
-			StringBuilder tagListString = new StringBuilder();
-
-			for (int i = 0; i < tagList.size(); i++) {
-				if (i > 0) {
-					tagListString.append(", ");
-				}
-				tagListString.append(tagList.get(i).getName());
-			}
-			tags.setText(tagListString);
+			tags.setText(tagListToString(tagList));
 		}
 
 		view.findViewById(R.id.edit_button).setOnClickListener(
@@ -190,12 +182,10 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 					.getCreationDate()));
 		}
 
-		if (egg.getTags().size() > 0) {
-			String eggTags = "";
-			for (Tag current : egg.getTags()) {
-				eggTags += current.getName() + " ";
-			}
-			tags.setText(eggTags);
+		List<Tag> tagList = egg.getTags();
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+			// (no tags)
+			tags.setText(tagListToString(tagList));
 		}
 
 		return view;
@@ -227,6 +217,24 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 	}
 
 	/**
+	 * Formats a list of tags (comma separated list)
+	 * 
+	 * @param tagList
+	 *            Tags to display
+	 */
+	public static String tagListToString(List<Tag> tagList) {
+		StringBuilder tagListString = new StringBuilder();
+
+		for (int i = 0; i < tagList.size(); i++) {
+			if (i > 0) {
+				tagListString.append(", ");
+			}
+			tagListString.append(tagList.get(i).getName());
+		}
+		return tagListString.toString();
+	}
+
+	/**
 	 * Returns the ViewGroup, which displays the Egg elements.
 	 * 
 	 * @return
@@ -244,16 +252,21 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 
 		public void onClick(View v) {
-			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
-					egg, true);
-			List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
-					.getApplication().getDraftEggManager().listEggs());
-			newList.remove(egg);
-			EggAdapter.this.clear();
-			for (Egg egg : newList) {
-				EggAdapter.this.add(egg);
+			if (egg != null) {
+				SendQueueService.sendEgg(FourDNestApplication.getApplication(),
+						egg, true);
+				List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
+						.getApplication().getDraftEggManager().listEggs());
+				newList.remove(egg);
+				EggAdapter.this.clear();
+				for (Egg egg : newList) {
+					EggAdapter.this.add(egg);
+				}
+				EggAdapter.this.notifyDataSetChanged();
 			}
-			EggAdapter.this.notifyDataSetChanged();
+			EggAdapter.this.activity.initializeDraftList(FourDNestApplication
+					.getApplication().getDraftEggManager(),
+					EggAdapter.this.activity.draftListView);
 		}
 	}
 
@@ -267,6 +280,9 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		public void onClick(View v) {
 			EggAdapter.this.activity.askConfirmDeletion(this.egg.getId());
+			EggAdapter.this.activity.initializeDraftList(FourDNestApplication
+					.getApplication().getDraftEggManager(),
+					EggAdapter.this.activity.draftListView);
 		}
 	}
 

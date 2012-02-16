@@ -141,7 +141,8 @@ public class Egg {
 	}
 	
 	/**
-	 * Returns egg id
+	 * Returns local egg id (row id in the database).
+	 * For the remote id use getExternalId()
 	 * @return Egg id
 	 */
 	public Integer getId() {

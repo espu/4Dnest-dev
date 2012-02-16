@@ -44,6 +44,10 @@ public class CommUtils {
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final String TAG = "CommUtils";
 	private static final int CONNECTION_TIMEOUT = 15000;
+	/** Default HTTP port number */
+	private static final int HTTP_PORT = 80;
+	/**Default HTTPS port number*/
+	private static final int HTTPS_PORT = 443;
 
 	/**
 	 * Hashes the file with the given path in MD5 and returns a base64 encoded
@@ -119,7 +123,7 @@ public class CommUtils {
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		// http scheme
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
+				.getSocketFactory(), HTTP_PORT));
 		FourDNestApplication app = FourDNestApplication.getApplication();
 		boolean aac;
 		if (app == null) {
@@ -131,11 +135,11 @@ public class CommUtils {
 		if (aac) {
 			// https scheme, all certs allowed
 			schemeRegistry.register(new Scheme("https",
-					new EasySSLSocketFactory(), 443));
+					new EasySSLSocketFactory(), HTTPS_PORT));
 		} else {
 			// doesn't allow all certs
 			schemeRegistry.register(new Scheme("https", SSLSocketFactory
-					.getSocketFactory(), 443));
+					.getSocketFactory(), HTTPS_PORT));
 		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,

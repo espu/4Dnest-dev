@@ -13,6 +13,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -73,9 +74,9 @@ public class FourDNestApplication extends Application
       
       app = this;
       Log.i(TAG, "onCreated");
-      //warm start TagSuggestionService
-      startService(new Intent(this, StreamReaderService.class));
-      startService(new Intent(this, TagSuggestionService.class));
+      //warm start services
+      TagSuggestionService.requestUpdate(this);
+      StreamReaderService.requestUpdate(this);
     }
     
     public static FourDNestApplication getApplication() {
@@ -195,7 +196,7 @@ public class FourDNestApplication extends Application
             newURI = new URI(baseUri);
             new URI("");
         } catch(URISyntaxException e) {
-            this.handler.post(new ToastDisplay("Invalid URI setting", Toast.LENGTH_SHORT));
+            this.handler.post(new ToastDisplay(getString(R.string.application_invalid_uri), Toast.LENGTH_SHORT));
             newURI = defaultURI;
         }
         NestManager m = this.getNestManager();
@@ -278,6 +279,16 @@ public class FourDNestApplication extends Application
 
 	public synchronized TagCache getTagCache() {
 		return this.tagCache;
+	}
+
+	/**
+	 * Opens the help page for the current Nest in an external browser
+	 */
+	public Intent helpBrowserIntent() {
+		String url = getCurrentNest().getProtocol().getHelpURL();
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setData(Uri.parse(url));
+		return i;
 	}
     
 
