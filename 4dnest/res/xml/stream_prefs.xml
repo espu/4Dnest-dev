@@ -49,13 +49,13 @@
                 android:entryValues="@array/listStreamValues"
                 android:defaultValue = "30"/>
 
-        <EditTextPreference
+        <ListPreference
                 android:key="stream_size"
                 android:summary="@string/stream_size_descr"
                 android:title="@string/stream_size_title"
-                android:inputType="number"
-                android:defaultValue = "50">
-        </EditTextPreference>
+                android:entries="@array/streamSizeNames"
+                android:entryValues="@array/streamSizeValues"
+                android:defaultValue = "30"/>
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/prefs_category_gps_title">
