@@ -47,21 +47,27 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";
+	/** The path used when uploading egg to a server in FourdnestProtocol*/
 	private static final String EGG_UPLOAD_PATH = "fourdnest/api/v1/egg/upload/";
+	/** The path used when downloading list of all eggs from the server*/
 	private static final String EGG_DOWNLOAD_PATH = "fourdnest/api/v1/egg/";
+	/** The path used when downloading list of all tags from the server*/
 	private static final String TAG_DOWNLOAD_PATH = "fourdnest/api/v1/tag/";
+	/** The path for the help text*/
 	private static final String HELP_PATH = "fourdnest/help/";
 	private static final String JSON_FORMAT = "?format=json";
 	private static final String SIZE_FORMAT = "?limit=";
 	private static final int HTTP_STATUSCODE_OK = 200;
 	private static final int HTTP_STATUSCODE_CREATED = 201;
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
+	private static final int HTTP_STATUSCODE_NOT_FOUND = 404;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 
 	
 	public static final String THUMBNAIL_SIZE_SMALL = "-100x100-crop";
 	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
 
+	/**Location of the thumbnail on the phone*/
 	private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
 
 	/** Location of thumbnails on the server */
@@ -138,7 +144,11 @@ public class FourDNestProtocol implements Protocol {
 		    return new ProtocolResult(null, ProtocolResult.INVALID_ADDRESS);
 		}
 	}
-
+	/**
+	 * Tries to overwrite the egg metadata on the server
+	 * @param egg Egg that we want to replace from the server
+	 * @return Result of the overwrite
+	 */
 	public ProtocolResult overwriteEgg(Egg egg) {
 		if (egg.getExternalId() == null) {
 			return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
@@ -193,6 +203,8 @@ public class FourDNestProtocol implements Protocol {
 		} else if (statusCode == HTTP_STATUSCODE_SERVER_ERROR) {
 			return new ProtocolResult(null,
 					ProtocolResult.SERVER_INTERNAL_ERROR);
+		} else if (statusCode == HTTP_STATUSCODE_NOT_FOUND){
+		    return new ProtocolResult(null, ProtocolResult.NOT_FOUND);
 		} else {
 			Log.d("sendEgg: UNKNOWN_RESULT", String.valueOf(statusCode));
 			return new ProtocolResult(null, ProtocolResult.UNKNOWN_REASON);
