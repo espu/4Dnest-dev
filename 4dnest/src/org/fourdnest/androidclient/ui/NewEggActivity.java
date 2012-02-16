@@ -66,7 +66,7 @@ public class NewEggActivity
 	 */
 	
 	private enum mediaItemType{
-		none, image, video, audio, route, multiple //note that multiple is currently not used
+		none, image, video, audio, route, multiple, unknown //note that multiple is currently not used
 	}
 	protected mediaItemType currentMediaItem = mediaItemType.none;
 	protected static final int SELECT_PICTURE = 1; //this is needed for selecting picture
@@ -406,7 +406,9 @@ public class NewEggActivity
 		
 		// user specified metadata
 		egg.setCaption(this.caption.getText().toString());
+		if(this.currentMediaItem != mediaItemType.unknown){
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+		}
 		this.taggingTool.addTagFromTextView();	// add tag from text field even if add button not pressed
 		List<Tag> tags = this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
@@ -433,8 +435,13 @@ public class NewEggActivity
 		/*
 		 *  I used to have this work with a switch, but it didn't work for some strange reason
 		 */
+		if(this.currentMediaItem == mediaItemType.unknown){
+			thumbNailView.setVisibility(View.VISIBLE);
+			upperButtons.setVisibility(View.GONE);
+			thumbNailView.setImageResource(R.drawable.unknown1);
+		}
 		
-			if (this.currentMediaItem == mediaItemType.image){ //image has been selected, we hide the selection buttons and show the preview thumbnail
+		else if (this.currentMediaItem == mediaItemType.image){ //image has been selected, we hide the selection buttons and show the preview thumbnail
 				upperButtons.setVisibility(View.GONE);
 				thumbNailView.setVisibility(View.VISIBLE);
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
@@ -510,7 +517,6 @@ public class NewEggActivity
 			else if (this.currentMediaItem == mediaItemType.video){ //video item is selected
 				thumbNailView.setVisibility(View.VISIBLE);
 				upperButtons.setVisibility(View.GONE);
-				thumbNailView.setImageResource(R.drawable.roll1);
 				File videoFile = new  File(fileURL);
 				realFileURL = videoFile.getAbsolutePath();
 			
@@ -838,16 +844,17 @@ public class NewEggActivity
 		for(int i = 0; i<tagList.size(); i++){
 			this.taggingTool.addTag(tagList.get(i), true);
 		}
-		if (uri == null){
+		if (uri == null || uri.toString().equalsIgnoreCase("file://")){ //there is no file so we can add a new one
 			currentMediaItem = mediaItemType.none;
 		}
 		else {
 			fileType eggsFileType = existingEgg.getMimeType();
+			
 			/*
 			 * This could be done with a switch, but I can't get the bloody things to work with predefined types.
 			 */
 			if(eggsFileType == fileType.NOT_SUPPORTED || eggsFileType == fileType.TEXT) {
-				this.currentMediaItem = mediaItemType.none;
+				this.currentMediaItem = mediaItemType.unknown; //cant just have it be 'none' or you will override the existing file !
 			}
 			else if (eggsFileType == fileType.IMAGE){
 				this.currentMediaItem = mediaItemType.image;
