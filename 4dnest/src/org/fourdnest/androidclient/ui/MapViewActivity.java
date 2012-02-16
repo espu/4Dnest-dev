@@ -22,7 +22,6 @@ import org.osmdroid.views.overlay.PathOverlay;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
