@@ -269,6 +269,15 @@ public class FourDNestApplication extends Application
     }
     
     /**
+     * Is NewEggActivity supposed to fetch current location
+     * even when route tracking is not active
+     * @return fetch or not
+     */
+    public synchronized boolean getNewEggGetLocationWhenNotTracking() {
+    	return this.prefs.getBoolean("new_egg_loc_when_not_tracking", false);
+    }
+    
+    /**
      * Set value of allow_all_certs setting. Used in testing.
      * @param val
      */

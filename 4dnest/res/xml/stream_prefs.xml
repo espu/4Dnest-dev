@@ -56,6 +56,17 @@
                 android:entries="@array/streamSizeNames"
                 android:entryValues="@array/streamSizeValues"
                 android:defaultValue = "30"/>
+        <CheckBoxPreference
+            android:key="new_egg_loc_when_not_tracking"
+            android:summaryOn="@string/prefs_newegg_fetch_loc_descrOn"
+            android:summaryOff="@string/prefs_newegg_fetch_loc_descrOff"
+            android:defaultValue="true"
+            android:title="@string/prefs_newegg_fetch_loc_title"
+            android:enabled="true" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory>
+        
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/prefs_category_gps_title">
