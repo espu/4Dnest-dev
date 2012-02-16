@@ -27,6 +27,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -319,17 +322,45 @@ public class NewEggActivity extends NestSpecificActivity{
      * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
     private void eggEditingDone(Egg egg) {
+    	// automatic metadata
 		egg.setAuthor(FourDNestApplication.getApplication().getCurrentNest().getUserName());
 		egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
+		egg.setCreationDate(new Date());
+		// If egg has no gps location info, try to add it
+		if(egg.getLatitude() == 0 || egg.getLongitude() == 0) {
+			LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Criteria crit = new Criteria();
+			crit.setAccuracy(Criteria.ACCURACY_FINE);
+			String provider = lm.getBestProvider(crit, true);
+			if(provider != null) {
+			Location loc = lm.getLastKnownLocation(provider);
+				if(loc != null) {
+					egg.setLatitude(loc.getLatitude());
+					egg.setLongitude(loc.getLongitude());
+				}
+			}
+		}
+		
+		// user specified metadata
 		egg.setCaption(this.caption.getText().toString());
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-		NewEggActivity.this.taggingTool.addTagFromTextView();
-		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
+		this.taggingTool.addTagFromTextView();	// add tag from text field even if add button not pressed
+		List<Tag> tags = this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
-		egg.setCreationDate(new Date());
+		
 		TagSuggestionService.setLastUsedTags(getApplication(), tags);
     }
-	
+
+    /**
+     * @return true if the Egg is completely empty (no edits done)
+     */
+    private boolean isEmpty() {
+    	return
+    		   "".equals(this.caption.getText().toString())
+    		&& currentMediaItem == mediaItemType.none
+    		&& this.taggingTool.getCheckedTags().size() == 0;
+    }
+    
 	/**
 	 * Used to refresh the elements displayed when an media item is selected / unselected
 	 */
@@ -524,7 +555,7 @@ public class NewEggActivity extends NestSpecificActivity{
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK && !isEmpty()) {
 	        showDialog(DIALOG_BACK);
 	        return true;
 	    }
