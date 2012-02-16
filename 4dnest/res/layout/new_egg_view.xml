@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#ffffff" >
+    android:layout_height="fill_parent" >
 
     <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
 
@@ -17,18 +16,10 @@
      to prevent the dummy from receiving focus again
     -->
 
-    <AutoCompleteTextView
-        android:id="@+id/autotext"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:nextFocusLeft="@id/autotext"
-        android:nextFocusUp="@id/autotext" />
-
     <ScrollView
         android:id="@+id/new_egg_scroll_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#ffffff"
         android:orientation="vertical" >
 
         <!-- buttom padding needs to be 40dp or buttons at end will over run this view -->
@@ -46,7 +37,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="#ffffff"
                 android:gravity="center_horizontal" >
 
                 <ImageButton
@@ -87,7 +77,6 @@
                 android:id="@+id/new_photo_egg_thumbnail_view2"
                 android:layout_width="fill_parent"
                 android:layout_height="120sp"
-                android:background="#000000"
                 android:cropToPadding="true"
                 android:onClick="new_photo_egg_preview_pic"
                 android:paddingLeft="10sp"
@@ -104,7 +93,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="#ffffff"
                 android:text="@string/preview" />
 
             <EditText

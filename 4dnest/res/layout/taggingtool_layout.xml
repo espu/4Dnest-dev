@@ -21,7 +21,6 @@
 	android:id="@+id/autocomplete_row"
 	android:layout_width="fill_parent"
 	android:layout_height="60dp"
-	android:background="#FFFFFF" 
 	android:stretchColumns="0">
 	<TableRow>
 	<AutoCompleteTextView android:id="@+id/autocomplete_tag"

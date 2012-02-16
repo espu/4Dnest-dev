@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -59,7 +60,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		Dialog dialog = null;
 		switch (id) {
 		case DIALOG_CONFIRM_DELETE:
-			AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+			AlertDialog.Builder backBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 			backBuilder
 					.setMessage(getString(R.string.draft_list_dialogue_delete))
 					.setCancelable(true)
