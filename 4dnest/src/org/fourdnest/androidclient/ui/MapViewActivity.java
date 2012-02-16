@@ -10,6 +10,7 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.tools.MapTools;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.ResourceProxy.bitmap;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -21,6 +22,7 @@ import org.osmdroid.views.overlay.PathOverlay;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -68,6 +70,7 @@ public class MapViewActivity extends Activity {
 		mapController.setZoom(DEFAULT_ZOOM);
 
 		GeoPoint firstPoint;
+		GeoPoint lastPoint = null;
 		if (egg.getMimeType() == Egg.fileType.ROUTE) {
 			
 			this.pathOverlay = new PathOverlay(Color.RED, resourceProxy);
@@ -98,6 +101,13 @@ public class MapViewActivity extends Activity {
 			lon = Float.valueOf(temp[0]);
 			firstPoint = new GeoPoint(lat, lon);
 			mapController.setCenter(firstPoint);
+			
+			if (list.size() > 1) {
+				temp = list.get(list.size()-1).split(",");
+				lat = Float.valueOf(temp[1]);
+				lon = Float.valueOf(temp[0]);
+				lastPoint = new GeoPoint(lat, lon);
+			}
 
 		} else {
 
@@ -107,6 +117,12 @@ public class MapViewActivity extends Activity {
 		mapController.setCenter(firstPoint);
 		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 		items.add(new OverlayItem("", "", firstPoint));
+		if (lastPoint != null) {
+			OverlayItem item = new OverlayItem("", "", lastPoint);
+			Drawable marker = resourceProxy.getDrawable(bitmap.person);
+			item.setMarker(marker);
+			items.add(item);
+		}
 
 		this.overlay = new ItemizedIconOverlay<OverlayItem>(items,
 				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {

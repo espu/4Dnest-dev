@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.text.Format;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.Egg.fileType;
+import org.fourdnest.androidclient.Util;
+import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
@@ -27,13 +30,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.Criteria;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -50,7 +55,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NewEggActivity extends NestSpecificActivity{
+public class NewEggActivity
+	extends NestSpecificActivity
+	implements LocationListener {
 
 	
 	/*
@@ -59,7 +66,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	 */
 	
 	private enum mediaItemType{
-		none, image, video, audio, route, multiple //note that multiple is currently not used
+		none, image, video, audio, route, multiple, unknown //note that multiple is currently not used
 	}
 	protected mediaItemType currentMediaItem = mediaItemType.none;
 	protected static final int SELECT_PICTURE = 1; //this is needed for selecting picture
@@ -69,6 +76,9 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
 	protected int currentEggID = 0; //0 if new egg
+	
+	private static final int LOCATION_MIN_DELAY = 10000; // 10 seconds
+	private static final float LOCATION_MIN_DISTANCE = 1; // 1 meter
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -100,6 +110,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private TextView caption;
 	private String thumbnailUriString;
 
+	
 	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
 	 * to layout and requirements of NewEggActivity. Called in mother classes OnCreate method.
@@ -148,12 +159,12 @@ public class NewEggActivity extends NestSpecificActivity{
                 v.getContext().startActivity(intent);
             }
         });
-		
         thumbNailView.setOnClickListener(new OnClickListener() {
 
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
+            	if(NewEggActivity.this.currentMediaItem != mediaItemType.unknown){
             	Intent i = new Intent(Intent.ACTION_VIEW);
             	/*
             	 * Creates an intent for previewing media with correct type of media
@@ -175,8 +186,11 @@ public class NewEggActivity extends NestSpecificActivity{
             		i.setDataAndType(Uri.parse("file://" + thumbnailUriString), "image/*");
             	}
             	startActivity(i);
+            	}
             }
+            	
         });
+		
 	
         
         /*
@@ -296,6 +310,8 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 	
+	
+	
 	protected void saveAsDraft() {
 		//TODO: Proper implementation
 		
@@ -334,6 +350,39 @@ public class NewEggActivity extends NestSpecificActivity{
     	this.taggingTool = null;
     }
     
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	Log.d(TAG, "onPause");
+    	LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	if(lm != null) {
+    		lm.removeUpdates(this);
+    		Log.d(TAG, "Updates removed");
+    	}
+    }
+    
+    @Override
+	public void onResume() {
+		super.onResume();
+		Log.d(TAG, "onResume");
+		
+		if(this.application.getNewEggGetLocationWhenNotTracking() ||
+				Util.isServiceRunning(this.application, RouteTrackService.class)) {
+			LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+	       	if(lm != null && lm.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+	       		Location l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	       		if(l != null) {
+	       			this.onLocationChanged(l);
+	       		}
+	       		
+	       		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+	       				NewEggActivity.LOCATION_MIN_DELAY,
+	       				NewEggActivity.LOCATION_MIN_DISTANCE,
+	       				this);
+	       	}
+		}
+	}
+    
     
     /**
      * Called whenever editing of Egg is done, both when sending and when saving as draft
@@ -360,7 +409,9 @@ public class NewEggActivity extends NestSpecificActivity{
 		
 		// user specified metadata
 		egg.setCaption(this.caption.getText().toString());
+		if(this.currentMediaItem != mediaItemType.unknown){
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+		}
 		this.taggingTool.addTagFromTextView();	// add tag from text field even if add button not pressed
 		List<Tag> tags = this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
@@ -387,8 +438,13 @@ public class NewEggActivity extends NestSpecificActivity{
 		/*
 		 *  I used to have this work with a switch, but it didn't work for some strange reason
 		 */
+		if(this.currentMediaItem == mediaItemType.unknown){
+			thumbNailView.setVisibility(View.VISIBLE);
+			upperButtons.setVisibility(View.GONE);
+			thumbNailView.setImageResource(R.drawable.unknown1);
+		}
 		
-			if (this.currentMediaItem == mediaItemType.image){ //image has been selected, we hide the selection buttons and show the preview thumbnail
+		else if (this.currentMediaItem == mediaItemType.image){ //image has been selected, we hide the selection buttons and show the preview thumbnail
 				upperButtons.setVisibility(View.GONE);
 				thumbNailView.setVisibility(View.VISIBLE);
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
@@ -464,7 +520,6 @@ public class NewEggActivity extends NestSpecificActivity{
 			else if (this.currentMediaItem == mediaItemType.video){ //video item is selected
 				thumbNailView.setVisibility(View.VISIBLE);
 				upperButtons.setVisibility(View.GONE);
-				thumbNailView.setImageResource(R.drawable.roll1);
 				File videoFile = new  File(fileURL);
 				realFileURL = videoFile.getAbsolutePath();
 			
@@ -792,16 +847,17 @@ public class NewEggActivity extends NestSpecificActivity{
 		for(int i = 0; i<tagList.size(); i++){
 			this.taggingTool.addTag(tagList.get(i), true);
 		}
-		if (uri == null){
+		if (uri == null || uri.toString().equalsIgnoreCase("file://")){ //there is no file so we can add a new one
 			currentMediaItem = mediaItemType.none;
 		}
 		else {
 			fileType eggsFileType = existingEgg.getMimeType();
+			
 			/*
 			 * This could be done with a switch, but I can't get the bloody things to work with predefined types.
 			 */
 			if(eggsFileType == fileType.NOT_SUPPORTED || eggsFileType == fileType.TEXT) {
-				this.currentMediaItem = mediaItemType.none;
+				this.currentMediaItem = mediaItemType.unknown; //cant just have it be 'none' or you will override the existing file !
 			}
 			else if (eggsFileType == fileType.IMAGE){
 				this.currentMediaItem = mediaItemType.image;
@@ -815,6 +871,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			else if (eggsFileType == fileType.ROUTE) {
 				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
+				this.realFileURL = existingEgg.getLocalFileURI().toString();
 			}
 			String uriTemp = uri.toString();
 			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 
@@ -834,6 +891,25 @@ public class NewEggActivity extends NestSpecificActivity{
 	private boolean isNewEgg() {
 		return currentEggID == 0;
 	}
+
+
+	public void onLocationChanged(Location loc) {
+		final Location l = loc;
+		Log.d(TAG, "Loc changed");		
+		// Android allows only the UI thread to touch views
+		runOnUiThread(new Runnable() {
+		     public void run() {
+		    	 TextView t = (TextView) findViewById(R.id.locationcontainer);
+		    	 String format = (String)getText(R.string.new_egg_location_format);
+		    	 t.setText(String.format(format, l.getLatitude(), l.getLongitude()));
+		    	 
+		    }
+		});
+	}
+	
+	public void onProviderDisabled(String arg0) {}
+	public void onProviderEnabled(String arg0) {}
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 	
 	
 }
