@@ -1,6 +1,9 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -343,8 +346,44 @@ public class NewEggActivity extends NestSpecificActivity{
 				File imgFile = new  File(fileURL);
 				if(imgFile.exists()){
 					realFileURL = imgFile.getAbsolutePath();
-				    Bitmap myBitmap = BitmapFactory.decodeFile(realFileURL);
-				    thumbNailView.setImageBitmap(myBitmap);
+					Bitmap bm = null;
+				    
+				    BitmapFactory.Options bfOptions=new BitmapFactory.Options();
+				    bfOptions.inDither=false;
+				    bfOptions.inPurgeable=true;                   //Tell gc that whether it needs free memory, the Bitmap can be cleared
+				    bfOptions.inInputShareable=true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+				    bfOptions.inTempStorage=new byte[32 * 1024]; 
+
+
+				    File file=new File(realFileURL);
+				    FileInputStream fs=null;
+				    try {
+				        fs = new FileInputStream(file);
+				    } catch (FileNotFoundException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    }
+
+				    try {
+				        if(fs!=null) bm=BitmapFactory.decodeFileDescriptor(fs.getFD(), null, bfOptions);
+				    } catch (IOException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    } finally{ 
+				        if(fs!=null) {
+				            try {
+				                fs.close();
+				            } catch (IOException e) {
+				                // TODO Auto-generated catch block
+				                e.printStackTrace();
+				            }
+				        }
+				    }
+
+				    if(bm != null) {
+				    	thumbNailView.setImageBitmap(bm);
+				    }
+				    bm=null;
 				}
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
