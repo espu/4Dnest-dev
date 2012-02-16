@@ -83,12 +83,15 @@ public class NewEggActivity extends NestSpecificActivity{
 	
 	public static final String EXTRA_EGG_ID = "eggID";
 	public static final String TAG = NewEggActivity.class.getSimpleName();
+	
+	public static final String NEW_EGG = "newEgg";
 
 	private String fileURL = "";
 	private String realFileURL = "";
 	private String selectedFilePath;
 	private String filemanagerstring;
 	private ImageView thumbNailView;
+	private Button button;
 	private RelativeLayout upperButtons;
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
@@ -113,6 +116,11 @@ public class NewEggActivity extends NestSpecificActivity{
 		this.caption = (TextView) findViewById(R.id.new_photo_egg_caption_view);
        	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
+		
+
+       	this.button = (Button) findViewById(R.id.to_map_button);
+        button.setVisibility(View.GONE);
+
 
 		/*
 		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
@@ -131,6 +139,15 @@ public class NewEggActivity extends NestSpecificActivity{
 				fileURL = extras.getString("pictureURL"); //Almost sure that this is not used these days
 			}
 		}
+		
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                intent.putExtra(MapViewActivity.EGG_ID, NewEggActivity.this.currentEggID);
+                intent.putExtra(NEW_EGG, true);
+                v.getContext().startActivity(intent);
+            }
+        });
 		
         thumbNailView.setOnClickListener(new OnClickListener() {
 
@@ -421,10 +438,10 @@ public class NewEggActivity extends NestSpecificActivity{
 			}
 			else if (this.currentMediaItem == mediaItemType.route) { // route egg
 				upperButtons.setVisibility(View.GONE);
-				thumbNailView.setVisibility(View.VISIBLE);
+				thumbNailView.setVisibility(View.GONE);
+				button.setVisibility(View.VISIBLE);
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
-				String thumbnailUriString = ThumbnailManager.getThumbnailUriString(NewEggActivity.this.editableEgg, null);
-				thumbNailView.setImageURI(Uri.parse(thumbnailUriString));
+
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
 			else if(this.currentMediaItem == mediaItemType.none){ //no media item is currently selected
@@ -798,8 +815,6 @@ public class NewEggActivity extends NestSpecificActivity{
 			else if (eggsFileType == fileType.ROUTE) {
 				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
-				this.thumbnailUriString = ThumbnailManager.getThumbnailUriString(existingEgg, null);
-				this.realFileURL = existingEgg.getLocalFileURI().toString();
 			}
 			String uriTemp = uri.toString();
 			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 
