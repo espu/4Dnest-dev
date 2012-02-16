@@ -51,6 +51,11 @@ public class SendQueueTestProtocol implements Protocol {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean getRelativeMediaFile(String uri, String localPath) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }
 

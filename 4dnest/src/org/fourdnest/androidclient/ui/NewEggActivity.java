@@ -1,7 +1,6 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
-import java.text.Format;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,9 +12,8 @@ import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.ThumbnailManager;
-import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.Util;
+import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
@@ -30,9 +28,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.Criteria;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -410,8 +408,9 @@ public class NewEggActivity
 		// user specified metadata
 		egg.setCaption(this.caption.getText().toString());
 		if(this.currentMediaItem != mediaItemType.unknown){
-		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
+			egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
 		}
+		Log.d(TAG, "At end of eggEditingDone, egg.setLocalFileURI: " + egg.getLocalFileURI());
 		this.taggingTool.addTagFromTextView();	// add tag from text field even if add button not pressed
 		List<Tag> tags = this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
@@ -450,7 +449,9 @@ public class NewEggActivity
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
 				File imgFile = new  File(fileURL);
 				if(imgFile.exists()){
-					realFileURL = imgFile.getAbsolutePath();
+					if("".equals(realFileURL)) {//happens with new eggs, not when editing old eggs
+						realFileURL = imgFile.getAbsolutePath();
+					}
 					Bitmap bm = null;
 				    
 				    BitmapFactory.Options bfOptions=new BitmapFactory.Options();
@@ -514,15 +515,18 @@ public class NewEggActivity
 				upperButtons.setVisibility(View.GONE);
 				thumbNailView.setImageResource(R.drawable.note1);
 				File audioFile = new  File(fileURL);
-				realFileURL = audioFile.getAbsolutePath();
+				if("".equals(realFileURL)) { //happens with new eggs, not when editing old eggs
+					realFileURL = audioFile.getAbsolutePath();
+				}
 		}
 			
 			else if (this.currentMediaItem == mediaItemType.video){ //video item is selected
 				thumbNailView.setVisibility(View.VISIBLE);
 				upperButtons.setVisibility(View.GONE);
 				File videoFile = new  File(fileURL);
-				realFileURL = videoFile.getAbsolutePath();
-			
+				if("".equals(realFileURL)) {	//happens with new eggs, not when editing old eggs
+					realFileURL = videoFile.getAbsolutePath();
+				}			
 				
 			String[] proj = {
 					MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DATA
@@ -543,7 +547,6 @@ public class NewEggActivity
 			
 			
 		}
-	
 	}
 	
 	/**
@@ -842,15 +845,17 @@ public class NewEggActivity
 			return;
 		}
 		Uri uri = existingEgg.getLocalFileURI();
-		this.caption.setText(existingEgg.getCaption());	
+		this.realFileURL = uri.toString();
+		if(uri != null) {
+			this.caption.setText(existingEgg.getCaption());
+		}
 		List<Tag> tagList =  existingEgg.getTags();
 		for(int i = 0; i<tagList.size(); i++){
 			this.taggingTool.addTag(tagList.get(i), true);
 		}
 		if (uri == null || uri.toString().equalsIgnoreCase("file://")){ //there is no file so we can add a new one
 			currentMediaItem = mediaItemType.none;
-		}
-		else {
+		} else {
 			fileType eggsFileType = existingEgg.getMimeType();
 			
 			/*
@@ -871,16 +876,16 @@ public class NewEggActivity
 			else if (eggsFileType == fileType.ROUTE) {
 				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
-				this.realFileURL = existingEgg.getLocalFileURI().toString();
 			}
-			String uriTemp = uri.toString();
-			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 
-			fileURL = uriTemp;
-			this.refreshElements();
-			fileURL = uri.toString();
+		}
+		Log.d(TAG, "Before removing prefix, realFileURL: " + this.realFileURL + " prefix length " + ("file://".length()));
+		// realFileURL must be without file prefix, because it is added later
+		if(this.realFileURL.startsWith("file://")) {
+			this.realFileURL = this.realFileURL.substring(7);
 		}
 		editableEgg = existingEgg;
 		this.refreshElements();
+		Log.d(TAG, "At end of recoverDataFromExistingEGG, realFileURL: " + this.realFileURL);
 	}
 
 	/**
