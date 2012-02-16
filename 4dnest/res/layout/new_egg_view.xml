@@ -16,13 +16,6 @@
      to prevent the dummy from receiving focus again
     -->
 
-    <AutoCompleteTextView
-        android:id="@+id/autotext"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:nextFocusLeft="@id/autotext"
-        android:nextFocusUp="@id/autotext" />
-
     <ScrollView
         android:id="@+id/new_egg_scroll_view"
         android:layout_width="fill_parent"
