@@ -66,6 +66,7 @@ public class ViewEggActivity extends NestSpecificActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapViewActivity.class);
                 intent.putExtra(MapViewActivity.EGG_ID, ViewEggActivity.this.eggID);
+                intent.putExtra(NewEggActivity.NEW_EGG, false);
                 v.getContext().startActivity(intent);
             }
         });
