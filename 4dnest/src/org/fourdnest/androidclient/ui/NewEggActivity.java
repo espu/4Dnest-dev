@@ -1,6 +1,7 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.text.Format;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
 import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.Egg.fileType;
+import org.fourdnest.androidclient.Util;
+import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.SendQueueService;
 import org.fourdnest.androidclient.services.TagSuggestionService;
 
@@ -27,13 +30,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.Criteria;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -50,7 +55,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NewEggActivity extends NestSpecificActivity{
+public class NewEggActivity
+	extends NestSpecificActivity
+	implements LocationListener {
 
 	
 	/*
@@ -69,6 +76,9 @@ public class NewEggActivity extends NestSpecificActivity{
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
 	protected static final int AUDIO_RECORER_REQUEST = 6;
 	protected int currentEggID = 0; //0 if new egg
+	
+	private static final int LOCATION_MIN_DELAY = 10000; // 10 seconds
+	private static final float LOCATION_MIN_DISTANCE = 1; // 1 meter
 
 	private static final int RESULT_OK = -1; // apparently its -1... dunno
 	
@@ -100,6 +110,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	private TextView caption;
 	private String thumbnailUriString;
 
+	
 	/**
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
 	 * to layout and requirements of NewEggActivity. Called in mother classes OnCreate method.
@@ -296,6 +307,8 @@ public class NewEggActivity extends NestSpecificActivity{
 	}
 	
 	
+	
+	
 	protected void saveAsDraft() {
 		//TODO: Proper implementation
 		
@@ -333,6 +346,39 @@ public class NewEggActivity extends NestSpecificActivity{
     	this.taggingTool.onDestroy();
     	this.taggingTool = null;
     }
+    
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	Log.d(TAG, "onPause");
+    	LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	if(lm != null) {
+    		lm.removeUpdates(this);
+    		Log.d(TAG, "Updates removed");
+    	}
+    }
+    
+    @Override
+	public void onResume() {
+		super.onResume();
+		Log.d(TAG, "onResume");
+		
+		if(this.application.getNewEggGetLocationWhenNotTracking() ||
+				Util.isServiceRunning(this.application, RouteTrackService.class)) {
+			LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+	       	if(lm != null && lm.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+	       		Location l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	       		if(l != null) {
+	       			this.onLocationChanged(l);
+	       		}
+	       		
+	       		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+	       				NewEggActivity.LOCATION_MIN_DELAY,
+	       				NewEggActivity.LOCATION_MIN_DISTANCE,
+	       				this);
+	       	}
+		}
+	}
     
     
     /**
@@ -835,6 +881,25 @@ public class NewEggActivity extends NestSpecificActivity{
 	private boolean isNewEgg() {
 		return currentEggID == 0;
 	}
+
+
+	public void onLocationChanged(Location loc) {
+		final Location l = loc;
+		Log.d(TAG, "Loc changed");		
+		// Android allows only the UI thread to touch views
+		runOnUiThread(new Runnable() {
+		     public void run() {
+		    	 TextView t = (TextView) findViewById(R.id.locationcontainer);
+		    	 String format = (String)getText(R.string.new_egg_location_format);
+		    	 t.setText(String.format(format, l.getLatitude(), l.getLongitude()));
+		    	 
+		    }
+		});
+	}
+	
+	public void onProviderDisabled(String arg0) {}
+	public void onProviderEnabled(String arg0) {}
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 	
 	
 }

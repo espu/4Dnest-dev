@@ -89,7 +89,8 @@ public class RouteTrackService
 	private final String MIN_DISTANCE_SETTING_KEY = "gps_update_mindistance";
 	private int minDelay = 1000; // ms
 	private float minDistance = 5; // m
-	private final int LATEST_LOC_MAX_DELAY = 1000 * 60; // 60 sec 
+	private final int LATEST_LOC_MAX_DELAY = 1000 * 60; // 60 sec
+	private int savedLocations = 0;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -159,33 +160,34 @@ public class RouteTrackService
 	
 	@Override
 	public void onDestroy() {
-		displayToast("Processing location data");
 		Log.d(TAG, "onDestroy");
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
 		
-		
-		// Create and save draft egg
-		Egg egg = this.createEggForCurrentRoute();
-		// Cancel the persistent notification
-		if(getSystemService(ACTIVITY_SERVICE) != null) {
-			this.stopForeground(true);
-		}
-		
-		if(egg == null) {
-			this.displayToast(getText(R.string.gps_egg_create_fail));
+		if(this.savedLocations > 0) {		
+			// Create and save draft egg
+			Egg egg = this.createEggForCurrentRoute();
+			// Cancel the persistent notification
+			if(getSystemService(ACTIVITY_SERVICE) != null) {
+				this.stopForeground(true);
+			}
+			
+			if(egg == null) {
+				this.displayToast(getText(R.string.gps_egg_create_fail));
+			} else {
+				
+				// Launch intent to edit route egg
+				Intent editIntent = new Intent(this.getApplication(), NewEggActivity.class);
+				editIntent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId());
+				editIntent.setAction(Intent.ACTION_VIEW);
+				editIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+				editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				
+				this.getApplication().startActivity(editIntent);
+			}		
 		} else {
-			
-			// Launch intent to edit route egg
-			Intent editIntent = new Intent(this.getApplication(), NewEggActivity.class);
-			editIntent.putExtra(NewEggActivity.EXTRA_EGG_ID, egg.getId());
-			editIntent.setAction(Intent.ACTION_VIEW);
-			editIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-			editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			
-			this.getApplication().startActivity(editIntent);
+			this.displayToast(getText(R.string.gps_empty_route_not_saved));
 		}
-		
 
 	}
 
@@ -196,6 +198,7 @@ public class RouteTrackService
 		// Add some sanity checks, for now just write to output file
 		this.writeLocation(location, this.outputFile);
 		this.lastLocation = location;
+		this.savedLocations++;
 	}
 
 	public void onProviderDisabled(String provider) {

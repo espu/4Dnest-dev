@@ -76,11 +76,15 @@
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
 	<string name="pref_kiosk_descr_off">Kiosk mode off</string>
-	<string name="prefs_category_gps_title">Location settings</string>
+	<string name="prefs_category_stream_title">Stream settings</string>
+	<string name="prefs_category_gps_title">Route tracking settings</string>
 	<string name="prefs_gps_update_freq_title">Update frequency</string>
 	<string name="prefs_gps_update_freq_descr">How often location info is requested</string>
 	<string name="prefs_gps_update_min_distance_title">Minimum distance</string>
 	<string name="prefs_gps_update_min_distance_descr">Minimum distance from previous point to save location</string>
+	<string name="prefs_newegg_fetch_loc_title">Saving post location</string>
+	<string name="prefs_newegg_fetch_loc_descrOn">Save post location even if route tracking is off.</string>
+	<string name="prefs_newegg_fetch_loc_descrOff">Do not save post location if route tracking is off.</string>
 	<string name="change_nest_prompt">Change</string>
 	<string name="send_all_drafts_button_text">Send All Drafts</string>
 	<string name="default_no_date">No Date</string>
@@ -110,6 +114,8 @@
     <string name="new_egg_select_audio_source">Select Audio Source</string>
     <string name="new_egg_select_video_source">Select Video Source</string>
     <string name="new_egg_video_description">Video captured for 4D Nest</string>
+    <string name="new_egg_getting_location">Getting location..</string>
+    <string name="new_egg_location_format">Location: %1$.5f, %2$.5f</string>
     <string name="application_invalid_uri">Base URL of server is invalid</string>
     <string name="to_map_button_name">Show on map</string>
 </resources>
