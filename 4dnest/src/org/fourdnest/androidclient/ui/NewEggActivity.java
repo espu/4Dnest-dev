@@ -1,6 +1,9 @@
 package org.fourdnest.androidclient.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -360,8 +364,44 @@ public class NewEggActivity extends NestSpecificActivity{
 				File imgFile = new  File(fileURL);
 				if(imgFile.exists()){
 					realFileURL = imgFile.getAbsolutePath();
-				    Bitmap myBitmap = BitmapFactory.decodeFile(realFileURL);
-				    thumbNailView.setImageBitmap(myBitmap);
+					Bitmap bm = null;
+				    
+				    BitmapFactory.Options bfOptions=new BitmapFactory.Options();
+				    bfOptions.inDither=false;
+				    bfOptions.inPurgeable=true;                   //Tell gc that whether it needs free memory, the Bitmap can be cleared
+				    bfOptions.inInputShareable=true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+				    bfOptions.inTempStorage=new byte[32 * 1024]; 
+
+
+				    File file=new File(realFileURL);
+				    FileInputStream fs=null;
+				    try {
+				        fs = new FileInputStream(file);
+				    } catch (FileNotFoundException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    }
+
+				    try {
+				        if(fs!=null) bm=BitmapFactory.decodeFileDescriptor(fs.getFD(), null, bfOptions);
+				    } catch (IOException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    } finally{ 
+				        if(fs!=null) {
+				            try {
+				                fs.close();
+				            } catch (IOException e) {
+				                // TODO Auto-generated catch block
+				                e.printStackTrace();
+				            }
+				        }
+				    }
+
+				    if(bm != null) {
+				    	thumbNailView.setImageBitmap(bm);
+				    }
+				    bm=null;
 				}
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
@@ -432,7 +472,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE: //determines that this dialogue is used to determine what ever to open image camera or image gallery
 	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
-	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	builder.setTitle(getString(R.string.new_egg_select_picture_source));
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -450,7 +490,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    
 	    case DIALOG_ASK_VIDEO: //this one is used to determine what ever to open a video camera or video gallery
 	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_callery), getString(R.string.new_egg_dialogue_open_video_camera)};
-	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	videoBuilder.setTitle(getString(R.string.new_egg_select_video_source));
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -466,7 +506,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	break;
 
         case DIALOG_BACK:
-        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
         	backBuilder.setMessage(getString(R.string.new_egg_dialogue_back))
         	       .setCancelable(true)
         	       .setPositiveButton(

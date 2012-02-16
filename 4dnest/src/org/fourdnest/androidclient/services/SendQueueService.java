@@ -16,6 +16,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -34,10 +35,14 @@ public class SendQueueService extends IntentService {
 	public static final String SEND_EGG = "SEND_EGG_CATEGORY";
 	/** Key for Egg id in Intent extras */
 	public static final String BUNDLE_EGG_ID = "BUNDLE_EGG_ID";
+
+	public static final String ACTION_DRAFTS_UPDATED = "org.fourdnest.androidclient.DRAFTS_UPDATED";;
 	
 	/** Internal Handler for displaying Toast after job completes */
 	private Handler handler;
-	private NotificationManager notificationManager;
+	//private NotificationManager notificationManager;
+	
+	private LocalBroadcastManager mLocalBroadcastManager;
 	
 	/**
 	 * Constructor, simply calls super. Never used explicitly in user code.
@@ -60,8 +65,8 @@ public class SendQueueService extends IntentService {
 	@Override
 	public void onCreate() {
 		this.handler = new Handler();
-		this.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		
+		//this.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		this.mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		super.onCreate();
 	}
 	
@@ -159,6 +164,10 @@ public class SendQueueService extends IntentService {
 					
 			    	Log.d(TAG, "Requesting stream update in onHandleIntent");
 					StreamReaderService.requestUpdate(app);
+					
+					// broadcast that the draft list is updated
+					Intent broadcastIntent = new Intent(ACTION_DRAFTS_UPDATED);
+					mLocalBroadcastManager.sendBroadcast(broadcastIntent);
 				} else {
 					// Something went wrong, transform code to message
 					String message = "";
