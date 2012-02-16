@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -163,13 +164,14 @@ public class RouteTrackService
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
 		
+		
+		// Create and save draft egg
+		Egg egg = this.createEggForCurrentRoute();
 		// Cancel the persistent notification
 		if(getSystemService(ACTIVITY_SERVICE) != null) {
 			this.stopForeground(true);
 		}
 		
-		// Create and save draft egg
-		Egg egg = this.createEggForCurrentRoute();
 		if(egg == null) {
 			this.displayToast(getText(R.string.gps_egg_create_fail));
 		} else {
@@ -430,8 +432,10 @@ public class RouteTrackService
 		
 		// Retrieve static map of the route as a thumbnail
 		
+		
 		StaticMapGetter smg = new OsmStaticMapGetter();
 		smg.getStaticMap(e);
+		
 		
 		return e;
 	}
