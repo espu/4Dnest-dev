@@ -24,7 +24,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 	Button sendAllButton;
 	private int eggBeingDeletedId;
 	private EggAdapter adapter;
-	
+
 	/** Called when this Activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,74 +37,84 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		this.sendAllButton = (Button) findViewById(R.id.send_all_button);
 		initializeDraftList(this.draftManager, this.draftListView);
 		initializeSendAllButton(this.sendAllButton);
-		
+
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		initializeDraftList(this.draftManager, this.draftListView);
 		super.onResume();
 	}
-	
+
 	/**
 	 * 
-	 * This method creates the dialogues that the user uses to make selections on what ever 
-	 * to use the capture device or browse existing items, and the back button dialog.
+	 * This method creates the dialogues that the user uses to make selections
+	 * on what ever to use the capture device or browse existing items, and the
+	 * back button dialog.
 	 * 
 	 */
-	
+
 	protected Dialog onCreateDialog(int id) {
-	    Dialog dialog = null;
-	    switch(id) {
-	    case DIALOG_CONFIRM_DELETE:
-	    	AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
-        	backBuilder.setMessage(getString(R.string.draft_list_dialogue_delete))
-        	       .setCancelable(true)
-        	       .setPositiveButton(
-        	    		   getString(R.string.draft_list_dialogue_confirm),
-        	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   ListDraftEggsActivity.this.confirmedDelete();
-        	           }
-        	       })
-        	       .setNegativeButton(
-        	    		   getString(R.string.draft_list_dialogue_cancel),
-        	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   dialog.cancel();
-        	           }
-        	       });
-        	dialog = backBuilder.create();
-	    	break;
-	    
-	    default:
-	        dialog = null;
-	    }
-	    return dialog; //the requested dialogue is returned for displaying
+		Dialog dialog = null;
+		switch (id) {
+		case DIALOG_CONFIRM_DELETE:
+			AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+			backBuilder
+					.setMessage(getString(R.string.draft_list_dialogue_delete))
+					.setCancelable(true)
+					.setPositiveButton(
+							getString(R.string.draft_list_dialogue_confirm),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									ListDraftEggsActivity.this
+											.confirmedDelete();
+								}
+							})
+					.setNegativeButton(
+							getString(R.string.draft_list_dialogue_cancel),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			dialog = backBuilder.create();
+			break;
+
+		default:
+			dialog = null;
+		}
+		return dialog; // the requested dialogue is returned for displaying
 	}
-	
+
 	/**
-	 * This idiotic function exists because too much internal functionality of this class
-	 * has been delegated to EggAdapter, making them tightly coupled.
-	 * @param id Id of draft egg that is being deleted. The user must still confirm the deletion.
+	 * This idiotic function exists because too much internal functionality of
+	 * this class has been delegated to EggAdapter, making them tightly coupled.
+	 * 
+	 * @param id
+	 *            Id of draft egg that is being deleted. The user must still
+	 *            confirm the deletion.
 	 */
 	public void askConfirmDeletion(Integer id) {
 		this.eggBeingDeletedId = id;
 		this.showDialog(DIALOG_CONFIRM_DELETE);
 	}
+
 	/**
-	 * Now the user has confirmed the deletion, so we can perform it.
-	 * This idiotic function exists because too much internal functionality of this class
-	 * has been delegated to EggAdapter, making them tightly coupled.
+	 * Now the user has confirmed the deletion, so we can perform it. This
+	 * idiotic function exists because too much internal functionality of this
+	 * class has been delegated to EggAdapter, making them tightly coupled.
 	 */
 	public void confirmedDelete() {
 		FourDNestApplication.getApplication().getDraftEggManager()
-		.deleteEgg(this.eggBeingDeletedId);
+				.deleteEgg(this.eggBeingDeletedId);
 		this.adapter.refreshList();
+		this.initializeDraftList(draftManager, draftListView);
 	}
 
-	private void initializeDraftList(EggManager manager, ListView draftListView) {
+	public void initializeDraftList(EggManager manager, ListView draftListView) {
 		List<Egg> draftEggs = manager.listEggs();
 		if (draftEggs.isEmpty()) {
 			findViewById(R.id.no_drafts_overlay).setVisibility(View.VISIBLE);
@@ -115,23 +125,27 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 				R.layout.egg_element_draft, manager.listEggs());
 		this.adapter.setDraftActivity(this);
 		draftListView.setAdapter(adapter);
-		draftListView.setOnItemClickListener(new EggItemOnClickListener(draftListView));
+		draftListView.setOnItemClickListener(new EggItemOnClickListener(
+				draftListView));
 	}
-	
+
 	private void initializeSendAllButton(Button button) {
 		button.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
-				EggAdapter draftAdapter = (EggAdapter) ListDraftEggsActivity.this.draftListView.getAdapter();
+				EggAdapter draftAdapter = (EggAdapter) ListDraftEggsActivity.this.draftListView
+						.getAdapter();
 				Egg current = null;
 				while (!draftAdapter.isEmpty()) {
 					current = draftAdapter.getItem(0);
-					//TODO: Wait for sendAll in Services. Use that instead of sending each egg individually.
-//					SendQueueService.sendEgg(getApplicationContext(), current, true);
+					// TODO: Wait for sendAll in Services. Use that instead of
+					// sending each egg individually.
+					// SendQueueService.sendEgg(getApplicationContext(),
+					// current, true);
 					draftAdapter.remove(current);
 				}
 				draftAdapter.notifyDataSetChanged();
-				
+
 			}
 		});
 	}

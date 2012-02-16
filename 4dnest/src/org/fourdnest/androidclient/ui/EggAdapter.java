@@ -215,10 +215,12 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		ImageView thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
 		return view;
 	}
-	
+
 	/**
 	 * Formats a list of tags (comma separated list)
-	 * @param tagList Tags to display
+	 * 
+	 * @param tagList
+	 *            Tags to display
 	 */
 	public static String tagListToString(List<Tag> tagList) {
 		StringBuilder tagListString = new StringBuilder();
@@ -250,16 +252,21 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 		}
 
 		public void onClick(View v) {
-			SendQueueService.sendEgg(FourDNestApplication.getApplication(),
-					egg, true);
-			List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
-					.getApplication().getDraftEggManager().listEggs());
-			newList.remove(egg);
-			EggAdapter.this.clear();
-			for (Egg egg : newList) {
-				EggAdapter.this.add(egg);
+			if (egg != null) {
+				SendQueueService.sendEgg(FourDNestApplication.getApplication(),
+						egg, true);
+				List<Egg> newList = new ArrayList<Egg>(FourDNestApplication
+						.getApplication().getDraftEggManager().listEggs());
+				newList.remove(egg);
+				EggAdapter.this.clear();
+				for (Egg egg : newList) {
+					EggAdapter.this.add(egg);
+				}
+				EggAdapter.this.notifyDataSetChanged();
 			}
-			EggAdapter.this.notifyDataSetChanged();
+			EggAdapter.this.activity.initializeDraftList(FourDNestApplication
+					.getApplication().getDraftEggManager(),
+					EggAdapter.this.activity.draftListView);
 		}
 	}
 
@@ -273,6 +280,9 @@ public class EggAdapter extends ArrayAdapter<Egg> {
 
 		public void onClick(View v) {
 			EggAdapter.this.activity.askConfirmDeletion(this.egg.getId());
+			EggAdapter.this.activity.initializeDraftList(FourDNestApplication
+					.getApplication().getDraftEggManager(),
+					EggAdapter.this.activity.draftListView);
 		}
 	}
 
