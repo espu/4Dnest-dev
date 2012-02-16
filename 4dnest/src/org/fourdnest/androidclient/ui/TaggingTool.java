@@ -143,11 +143,6 @@ public class TaggingTool extends LinearLayout {
 		
 		Log.d(TAG, "TaggingTool created");
 		TagSuggestionService.requestTagBroadcast(context);
-		
-		// DEBUG
-		//this.addTag(new Tag("Testing tagging tool"), false);
-		//this.addTag(new Tag("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"), false);
-		//this.addTag(new Tag("Checked"), true);
 	}
 	
 	/**

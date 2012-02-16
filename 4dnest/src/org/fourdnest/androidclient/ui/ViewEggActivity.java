@@ -1,16 +1,18 @@
 package org.fourdnest.androidclient.ui;
 
 import java.text.DateFormat;
+import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
-import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 public class ViewEggActivity extends NestSpecificActivity {
 
 	private int eggID;
+	private ImageView thumbnail;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -49,21 +52,15 @@ public class ViewEggActivity extends NestSpecificActivity {
 		message.setText(egg.getCaption());
 		
 		if (egg.getMimeType() != Egg.fileType.TEXT) {
-			ImageView thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
-			application.getCurrentNest().getProtocol()
-					.getThumbnail(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE);
-			thumbnail.setImageURI(Uri.parse(ThumbnailManager
-					.getThumbnailUriString(egg,
-							FourDNestProtocol.THUMBNAIL_SIZE_LARGE)));
+			this.thumbnail = (ImageView) findViewById(R.id.file_thumbnail);
+			new ThumbnailTask().execute(egg);
 		}
-		if (!egg.getTags().isEmpty()) {
-			String tagList = "";
-			for (Tag current : egg.getTags()) {
-				tagList += current.getName() + " ";
-			}
-			tags.setText(tagList);
+		List<Tag> tagList = egg.getTags();
+		if (tagList.size() > 0) { // if there are no tags, leave default message
+			// (no tags)
+			tags.setText(EggAdapter.tagListToString(tagList));
 		}
-		
+				
 		final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -111,13 +108,49 @@ public class ViewEggActivity extends NestSpecificActivity {
 			startActivity(new Intent(this, PrefsActivity.class));
 			return true;
 		case R.id.menu_view_help:
+			startActivity(this.application.helpBrowserIntent());
 			return true;
+		/*
+		// FIXME Actually these would be better as on-screen buttons instead of menu buttons
 		case R.id.menu_view_edit:
+			//FIXME unimplemented, button hidden. Uncomment from xml when implemented
 			return true;
 		case R.id.menu_view_delete:
+			//FIXME unimplemented, button hidden. Uncomment from xml when implemented
 			return true;
+		*/
 		}
 		return false;
 	}
+
+	/**
+	 * Asynchronous task for background retrieval of larger thumbnail
+	 */
+	private class ThumbnailTask extends AsyncTask<Egg, Void, Void> {
+		protected Void doInBackground(Egg... eggs) {
+			Egg egg = eggs[0]; 
+			application.getCurrentNest().getProtocol()
+			.getThumbnail(egg, FourDNestProtocol.THUMBNAIL_SIZE_LARGE);
+			final Uri thumbUri = Uri.parse(ThumbnailManager.getThumbnailUriString(
+					egg,
+					FourDNestProtocol.THUMBNAIL_SIZE_LARGE
+			));
+			
+			// Android allows only the UI thread to touch views
+			runOnUiThread(new Runnable() {
+			     public void run() {
+			    	 thumbnail.setImageURI(thumbUri);
+			    }
+			});
+
+			return null;	// because Void is an Android placeholder, not true void
+		}
+
+		protected void onProgressUpdate() {
+		}
+
+		protected void onPostExecute() {
+		}
+	 }
 
 }

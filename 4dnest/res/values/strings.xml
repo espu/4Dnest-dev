@@ -60,7 +60,7 @@
     <string name="new_egg_dialogue_open_video_callery">Open Video Gallery</string>
     <string name="new_egg_dialogue_back">Do you want to save the message as a draft?</string>
 	<string name="new_egg_dialogue_back_save">Save</string>
-	<string name="new_egg_dialogue_back_cancel">Go back</string>
+	<string name="new_egg_dialogue_back_cancel">Keep editing</string>
 	<string name="new_egg_dialogue_back_discard">Discard</string>
     <string name="prefs_category_nest_title">Server settings</string>
     <string name="prefs_nest_uri_title">Base URL</string>
@@ -105,4 +105,10 @@
     <string name="draft_list_dialogue_confirm">Delete</string>
     <string name="draft_list_dialogue_cancel">Cancel</string>
     <string name="no_drafts_text">You have no saved drafts.</string>
+    <string name="sendqueue_active_nest_not_set">Active nest not set, item not queued</string>
+    <string name="new_egg_select_picture_source">Select Picture Source</string>
+    <string name="new_egg_select_audio_source">Select Audio Source</string>
+    <string name="new_egg_select_video_source">Select Video Source</string>
+    <string name="new_egg_video_description">Video captured for 4D Nest</string>
+    <string name="application_invalid_uri">Base URL of server is invalid</string>
 </resources>

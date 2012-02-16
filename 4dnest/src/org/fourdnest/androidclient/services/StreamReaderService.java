@@ -6,9 +6,9 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
+import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
 import org.fourdnest.androidclient.comm.Protocol;
-import org.fourdnest.androidclient.comm.ThumbnailManager;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -37,8 +37,11 @@ public class StreamReaderService extends IntentService {
 	/** Broadcast has this action when stream has been updated */
 	public static final String ACTION_STREAM_UPDATED = "org.fourdnest.androidclient.STREAM_UPDATED";
 
-	/** How long we initially wait before fetching the Stream */
-	public static final long FIRST_INTERVAL = 0;
+	/** How long we initially wait before fetching the Stream
+	 * This is done each time the service is started (which happens frequently despite START_STICKY,
+	 * not only when initially starting the app. Therefore setting this to 0 will cause double fetching.
+	 */
+	public static final long FIRST_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 	public static final String THUMBNAIL_SAVE_LOCATION = "thumbnails";
 
@@ -87,7 +90,7 @@ public class StreamReaderService extends IntentService {
 								// timing
 				AlarmManager.ELAPSED_REALTIME, // Don't wake up phone just for
 												// this
-				FIRST_INTERVAL, // Don't run on start
+				System.currentTimeMillis() + FIRST_INTERVAL, // Time of first execution
 				frequency, // Update frequency
 				PendingIntent.getService(app, // The context
 						0, intent, 0));

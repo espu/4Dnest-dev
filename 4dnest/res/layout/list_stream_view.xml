@@ -3,7 +3,6 @@
     android:id="@+id/read_stream_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -60,8 +59,7 @@
     <ListView
         android:id="@+id/egg_list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/background" >
+        android:layout_height="fill_parent" >
     </ListView>
 
 </LinearLayout>

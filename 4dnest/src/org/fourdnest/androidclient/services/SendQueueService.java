@@ -95,7 +95,7 @@ public class SendQueueService extends IntentService {
 		if(!isDraft) {
 			Nest currentNest = app.getCurrentNest();		
 			if(currentNest == null) {
-				Toast.makeText(app, "Active nest not set, item not queued", Toast.LENGTH_SHORT);
+				Toast.makeText(app, context.getString(R.string.sendqueue_active_nest_not_set), Toast.LENGTH_SHORT);
 				return;
 			}
 			savedEgg = app.getDraftEggManager().saveEgg(egg);
