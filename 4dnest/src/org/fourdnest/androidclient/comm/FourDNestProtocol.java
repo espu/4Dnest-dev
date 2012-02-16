@@ -1,6 +1,8 @@
 package org.fourdnest.androidclient.comm;
 
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -62,7 +64,6 @@ public class FourDNestProtocol implements Protocol {
 	private static final int HTTP_STATUSCODE_UNAUTHORIZED = 401;
 	private static final int HTTP_STATUSCODE_NOT_FOUND = 404;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
-
 	
 	public static final String THUMBNAIL_SIZE_SMALL = "-100x100-crop";
 	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
@@ -125,7 +126,7 @@ public class FourDNestProtocol implements Protocol {
 		int status = 0;
 		try {
 			post.setEntity(CommUtils.createEntity(pairs));
-			addAuthentication(post, multipartMd5String);
+			addHeaders(post, multipartMd5String);
 			Log.d("AUTH", post.getHeaders("Authorization")[0].getValue());
 			HttpResponse response = client.execute(post);
 			status = response.getStatusLine().getStatusCode();
@@ -168,7 +169,7 @@ public class FourDNestProtocol implements Protocol {
 			StringEntity se = new StringEntity(metadata, HTTP.UTF_8);
 			request.addHeader("Content-Type", "application/json");
 			request.setEntity(se);
-			addAuthentication(request, multipartMd5String);
+			addHeaders(request, multipartMd5String);
 			HttpResponse response = client.execute(request);
 			status = response.getStatusLine().getStatusCode();
 			Log.d("OVERSTATUS", String.valueOf(status));
@@ -228,7 +229,7 @@ public class FourDNestProtocol implements Protocol {
 
 		try {
 			request.setURI(new URI(uriPath));
-			addAuthentication(request, "");
+			addHeaders(request, "");
 			String jsonStr = CommUtils
 					.responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
@@ -277,7 +278,7 @@ public class FourDNestProtocol implements Protocol {
 
 		try {
 			request.setURI(new URI(uriPath));
-			addAuthentication(request, "");
+			addHeaders(request, "");
 			String jsonStr = CommUtils
 					.responseToString(client.execute(request));
 			JSONObject js = new JSONObject(jsonStr);
@@ -317,7 +318,7 @@ public class FourDNestProtocol implements Protocol {
 		// Log.d("URIStream", uriPath);
 		try {
 			request.setURI(new URI(uriPath));
-			addAuthentication(request, "");
+			addHeaders(request, "");
 			String jsonStr = CommUtils
 					.responseToString(client.execute(request));
 			JSONObject outer = new JSONObject(jsonStr);
@@ -384,7 +385,7 @@ public class FourDNestProtocol implements Protocol {
 	 * @param multipartMd5
 	 *            the multipart md5 string
 	 */
-	private void addAuthentication(HttpRequestBase base, String multipartMd5) {
+	private void addHeaders(HttpRequestBase base, String multipartMd5) {
 		/*
 		 * StringToSign = HTTP-Verb + '\n' + base64(Content-MD5) + '\n' +
 		 * base64(x-4dnest-multipartMD5) + '\n' + Content-Type + '\n' + Date +
@@ -408,6 +409,17 @@ public class FourDNestProtocol implements Protocol {
 		base.setHeader("Date", DateUtils.formatDate(date));
 
 		base.setHeader("x-4dnest-multipartMD5", multipartMd5);
+		FourDNestApplication app = (FourDNestApplication) FourDNestApplication.getApplication();
+		String versionName = "";
+		try {
+            versionName = app.getPackageManager().getPackageInfo(app.getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            versionName = "";
+        }
+        String user_agent = "4Dnest.org Android "
+            + String.valueOf(Build.VERSION.SDK_INT) + " " + Build.MODEL + " " + versionName;
+        Log.d("USER_AGENT", user_agent);
+        base.addHeader("User-Agent", user_agent);
 	}
 
 	/**
@@ -424,7 +436,7 @@ public class FourDNestProtocol implements Protocol {
 		HttpClient client = CommUtils.createHttpClient();
 		try {
 			HttpGet request = new HttpGet(new URI(uri));
-			addAuthentication(request, "");
+			addHeaders(request, "");
 			HttpResponse resp = client.execute(request);
 			Log.d(TAG, String.valueOf(resp.getStatusLine().getStatusCode()));
 			if (resp.getStatusLine().getStatusCode() != HTTP_STATUSCODE_OK) {
@@ -532,7 +544,6 @@ public class FourDNestProtocol implements Protocol {
             try {
                 latitude = js.getDouble("lat");
                 longitude = js.getDouble("lon");
-                Log.d(TAG, "succesfully parsed location data");
             }catch (JSONException e) {
                 // No location information
             }
@@ -542,7 +553,6 @@ public class FourDNestProtocol implements Protocol {
 			egg.setLatitude(latitude);
 			egg.setLongitude(longitude);
 			egg.setCreationDate(date);
-			Log.d("EGGLATI", ":" + egg.getLatitude());
 			return egg;
 		} catch (JSONException e) {
 			Log.e("JSONTOEGG", "Got JSONexception");
