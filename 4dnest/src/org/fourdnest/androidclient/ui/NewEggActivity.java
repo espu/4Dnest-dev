@@ -2,6 +2,9 @@ package org.fourdnest.androidclient.ui;
 
 import java.io.File;
 import java.text.Format;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,12 +32,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.Criteria;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,12 +93,15 @@ public class NewEggActivity
 	
 	public static final String EXTRA_EGG_ID = "eggID";
 	public static final String TAG = NewEggActivity.class.getSimpleName();
+	
+	public static final String NEW_EGG = "newEgg";
 
 	private String fileURL = "";
 	private String realFileURL = "";
 	private String selectedFilePath;
 	private String filemanagerstring;
 	private ImageView thumbNailView;
+	private Button button;
 	private RelativeLayout upperButtons;
 	private Uri capturedImageURI;
 	private TaggingTool taggingTool;
@@ -119,6 +127,11 @@ public class NewEggActivity
 		this.caption = (TextView) findViewById(R.id.new_photo_egg_caption_view);
        	LinearLayout inputsLinearLayout = (LinearLayout) findViewById(R.id.new_photo_egg_caption_and_tag_part);
        	this.taggingTool = new TaggingTool(this.getApplicationContext(), inputsLinearLayout);
+		
+
+       	this.button = (Button) findViewById(R.id.to_map_button);
+        button.setVisibility(View.GONE);
+
 
 		/*
 		 * Adds a onClickListener to the preview image so we know when to open a thumbnail
@@ -137,6 +150,15 @@ public class NewEggActivity
 				fileURL = extras.getString("pictureURL"); //Almost sure that this is not used these days
 			}
 		}
+		
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                intent.putExtra(MapViewActivity.EGG_ID, NewEggActivity.this.currentEggID);
+                intent.putExtra(NEW_EGG, true);
+                v.getContext().startActivity(intent);
+            }
+        });
 		
         thumbNailView.setOnClickListener(new OnClickListener() {
 
@@ -363,17 +385,45 @@ public class NewEggActivity
      * Called whenever editing of Egg is done, both when sending and when saving as draft
      */
     private void eggEditingDone(Egg egg) {
+    	// automatic metadata
 		egg.setAuthor(FourDNestApplication.getApplication().getCurrentNest().getUserName());
 		egg.setNestId(FourDNestApplication.getApplication().getCurrentNestId());
+		egg.setCreationDate(new Date());
+		// If egg has no gps location info, try to add it
+		if(egg.getLatitude() == 0 || egg.getLongitude() == 0) {
+			LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Criteria crit = new Criteria();
+			crit.setAccuracy(Criteria.ACCURACY_FINE);
+			String provider = lm.getBestProvider(crit, true);
+			if(provider != null) {
+			Location loc = lm.getLastKnownLocation(provider);
+				if(loc != null) {
+					egg.setLatitude(loc.getLatitude());
+					egg.setLongitude(loc.getLongitude());
+				}
+			}
+		}
+		
+		// user specified metadata
 		egg.setCaption(this.caption.getText().toString());
 		egg.setLocalFileURI(Uri.parse("file://"+realFileURL));
-		NewEggActivity.this.taggingTool.addTagFromTextView();
-		List<Tag> tags = NewEggActivity.this.taggingTool.getCheckedTags();
+		this.taggingTool.addTagFromTextView();	// add tag from text field even if add button not pressed
+		List<Tag> tags = this.taggingTool.getCheckedTags();
 		egg.setTags(tags);
-		egg.setCreationDate(new Date());
+		
 		TagSuggestionService.setLastUsedTags(getApplication(), tags);
     }
-	
+
+    /**
+     * @return true if the Egg is completely empty (no edits done)
+     */
+    private boolean isEmpty() {
+    	return
+    		   "".equals(this.caption.getText().toString())
+    		&& currentMediaItem == mediaItemType.none
+    		&& this.taggingTool.getCheckedTags().size() == 0;
+    }
+    
 	/**
 	 * Used to refresh the elements displayed when an media item is selected / unselected
 	 */
@@ -391,17 +441,53 @@ public class NewEggActivity
 				File imgFile = new  File(fileURL);
 				if(imgFile.exists()){
 					realFileURL = imgFile.getAbsolutePath();
-				    Bitmap myBitmap = BitmapFactory.decodeFile(realFileURL);
-				    thumbNailView.setImageBitmap(myBitmap);
+					Bitmap bm = null;
+				    
+				    BitmapFactory.Options bfOptions=new BitmapFactory.Options();
+				    bfOptions.inDither=false;
+				    bfOptions.inPurgeable=true;                   //Tell gc that whether it needs free memory, the Bitmap can be cleared
+				    bfOptions.inInputShareable=true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+				    bfOptions.inTempStorage=new byte[32 * 1024]; 
+
+
+				    File file=new File(realFileURL);
+				    FileInputStream fs=null;
+				    try {
+				        fs = new FileInputStream(file);
+				    } catch (FileNotFoundException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    }
+
+				    try {
+				        if(fs!=null) bm=BitmapFactory.decodeFileDescriptor(fs.getFD(), null, bfOptions);
+				    } catch (IOException e) {
+				        //TODO do something intelligent
+				        e.printStackTrace();
+				    } finally{ 
+				        if(fs!=null) {
+				            try {
+				                fs.close();
+				            } catch (IOException e) {
+				                // TODO Auto-generated catch block
+				                e.printStackTrace();
+				            }
+				        }
+				    }
+
+				    if(bm != null) {
+				    	thumbNailView.setImageBitmap(bm);
+				    }
+				    bm=null;
 				}
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
 			else if (this.currentMediaItem == mediaItemType.route) { // route egg
 				upperButtons.setVisibility(View.GONE);
-				thumbNailView.setVisibility(View.VISIBLE);
+				thumbNailView.setVisibility(View.GONE);
+				button.setVisibility(View.VISIBLE);
 				ScrollView scrollView = (ScrollView) this.findViewById(R.id.new_egg_scroll_view);
-				String thumbnailUriString = ThumbnailManager.getThumbnailUriString(NewEggActivity.this.editableEgg, null);
-				thumbNailView.setImageURI(Uri.parse(thumbnailUriString));
+
 				scrollView.postInvalidate(); //should cause a redraw.... should!
 			}
 			else if(this.currentMediaItem == mediaItemType.none){ //no media item is currently selected
@@ -463,7 +549,7 @@ public class NewEggActivity
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE: //determines that this dialogue is used to determine what ever to open image camera or image gallery
 	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
-	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	builder.setTitle(getString(R.string.new_egg_select_picture_source));
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -481,7 +567,7 @@ public class NewEggActivity
 	    
 	    case DIALOG_ASK_VIDEO: //this one is used to determine what ever to open a video camera or video gallery
 	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_callery), getString(R.string.new_egg_dialogue_open_video_camera)};
-	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	videoBuilder.setTitle(getString(R.string.new_egg_select_video_source));
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -497,7 +583,7 @@ public class NewEggActivity
 	    	break;
 
         case DIALOG_BACK:
-        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
         	backBuilder.setMessage(getString(R.string.new_egg_dialogue_back))
         	       .setCancelable(true)
         	       .setPositiveButton(
@@ -532,7 +618,7 @@ public class NewEggActivity
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK && !isEmpty()) {
 	        showDialog(DIALOG_BACK);
 	        return true;
 	    }
@@ -775,8 +861,6 @@ public class NewEggActivity
 			else if (eggsFileType == fileType.ROUTE) {
 				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
-				this.thumbnailUriString = ThumbnailManager.getThumbnailUriString(existingEgg, null);
-				this.realFileURL = existingEgg.getLocalFileURI().toString();
 			}
 			String uriTemp = uri.toString();
 			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 

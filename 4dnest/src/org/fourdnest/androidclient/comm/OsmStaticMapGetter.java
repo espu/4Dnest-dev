@@ -14,6 +14,7 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.CommUtils;
 import org.fourdnest.androidclient.tools.LocationHelper;
+import org.fourdnest.androidclient.tools.MapTools;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +41,7 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		Log.d(TAG, internalUriString);
 		List<String> list = new ArrayList<String>();
 		try {
-			list = getLocationListFromEgg(egg);
+			list = MapTools.getLocationListFromEgg(egg);
 		} catch (Exception e) {
 			Log.d(TAG, "Failed to produce location list from location file");
 			return false;
@@ -127,31 +128,7 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		return uriString + "&height=" + height;
 	}
 	
-	/*
-	 * Generate a list of locations from egg's route file
-	 */
-	private List<String> getLocationListFromEgg(Egg egg) throws NumberFormatException, IOException  {
-		List<String> locList = new ArrayList<String>();
-		FileInputStream fstream = new FileInputStream(egg.getLocalFileURI().getEncodedPath());
-		DataInputStream in = new DataInputStream(fstream);
-		BufferedReader buffRead = new BufferedReader(new InputStreamReader(in));
-		String line;
-		try {
-			while ((line = buffRead.readLine()) != null) {
-				JSONObject temp = new JSONObject(line);
-				Float lat = Float.valueOf(temp.optString(LocationHelper.JSON_LATITUDE));
-				Float lon = Float.valueOf(temp.optString(LocationHelper.JSON_LONGITUDE));
-				locList.add(String.format(FLOAT_TO_STRING_FORMAT + "," + FLOAT_TO_STRING_FORMAT, lon, lat));			
-			}
-		} catch (JSONException e) {
-			Log.d(TAG, "Could not convert location file line to json object");
-		} finally {
-			buffRead.close();
-			in.close();
-			fstream.close();
-		}
-		return locList;
-	}
+
 
 
 }

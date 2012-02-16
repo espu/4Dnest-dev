@@ -8,7 +8,6 @@
         android:id="@+id/nest_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background"
         android:text="No Nest" />
 
 </LinearLayout>

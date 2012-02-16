@@ -159,7 +159,7 @@ public class RouteTrackService
 	
 	@Override
 	public void onDestroy() {
-		
+		displayToast("Processing location data");
 		Log.d(TAG, "onDestroy");
 		// Remove location updating
 		this.locationManager.removeUpdates(this);
@@ -430,11 +430,6 @@ public class RouteTrackService
 		
 		e = app.getDraftEggManager().saveEgg(e);
 		
-		// Retrieve static map of the route as a thumbnail
-		
-		
-		StaticMapGetter smg = new OsmStaticMapGetter();
-		smg.getStaticMap(e);
 		
 		
 		return e;
