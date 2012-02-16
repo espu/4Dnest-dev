@@ -358,6 +358,9 @@ public class FourDNestProtocol implements Protocol {
 	 */
 	private String computeSignature(String stringToSign, String secretKey) {
 		String result = "";
+		if (secretKey.equalsIgnoreCase("")) {
+			secretKey = " "; // must have bytes
+		}
 		byte[] keyBytes = secretKey.getBytes();
 		SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
 
