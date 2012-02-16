@@ -69,7 +69,7 @@ public class FourDNestProtocol implements Protocol {
 	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
 
 	/**Location of the thumbnail on the phone*/
-	private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
+	private static final String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
 
 	/** Location of thumbnails on the server */
 	public static final String THUMBNAIL_PATH = "content/instance/";
@@ -416,10 +416,10 @@ public class FourDNestProtocol implements Protocol {
         } catch (NameNotFoundException e) {
             versionName = "";
         }
-        String user_agent = "4Dnest.org Android "
+        String userAgent = "4Dnest.org Android "
             + String.valueOf(Build.VERSION.SDK_INT) + " " + Build.MODEL + " " + versionName;
-        Log.d("USER_AGENT", user_agent);
-        base.addHeader("User-Agent", user_agent);
+        Log.d("USER_AGENT", userAgent);
+        base.addHeader("User-Agent", userAgent);
 	}
 
 	/**
@@ -596,10 +596,12 @@ public class FourDNestProtocol implements Protocol {
 					+ THUMBNAIL_PATH + egg.getExternalId() + size
 					+ THUMBNAIL_FILETYPE;
 			Log.d(TAG, externalUriString);
-			String thumbnail_dir = Environment.getExternalStorageDirectory()
+			String thumbnailDir = Environment.getExternalStorageDirectory()
 					.getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
-			if (!new File(thumbnail_dir).exists()) {
-				new File(thumbnail_dir).mkdirs();
+			if (!new File(thumbnailDir).exists()) {
+				if (!new File(thumbnailDir).mkdirs()) {
+				    return false;
+				}
 			}
 			Log.d("SAVELOC", path);
 			if (getMediaFile(externalUriString, path)) {
