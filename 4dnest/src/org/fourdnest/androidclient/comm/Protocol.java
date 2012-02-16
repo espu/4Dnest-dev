@@ -32,10 +32,23 @@ public interface Protocol {
      * @return The requested Egg or null if unable to retrieve the Egg.
      */
     Egg getEgg(String uid);
+ 
+	/**
+	 * Retrieves a file from relative uri to localpath over HTTP
+	 * 
+	 * @param uri
+	 *            Location of the file on server (without baseurl)
+	 * @param localPath
+	 *            Local path where the file is to be saved
+	 * 
+	 * @return true if file retrieved successfully, false otherwise
+	 */
+	public boolean getRelativeMediaFile(String uri, String localPath);
+	
     /**
      * Attempts to retrieve a media file from the Nest that this Protocol is bound to.
      * FIXME Errorhandling! should return ProtocolResult
-     * @param uri URI of the media file
+     * @param uri URI of the media file (including protocol and domain)
      * @param localPath A path on the device in which to store the file
      * @return Success value of the request 
      */

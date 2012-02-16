@@ -29,16 +29,21 @@ public class MediaManager {
     }
     
     public static String getMediaUriString(Egg egg) {
+    	String mediaDir = Environment.getExternalStorageDirectory()
+			+ MEDIA_LOCATION;
+    	if (!new File(mediaDir).exists()) {
+			if (!new File(mediaDir).mkdirs()) {
+				return mediaDir + "fail";	//silly
+			}
+		}
     	Uri remoteUri = egg.getRemoteFileURI();
         if (remoteUri == null) { // this shouldn't happen
-            return Environment.getExternalStorageDirectory()
-            		+ MEDIA_LOCATION + "fail";
+            return mediaDir + "fail";
 		} else {
 			String remoteUriString = remoteUri.toString();
-			return Environment.getExternalStorageDirectory()
-					+ MEDIA_LOCATION
+			return mediaDir
 					+ egg.getExternalId()
-					+ MimeTypeMap.getFileExtensionFromUrl(remoteUriString);
+					+ "." + MimeTypeMap.getFileExtensionFromUrl(remoteUriString);
 		}
 
     }

@@ -65,8 +65,10 @@ public class FourDNestProtocol implements Protocol {
 	private static final int HTTP_STATUSCODE_NOT_FOUND = 404;
 	private static final int HTTP_STATUSCODE_SERVER_ERROR = 500;
 	
+	/** This thumbnail size is used in the stream, with text on the side */
 	public static final String THUMBNAIL_SIZE_SMALL = "-100x100-crop";
-	public static final String THUMBNAIL_SIZE_LARGE = "-600x600";
+	/** This thumbnail size is used when viewing the Egg. Should fit on screen */
+	public static final String THUMBNAIL_SIZE_LARGE = "-320x320";
 
 	/**Location of the thumbnail on the phone*/
 	private static final String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
@@ -423,10 +425,24 @@ public class FourDNestProtocol implements Protocol {
 	}
 
 	/**
+	 * Retrieves a file from relative uri to localpath over HTTP
+	 * 
+	 * @param uri
+	 *            Location of the file on server (without baseurl)
+	 * @param localPath
+	 *            Local path where the file is to be saved
+	 * 
+	 * @return true if file retrieved successfully, false otherwise
+	 */
+	public boolean getRelativeMediaFile(String uri, String localPath) {
+		return getMediaFile(this.nest.getBaseURI() + uri, localPath);
+	}
+	
+	/**
 	 * Retrieves a file from uri to localpath over HTTP
 	 * 
 	 * @param uri
-	 *            Location of the file in server
+	 *            Location of the file in server (including protocol and domain)
 	 * @param localPath
 	 *            Local path where the file is to be saved
 	 * 
@@ -451,9 +467,11 @@ public class FourDNestProtocol implements Protocol {
 		} catch (ClientProtocolException e) {
 			Log.e(TAG, "getMediaFile: Execute failed");
 		} catch (IOException e) {
-			Log.e(TAG, "getMediaFile: Write operation failed");
+			Log.e(TAG, "getMediaFile: Write operation failed. Localpath: " + localPath);
+			Log.e(TAG, "reason: " + e.getMessage());
+		} catch (IllegalStateException e) {
+		    Log.d(TAG, "Invalid base uri address: " + uri);
 		}
-
 		return false;
 
 	}
