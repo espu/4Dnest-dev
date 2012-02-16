@@ -76,9 +76,8 @@
 	<string name="pref_kiosk_title">Kiosk Mode</string>
 	<string name="pref_kiosk_descr_on">Kiosk mode on</string>
 	<string name="pref_kiosk_descr_off">Kiosk mode off</string>
-	
 	<string name="prefs_category_stream_title">Stream settings</string>
-	<string name="prefs_category_gps_title">Route tracing settings</string>
+	<string name="prefs_category_gps_title">Route tracking settings</string>
 	<string name="prefs_gps_update_freq_title">Update frequency</string>
 	<string name="prefs_gps_update_freq_descr">How often location info is requested</string>
 	<string name="prefs_gps_update_min_distance_title">Minimum distance</string>
