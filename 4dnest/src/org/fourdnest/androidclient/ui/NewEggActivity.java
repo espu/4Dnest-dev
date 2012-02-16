@@ -159,12 +159,12 @@ public class NewEggActivity
                 v.getContext().startActivity(intent);
             }
         });
-		
         thumbNailView.setOnClickListener(new OnClickListener() {
 
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
+            	if(NewEggActivity.this.currentMediaItem != mediaItemType.unknown){
             	Intent i = new Intent(Intent.ACTION_VIEW);
             	/*
             	 * Creates an intent for previewing media with correct type of media
@@ -186,8 +186,11 @@ public class NewEggActivity
             		i.setDataAndType(Uri.parse("file://" + thumbnailUriString), "image/*");
             	}
             	startActivity(i);
+            	}
             }
+            	
         });
+		
 	
         
         /*

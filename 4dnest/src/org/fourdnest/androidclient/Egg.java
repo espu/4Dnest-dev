@@ -281,7 +281,9 @@ public class Egg {
             if (this.getLocalFileURI() != null) {
                 mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                         MimeTypeMap.getFileExtensionFromUrl(this
-                                .getLocalFileURI().toString()));
+                                .getLocalFileURI().toString())); 
+            	
+            	
                 if (MimeTypeMap.getFileExtensionFromUrl(this.getLocalFileURI().toString()).equalsIgnoreCase("json")) {
                 	mime = "application/json";
                 }
