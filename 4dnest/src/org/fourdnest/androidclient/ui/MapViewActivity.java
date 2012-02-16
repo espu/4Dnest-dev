@@ -17,7 +17,6 @@ import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
-import android.graphics.Point;
 import android.os.Bundle;
 
 public class MapViewActivity extends Activity {
@@ -59,6 +58,10 @@ public class MapViewActivity extends Activity {
         GeoPoint point2 = new GeoPoint(egg.getLatitude(), egg.getLongitude());
         mapController.setCenter(point2);
         
+        if (egg.getMimeType() == Egg.fileType.ROUTE) {
+        	
+        } else {
+			
         ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
         items.add(new OverlayItem("", "", point2));
         
@@ -78,6 +81,8 @@ public class MapViewActivity extends Activity {
         
         this.mapView.getOverlays().add(this.overlay);
         mapView.invalidate();
+        
+        }
 
     }
     protected boolean isRouteDisplayed() {
