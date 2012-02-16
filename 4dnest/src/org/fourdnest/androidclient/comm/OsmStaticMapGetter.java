@@ -109,15 +109,15 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	 */
 	private String addPath(String uriString, List<String> list) {
 	    StringBuilder strb = new StringBuilder();
-		String attribute = "&paths=";
-		String separator = ",";
-		uriString = uriString + attribute;
-		strb.append(uriString);
-		for (String location : list) {
-			strb.append(location + separator); // there can be a , in the end, too
-		}
-		return strb.toString();
-	}
+	    String attribute = "&paths=";
+	    String separator = ",";
+	    uriString = uriString + attribute;
+	    strb.append(uriString);
+	    for (String location : list) {
+	    strb.append(location + separator); // there can be a , in the end, too
+	    }
+	    return strb.toString();
+	    }
 	
 	private String setWidth(String uriString, int width) {
 		return uriString + "&width=" + width;
