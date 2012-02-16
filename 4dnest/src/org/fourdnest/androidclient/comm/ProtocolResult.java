@@ -8,7 +8,8 @@ public class ProtocolResult {
     public static final int SERVER_INTERNAL_ERROR = 3;
     public static final int SENDING_FAILED = 4;
     public static final int RESOURCE_UPDATED = 5;
-    public static final int UNKNOWN_REASON = 6;
+    public static final int INVALID_ADDRESS = 6;
+    public static final int UNKNOWN_REASON = 7;
     
     public ProtocolResult(String url, int statusCode) {
         this.url = url;

@@ -133,6 +133,9 @@ public class FourDNestProtocol implements Protocol {
 		} catch (IOException e) {
 			Log.e(TAG, "IOException, egg not sent " + e.getMessage());
 			return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
+		} catch (IllegalStateException e) {
+		    Log.e(TAG, "IllegalStateException, egg not sent " + e.getMessage());
+		    return new ProtocolResult(null, ProtocolResult.INVALID_ADDRESS);
 		}
 	}
 
@@ -161,11 +164,12 @@ public class FourDNestProtocol implements Protocol {
 			Log.d("OVERSTATUS", String.valueOf(status));
 			return this.parseResult(status, response);
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to overwrite egg: ClientProtocolException");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to overwrite egg: IOException");
+		} catch (IllegalStateException e) {
+		    Log.e(TAG, "Failed to overwrite egg: IllegalStateException");
+		    return new ProtocolResult(null, ProtocolResult.INVALID_ADDRESS);
 		}
 		return new ProtocolResult(null, ProtocolResult.SENDING_FAILED);
 	}
@@ -224,17 +228,15 @@ public class FourDNestProtocol implements Protocol {
 			}
 			return tags;
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to fetch tags: UriSyntaxException");
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to fetch tags: ClientProtocolException");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to fetch tags: IoException");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to fetch tags: JSONException");
+		} catch (IllegalStateException e) {
+		    Log.e(TAG, "Failed to fetch tags: IllegalStateException");
 		}
 		return new ArrayList<Tag>();
 	}
@@ -324,6 +326,8 @@ public class FourDNestProtocol implements Protocol {
 			Log.d(TAG, "getStream: got IOException");
 		} catch (JSONException e) {
 			Log.d(TAG, "JSONstring formatted incorrectly");
+		} catch (IllegalStateException e) {
+		    Log.d(TAG, "Invalid base uri address");
 		}
 		return eggList;
 	}
