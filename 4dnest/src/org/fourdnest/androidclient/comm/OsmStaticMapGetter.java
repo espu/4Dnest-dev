@@ -43,7 +43,6 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 			list = getLocationListFromEgg(egg);
 		} catch (Exception e) {
 			Log.d(TAG, "Failed to produce location list from location file");
-			e.printStackTrace();
 			return false;
 		}
 		String uriString = BASEURI;
@@ -109,22 +108,16 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 	 * Add path information from list of locations to request string
 	 */
 	private String addPath(String uriString, List<String> list) {
-		String attribute = "&paths=";
-		String separator = ",";
-		uriString = uriString + attribute;
-		for (String location : list) {
-			uriString = uriString + location + separator; // there can be a , in the end, too
-		}
-		return uriString;
-	}
-	
-	private String addPoint(String uriString, Egg egg) {
-		return uriString;
-	}
-	
-	private String setCenterPoint(String uriString, float longitude, float latitude) {
-		return uriString + "&center=" + String.format("%.4f", longitude) + "," +  String.format("%.4f", longitude);
-	}
+	    StringBuilder strb = new StringBuilder();
+	    String attribute = "&paths=";
+	    String separator = ",";
+	    uriString = uriString + attribute;
+	    strb.append(uriString);
+	    for (String location : list) {
+	    strb.append(location + separator); // there can be a , in the end, too
+	    }
+	    return strb.toString();
+	    }
 	
 	private String setWidth(String uriString, int width) {
 		return uriString + "&width=" + width;
@@ -134,14 +127,10 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		return uriString + "&height=" + height;
 	}
 	
-	private String setZoom(String uriString, int zoomLevel) {
-		return uriString;
-	}
-	
 	/*
 	 * Generate a list of locations from egg's route file
 	 */
-	private List<String> getLocationListFromEgg(Egg egg) throws Exception {
+	private List<String> getLocationListFromEgg(Egg egg) throws NumberFormatException, IOException  {
 		List<String> locList = new ArrayList<String>();
 		FileInputStream fstream = new FileInputStream(egg.getLocalFileURI().getEncodedPath());
 		DataInputStream in = new DataInputStream(fstream);
@@ -156,7 +145,6 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 			}
 		} catch (JSONException e) {
 			Log.d(TAG, "Could not convert location file line to json object");
-			e.printStackTrace();
 		} finally {
 			buffRead.close();
 			in.close();
