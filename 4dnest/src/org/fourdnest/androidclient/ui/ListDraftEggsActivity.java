@@ -6,11 +6,19 @@ import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
+import org.fourdnest.androidclient.services.SendQueueService;
+import org.fourdnest.androidclient.services.StreamReaderService;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,13 +26,15 @@ import android.widget.Button;
 import android.widget.ListView;
 
 public class ListDraftEggsActivity extends NestSpecificActivity {
-
+	public static final String TAG = ListDraftEggsActivity.class.getSimpleName();
 	private static final int DIALOG_CONFIRM_DELETE = 0;
 	private EggManager draftManager;
 	ListView draftListView;
 	Button sendAllButton;
 	private int eggBeingDeletedId;
 	private EggAdapter adapter;
+	private LocalBroadcastManager mLocalBroadcastManager;
+	private BroadcastReceiver mReceiver;
 
 	/** Called when this Activity is first created. */
 	@Override
@@ -39,6 +49,24 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		initializeDraftList(this.draftManager, this.draftListView);
 		initializeSendAllButton(this.sendAllButton);
 
+		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+		IntentFilter filter = new IntentFilter();
+        filter.addAction(SendQueueService.ACTION_DRAFTS_UPDATED);
+        this.mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            	Log.d(TAG, "BroadcastReceiver.onReceive");
+            	if (intent.getAction().equals(SendQueueService.ACTION_DRAFTS_UPDATED)) {
+            		initializeDraftList(
+            				ListDraftEggsActivity.this.draftManager,
+            				ListDraftEggsActivity.this.draftListView
+            		);
+            	}
+            }
+        };
+        Log.d(TAG, "Registering the broadcast receiver");
+        mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+        
 		super.onCreate(savedInstanceState);
 	}
 
@@ -48,6 +76,13 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		super.onResume();
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "UnRegistering the broadcast receiver");
+		mLocalBroadcastManager.unregisterReceiver(this.mReceiver);
+	}
+	
 	/**
 	 * 
 	 * This method creates the dialogues that the user uses to make selections
