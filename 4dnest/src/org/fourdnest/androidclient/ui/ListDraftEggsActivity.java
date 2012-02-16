@@ -60,7 +60,7 @@ public class ListDraftEggsActivity extends NestSpecificActivity {
 		Dialog dialog = null;
 		switch (id) {
 		case DIALOG_CONFIRM_DELETE:
-			AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+			AlertDialog.Builder backBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 			backBuilder
 					.setMessage(getString(R.string.draft_list_dialogue_delete))
 					.setCancelable(true)

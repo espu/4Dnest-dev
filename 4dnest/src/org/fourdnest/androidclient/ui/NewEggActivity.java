@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -415,7 +416,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    switch(id) {
 	    case DIALOG_ASK_IMAGE: //determines that this dialogue is used to determine what ever to open image camera or image gallery
 	    	final CharSequence[] items = {getString(R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};// {getString (R.string.new_egg_dialogue_open_image_callery), getString(R.string.new_egg_dialogue_open_photo_camera)};
-	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	builder.setTitle(getString(R.string.new_egg_select_picture_source));
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -433,7 +434,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    
 	    case DIALOG_ASK_VIDEO: //this one is used to determine what ever to open a video camera or video gallery
 	    	final CharSequence[] videoItems = {getString(R.string.new_egg_dialogue_open_video_callery), getString(R.string.new_egg_dialogue_open_video_camera)};
-	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(this);
+	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	videoBuilder.setTitle(getString(R.string.new_egg_select_video_source));
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int item) {
@@ -449,7 +450,7 @@ public class NewEggActivity extends NestSpecificActivity{
 	    	break;
 
         case DIALOG_BACK:
-        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(this);
+        	AlertDialog.Builder backBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
         	backBuilder.setMessage(getString(R.string.new_egg_dialogue_back))
         	       .setCancelable(true)
         	       .setPositiveButton(
