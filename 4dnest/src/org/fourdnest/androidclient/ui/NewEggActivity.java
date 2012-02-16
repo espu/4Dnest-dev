@@ -815,6 +815,7 @@ public class NewEggActivity extends NestSpecificActivity{
 			else if (eggsFileType == fileType.ROUTE) {
 				// route eggs come only directly from RouteTrackService
 				this.currentMediaItem = mediaItemType.route;
+				this.realFileURL = existingEgg.getLocalFileURI().toString();
 			}
 			String uriTemp = uri.toString();
 			uriTemp = uriTemp.substring(7); //The saved URI string is in long form, needs to be converted to short form for consistency 

@@ -10,6 +10,7 @@ import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.tools.MapTools;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.ResourceProxy.bitmap;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -21,6 +22,8 @@ import org.osmdroid.views.overlay.PathOverlay;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -116,7 +119,10 @@ public class MapViewActivity extends Activity {
 		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 		items.add(new OverlayItem("", "", firstPoint));
 		if (lastPoint != null) {
-			items.add(new OverlayItem("", "", lastPoint));
+			OverlayItem item = new OverlayItem("", "", lastPoint);
+			Drawable marker = resourceProxy.getDrawable(bitmap.person);
+			item.setMarker(marker);
+			items.add(item);
 		}
 
 		this.overlay = new ItemizedIconOverlay<OverlayItem>(items,
