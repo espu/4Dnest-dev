@@ -212,10 +212,12 @@ public class TagSuggestionService extends IntentService {
 		synchronized(cache) {
 			// First broadcast the autocomplete suggestions
 			Integer currentNestId = Integer.valueOf(intent.getIntExtra(BUNDLE_NEST_ID, -1));
-			List<String> out = new ArrayList<String>();
+			Set<String> out;
 			Set<String> lt = cache.getLocalTags(currentNestId);
 			if(lt != null) {
-				out.addAll(lt);
+				out = new HashSet<String>(lt);
+			} else {
+				out = new HashSet<String>();
 			}
 			String[] rt = cache.getRemoteTags(currentNestId);
 			if(rt != null) {
