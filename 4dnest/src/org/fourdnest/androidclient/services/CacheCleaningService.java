@@ -8,14 +8,23 @@ import org.fourdnest.androidclient.ThumbnailManager;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+/**
+ * Service for cleaning cache files related with the 4dnest application
+ * Currently only handles the cleaning of thumbnails but can be easily extended to other parts as well.
+ *
+ */
+
 public class CacheCleaningService extends IntentService {
 	
+	private static final String TAG = "CacheCleaningService";
 	public static final String CLEAN_THUMBNAILS = "cleanThumbnails";
 	private static final String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
+	private static final long ONE_DAY_IN_MILLIS = 86400000;
 	
 	public CacheCleaningService() {
 		super(CacheCleaningService.class.getName());
@@ -27,6 +36,7 @@ public class CacheCleaningService extends IntentService {
 	
 	@Override
 	public void onCreate() {
+		Log.d(TAG,"Intent Created");
 		super.onCreate();
 		FourDNestApplication app = FourDNestApplication.getApplication();
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -42,12 +52,40 @@ public class CacheCleaningService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		Log.d(TAG,"Handling intent");
 		if (intent.hasCategory(CLEAN_THUMBNAILS)) {
+			Log.d(TAG,"Got clean command");
 			String thumbnailDir = Environment.getExternalStorageDirectory()
-					.getAbsolutePath() + File.separator + THUMBNAIL_LOCATION;
-			Log.d("THUMBNAILPATH", thumbnailDir);
+					.getAbsolutePath() + THUMBNAIL_LOCATION;
+			File dir = new File(thumbnailDir);
+			//Delete all files that are older than one day
+			long timeLimit = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
+			if (dir.exists() && dir.isDirectory()) {
+				File list[] = dir.listFiles();
+				if (list != null) {
+					for (File f : list) {
+						String name = f.getName();
+						Log.d(TAG, "Checking file " + name);
+						long lastModified = f.lastModified();
+						if (timeLimit > lastModified) {
+							Log.d(TAG, "Trying to delete file " + name);
+							if (f.delete()) {
+								Log.d(TAG, "Deleted file succesfully");
+							}
+						}else {
+							Log.d(TAG, "No need to remove file " + name);
+						}
+					}
+				}
+			}
 		}
 		
+	}
+	
+	public static void requestClean(Context context) {
+		Intent i = new Intent(context, CacheCleaningService.class);
+		i.addCategory(CLEAN_THUMBNAILS);
+		context.startService(i);
 	}
 
 }

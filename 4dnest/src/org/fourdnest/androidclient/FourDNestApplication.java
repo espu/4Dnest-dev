@@ -78,8 +78,7 @@ public class FourDNestApplication extends Application
       //warm start services
       TagSuggestionService.requestUpdate(this);
       StreamReaderService.requestUpdate(this);
-      Intent i = new Intent(this, CacheCleaningService.class);
-      //startService(i);
+      CacheCleaningService.requestClean(this);
     }
     
     public static FourDNestApplication getApplication() {

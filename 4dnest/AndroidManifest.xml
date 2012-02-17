@@ -55,6 +55,7 @@
         <service android:name=".services.RouteTrackService" android:enabled="true" android:label="@string/app_name"/>
         <service android:name=".services.TagSuggestionService" android:enabled="true" android:label="@string/app_name"/>
         <service android:name=".services.StreamReaderService" android:enabled="true" android:label="@string/app_name"/>
+        <service android:name=".services.CacheCleaningService" android:enabled="true" android:label="@string/app_name"/>
 
     </application>
 
