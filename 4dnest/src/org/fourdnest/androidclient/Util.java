@@ -5,7 +5,8 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 
 /**
- * A class for static utility methods. 
+ * A class for static utility methods.
+ * also @see org.fourdnest.androidclient.tools.GenericUtils
  */
 public final class Util {
 	/** Private constructor to prevent instantiation */

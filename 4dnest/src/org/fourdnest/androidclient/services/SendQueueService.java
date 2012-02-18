@@ -8,17 +8,12 @@ import org.fourdnest.androidclient.ui.ListStreamActivity;
 
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 /**

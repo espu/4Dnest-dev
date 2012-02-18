@@ -3,7 +3,6 @@ package org.fourdnest.androidclient.services;
 import java.io.File;
 
 import org.fourdnest.androidclient.FourDNestApplication;
-import org.fourdnest.androidclient.ThumbnailManager;
 
 import android.app.AlarmManager;
 import android.app.IntentService;

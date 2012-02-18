@@ -7,7 +7,6 @@ import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.services.SendQueueService;
-import org.fourdnest.androidclient.services.StreamReaderService;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

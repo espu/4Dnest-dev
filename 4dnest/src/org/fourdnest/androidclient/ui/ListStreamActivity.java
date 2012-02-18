@@ -12,7 +12,6 @@ import org.fourdnest.androidclient.Util;
 import org.fourdnest.androidclient.services.RouteTrackService;
 import org.fourdnest.androidclient.services.StreamReaderService;
 
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;

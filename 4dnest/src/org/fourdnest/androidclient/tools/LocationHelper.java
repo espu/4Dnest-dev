@@ -2,7 +2,6 @@ package org.fourdnest.androidclient.tools;
 
 import java.util.List;
 
-import org.fourdnest.androidclient.services.RouteTrackService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,7 +78,7 @@ public class LocationHelper {
 		}
     }
 
-	/*
+	/**
 	 * @param json object containing relevant location information
 	 * @return Location object
 	 * @throws JSONException

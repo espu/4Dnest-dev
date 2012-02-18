@@ -1,6 +1,5 @@
 package org.fourdnest.androidclient.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -110,9 +109,7 @@ public class TagSuggestionService extends IntentService {
 	
 	/**
 	 * Requests an immediate update
-	 * 
-	 * @param context
-	 *            The application context
+	 * @param context The application context
 	 */
 	public static void requestUpdate(Context context) {
 		Intent intent = new Intent(context, TagSuggestionService.class);
@@ -121,6 +118,7 @@ public class TagSuggestionService extends IntentService {
 	}	
 	/**
 	 * Request broadcasting of the current tag suggestions
+	 * @param context The application context
 	 */
 	public static void requestTagBroadcast(Context context) {
 		FourDNestApplication app = (FourDNestApplication) context;
@@ -137,6 +135,7 @@ public class TagSuggestionService extends IntentService {
 	 * Stores the tags used in sending an Egg,
 	 * so that when sending the next one they can be retrieved
 	 * and used as suggestions.
+	 * @param context The application context
 	 * @param tags The tags attached to the last sent Egg.
 	 */
 	public static void setLastUsedTags(Context context, List<Tag> tags) {
@@ -154,6 +153,7 @@ public class TagSuggestionService extends IntentService {
 	/**
 	 * Default Intent handler for IntentService. All Intents get sent here.
 	 * Asynch processing of tasks with inexact timing goes here.
+	 * @param intent The Intent to handle
 	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
@@ -163,7 +163,11 @@ public class TagSuggestionService extends IntentService {
 		}
 	}
 	/**
-	 * Timing sensitive fast tasks are handled here 
+	 * Timing sensitive fast tasks are handled here
+	 * @param intent The Intent to handle
+	 * @param flags Passed on to super.onStartCommand
+	 * @param startId Passed on to super.onStartCommand
+	 * @return START_STICKY, which however doesn't guarantee that the service survives.
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -285,6 +289,9 @@ public class TagSuggestionService extends IntentService {
 		private Map<Integer, Set<String>> localTags;
 		private Map<Integer, String[]> remoteTags;
 		
+		/**
+		 * Initializes the Maps for storing the tags.
+		 */
 		public TagCache() {
 			this.lastUsedTags = new HashMap<Integer, String[]>();
 			this.localTags = new HashMap<Integer, Set<String>>();

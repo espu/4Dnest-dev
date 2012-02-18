@@ -1,33 +1,24 @@
 package org.fourdnest.androidclient.services;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.Nest;
 import org.fourdnest.androidclient.R;
 import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.ThumbnailManager;
-import org.fourdnest.androidclient.comm.FourDNestProtocol;
-import org.fourdnest.androidclient.comm.OsmStaticMapGetter;
-import org.fourdnest.androidclient.comm.StaticMapGetter;
 import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.ui.ListStreamActivity;
 import org.fourdnest.androidclient.ui.NewEggActivity;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.app.Service;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -41,7 +32,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.widget.Toast;
 

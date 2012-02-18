@@ -81,6 +81,9 @@ public class FourDNestApplication extends Application
       CacheCleaningService.requestClean(this);
     }
     
+    /**
+     * @return the FourDNestApplication singleton
+     */
     public static FourDNestApplication getApplication() {
         return app;
     }
@@ -128,6 +131,8 @@ public class FourDNestApplication extends Application
     /**
      * Handler for OnSharedPreferenceChangeListener
      * Called when preferences change
+     * @param sharedPreferences The preferences object
+     * @param key The key that changed
      */
     public synchronized void onSharedPreferenceChanged(
             SharedPreferences sharedPreferences, String key) {
@@ -273,7 +278,7 @@ public class FourDNestApplication extends Application
     /**
      * Is NewEggActivity supposed to fetch current location
      * even when route tracking is not active
-     * @return fetch or not
+     * @return True if fetching should be performed
      */
     public synchronized boolean getNewEggGetLocationWhenNotTracking() {
     	return this.prefs.getBoolean("new_egg_loc_when_not_tracking", false);
@@ -281,7 +286,7 @@ public class FourDNestApplication extends Application
     
     /**
      * Set value of allow_all_certs setting. Used in testing.
-     * @param val
+     * @param val Value to set
      */
     public synchronized void setAllowAllCerts(Boolean val) {
         SharedPreferences.Editor prefEditor = this.prefs.edit();

@@ -7,6 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * A class for static utility methods.
+ * also @see org.fourdnest.androidclient.Util 
+ */
 public class GenericUtils {
 
 	/**
