@@ -71,21 +71,13 @@ public class NewEggActivity
 	 * (if any). This decides what UI elements to show.
 	 */
 	protected mediaItemType currentMediaItem = mediaItemType.none;
-	/**
-	 * Request code indicating that a picture should be selected
-	 */
+	/** Request code indicating that a picture should be selected */
 	protected static final int SELECT_PICTURE = 1;
-	/**
-	 * Request code indicating that audio should be selected
-	 */
+	/** Request code indicating that audio should be selected */
 	protected static final int SELECT_AUDIO = 2;
-	/**
-	 * Request code indicating that video should be selected
-	 */
+	/** Request code indicating that video should be selected */
 	protected static final int SELECT_VIDEO = 3;
-	/**
-	 * Request code indicating that camera should be opened for still picture
-	 */
+	/** Request code indicating that camera should be opened for still picture */
 	protected static final int CAMERA_PIC_REQUEST = 4;
 	/** Request code indicating that camera should be opened for video */
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
@@ -168,6 +160,7 @@ public class NewEggActivity
 		}
 		
         button.setOnClickListener(new View.OnClickListener() {
+        	/** Clicking moves to the Map view activity */
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapViewActivity.class);
                 intent.putExtra(MapViewActivity.EGG_ID, NewEggActivity.this.currentEggID);
