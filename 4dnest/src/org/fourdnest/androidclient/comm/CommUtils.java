@@ -1,11 +1,13 @@
 package org.fourdnest.androidclient.comm;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -105,14 +107,13 @@ public class CommUtils {
 			throws IOException {
 		InputStream content = null;
 		content = response.getEntity().getContent();
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = content.read(buf)) > 0) {
-			bout.write(buf, 0, len);
+		BufferedReader r = new BufferedReader(new InputStreamReader(content));
+		StringBuilder total = new StringBuilder();
+		String line;
+		while ((line = r.readLine()) != null) {
+		    total.append(line);
 		}
-		content.close();
-		return bout.toString();
+		return total.toString();
 	}
 
 	/**
