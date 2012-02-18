@@ -13,7 +13,7 @@ import android.os.Environment;
  */
 public class ThumbnailManager {
 
-	private static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
+	public static String THUMBNAIL_LOCATION = "/fourdnest/thumbnails/";
 
 	/** Location of thumbnails on the server */
 	public static final String THUMBNAIL_PATH = "content/instance/";

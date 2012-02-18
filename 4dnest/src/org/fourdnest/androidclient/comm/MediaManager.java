@@ -10,7 +10,7 @@ import android.webkit.MimeTypeMap;
 
 
 public class MediaManager {
-    private static String MEDIA_LOCATION = "/fourdnest/media/";
+    public static String MEDIA_LOCATION = "/fourdnest/media/";
     
     /**
      * Check if given file exists
