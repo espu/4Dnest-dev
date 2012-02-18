@@ -206,6 +206,11 @@ public class TaggingTool extends LinearLayout {
 	 */
 	private class TagCheckBox extends CheckBox {
 		private Tag tag;
+		/**
+		 * Constructs a checkbox element for this tag
+		 * @param context Application context
+		 * @param tag Tag to represent
+		 */
 		public TagCheckBox(Context context, Tag tag) {
 			super(context);
 			this.tag = tag;
