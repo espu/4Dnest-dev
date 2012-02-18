@@ -3,12 +3,9 @@ package org.fourdnest.androidclient.services;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.Egg.fileType;
 import org.fourdnest.androidclient.EggManager;
 import org.fourdnest.androidclient.FourDNestApplication;
-import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.FourDNestProtocol;
-import org.fourdnest.androidclient.comm.Protocol;
 
 import android.app.AlarmManager;
 import android.app.IntentService;

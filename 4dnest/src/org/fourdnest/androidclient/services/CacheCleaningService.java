@@ -6,6 +6,7 @@ import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.ThumbnailManager;
 import org.fourdnest.androidclient.comm.MediaManager;
 
+
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;

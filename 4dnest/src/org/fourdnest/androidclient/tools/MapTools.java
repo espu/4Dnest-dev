@@ -14,12 +14,18 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+/**
+ * Utility functions for processing of routes and other map data. 
+ */
 public class MapTools {
 	private static final String TAG = "Maptools";
 	private static final String FLOAT_TO_STRING_FORMAT = "%.6f";
 	
-	/*
+	/**
 	 * Generate a list of locations from egg's route file
+	 * @param egg A route-type egg
+	 * @return A list of locations describing the route
+	 * @throws NumberFormatException, IOException
 	 */
 	public static List<String> getLocationListFromEgg(Egg egg) throws NumberFormatException, IOException  {
 		List<String> locList = new ArrayList<String>();

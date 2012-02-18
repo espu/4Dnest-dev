@@ -84,6 +84,7 @@ public class TaggingTool extends LinearLayout {
         filter.addAction(TagSuggestionService.ACTION_LAST_USED_TAGS);
         this.mReceiver = new BroadcastReceiver() {
             @Override
+            /** Received broadcast containing tags from the TagSuggestionService */
             public void onReceive(Context context, Intent intent) {
             	Log.d(TAG, "BroadcastReceiver.onReceive");
                 if (intent.getAction().equals(TagSuggestionService.ACTION_AUTOCOMPLETE_TAGS)) {
@@ -109,13 +110,14 @@ public class TaggingTool extends LinearLayout {
 		
 
        	this.addTagButton.setOnClickListener(new OnClickListener() {
+       		/** Clicking on the add tag button adds the tag */
 			public void onClick(View arg0) {
 				TaggingTool.this.addTagFromTextView();
 			}
 		});
        	
        	this.tagTextView.addTextChangedListener(new TextWatcher() {
-       		// disable add button if text field is empty
+       		/** disable add button if text field is empty */
 			public void afterTextChanged(Editable s) {
 				if(s.length() > 0) {
 					TaggingTool.this.addTagButton.setEnabled(true);
@@ -124,15 +126,16 @@ public class TaggingTool extends LinearLayout {
 				}
 			}
        		
-       		// empty implementations for unneeded methods
+       		/** empty implementations for unneeded methods */
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			/** empty implementations for unneeded methods */
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {}
 		});
 
-       	//Handle pressing enter
        	this.tagTextView.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+       		/** Handle pressing enter */
+       		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				TaggingTool.this.addTagFromTextView();
 				return true; // consume the enter
 			}
@@ -206,6 +209,11 @@ public class TaggingTool extends LinearLayout {
 	 */
 	private class TagCheckBox extends CheckBox {
 		private Tag tag;
+		/**
+		 * Constructs a checkbox element for this tag
+		 * @param context Application context
+		 * @param tag Tag to represent
+		 */
 		public TagCheckBox(Context context, Tag tag) {
 			super(context);
 			this.tag = tag;
@@ -217,6 +225,7 @@ public class TaggingTool extends LinearLayout {
 			this.setText(tag.getName());
 			this.setHeight(60);	//FIXME these are raw pixels. Find a way to use density invariant pixels (dp) instead
 			this.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				/** Called when the user checks or unchecks the tag button */
 				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
 					if(isChecked) {
 						button.getBackground().setColorFilter(

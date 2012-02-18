@@ -53,26 +53,37 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * An activity for creating new Eggs and for editing old eggs,
+ * both from drafts and from the stream.
+ * Should be called EditEggActivity.
+ */
 public class NewEggActivity
 	extends NestSpecificActivity
 	implements LocationListener {
 
-	
-	/*
-	 * currentMediaItemType is used to track what media item is selected
-	 * (if any). This decides what UI elements to show.
-	 */
-	
+	/** Legal values for mediaItemType */
 	private enum mediaItemType{
 		none, image, video, audio, route, multiple, unknown //note that multiple is currently not used
 	}
+	/**
+	 * currentMediaItem is used to track what media item is selected
+	 * (if any). This decides what UI elements to show.
+	 */
 	protected mediaItemType currentMediaItem = mediaItemType.none;
-	protected static final int SELECT_PICTURE = 1; //this is needed for selecting picture
+	/** Request code indicating that a picture should be selected */
+	protected static final int SELECT_PICTURE = 1;
+	/** Request code indicating that audio should be selected */
 	protected static final int SELECT_AUDIO = 2;
+	/** Request code indicating that video should be selected */
 	protected static final int SELECT_VIDEO = 3;
+	/** Request code indicating that camera should be opened for still picture */
 	protected static final int CAMERA_PIC_REQUEST = 4;
+	/** Request code indicating that camera should be opened for video */
 	protected static final int CAMERA_VIDEO_REQUEST = 5;
+	/** Request code indicating that sound recorder should be opened */
 	protected static final int AUDIO_RECORER_REQUEST = 6;
+	/** Id of the egg currently being edited */
 	protected int currentEggID = 0; //0 if new egg
 	
 	private static final int LOCATION_MIN_DELAY = 10000; // 10 seconds
@@ -113,7 +124,6 @@ public class NewEggActivity
 	 * A method required by the mother class. Populates the view used by nestSpesificActivity according
 	 * to layout and requirements of NewEggActivity. Called in mother classes OnCreate method.
 	 */
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.application = (FourDNestApplication) getApplication();
@@ -150,6 +160,7 @@ public class NewEggActivity
 		}
 		
         button.setOnClickListener(new View.OnClickListener() {
+        	/** Clicking moves to the Map view activity */
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapViewActivity.class);
                 intent.putExtra(MapViewActivity.EGG_ID, NewEggActivity.this.currentEggID);
@@ -158,7 +169,7 @@ public class NewEggActivity
             }
         });
         thumbNailView.setOnClickListener(new OnClickListener() {
-
+        	/** Clicking the thumbnail activates the preview */ 
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
@@ -198,6 +209,7 @@ public class NewEggActivity
         
         Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
+        	/** Clicking writes data from the UI elements to the egg, and sends it */
 			public void onClick(View v) {		
 				//TODO: Proper implementation, don't create new egg
 				// but fetch the actual given egg if provided (=Edit existing egg, for example
@@ -241,20 +253,19 @@ public class NewEggActivity
         
         Button draftButton = (Button) findViewById(R.id.edit_egg_save_draft_button);
         draftButton.setOnClickListener(new OnClickListener() {
-			
+        	/** Clicking the draft button saves the egg as draft */
 			public void onClick(View v) {
 				NewEggActivity.this.saveAsDraft();
 			}
 		});
         
         
-		/*
-		* This onClick listener is used to popup a dialogue that determines what ever to
-		* open the image gallery or the camera
-		 */
-        
     	((ImageButton) findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
+			/**
+			 * This onClick listener is used to popup a dialogue that determines what ever to
+			 * open the image gallery or the camera
+			 */		
 			public void onClick(View arg0) {
 				/*
 				 * If kiosk mode is enabled, open camera directly. Othervice 
@@ -268,13 +279,13 @@ public class NewEggActivity
 			}
 		});
     	
-		/*
-		* This onClick listener pops up a default internal android dialogue that asks what ever 
-		 * to open the audio gallery or the audio recorder.
-		 */
     	
        	((ImageButton) findViewById(R.id.select_audio))
     		.setOnClickListener(new OnClickListener() {
+    			/**
+    			 * This onClick listener pops up a default internal android dialogue that asks what ever 
+    			 * to open the audio gallery or the audio recorder.
+    			 */
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
@@ -287,14 +298,12 @@ public class NewEggActivity
     			}
     		});
        	
-		/*
-		* This onClick listener is used to popup a dialogue that determines what ever to
-		* open the video gallery or the video camera
-		 */
-        
-       	
        	((ImageButton) findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
+    			/**
+    	 		 * This onClick listener is used to popup a dialogue that determines what ever to
+    			 * open the video gallery or the video camera
+    			 */
     			public void onClick(View arg0) {
     				if(kioskMode){
     					startIntent(CAMERA_VIDEO_REQUEST);
@@ -307,9 +316,9 @@ public class NewEggActivity
        	super.onCreate(savedInstanceState); 
 	}
 	
-	
-	
-	
+	/**
+	 * Saves the current Egg as a draft
+	 */
 	protected void saveAsDraft() {
 		//TODO: Proper implementation
 		
@@ -337,10 +346,8 @@ public class NewEggActivity
 
 
 	/**
-	 * 
-	 * Destroys the activity. Overridden so we get rid of the tagging tool
+	 * Destroys the activity. Overridden to free the resources of the tagging tool
 	 */
-	
     @Override
     public void onDestroy() {
     	super.onDestroy();
@@ -348,6 +355,10 @@ public class NewEggActivity
     	this.taggingTool = null;
     }
     
+    /**
+     * Called when the activity is no longer shown to the user.
+     * Overridden to stop listening to the location.
+     */
     @Override
     public void onPause() {
     	super.onPause();
@@ -358,7 +369,11 @@ public class NewEggActivity
     		Log.d(TAG, "Updates removed");
     	}
     }
-    
+
+    /**
+     * Called when the activity is no longer shown to the user.
+     * Overridden to start listening to the location.
+     */
     @Override
 	public void onResume() {
 		super.onResume();
@@ -550,12 +565,11 @@ public class NewEggActivity
 	}
 	
 	/**
-	 * 
 	 * This method creates the dialogues that the user uses to make selections on what ever 
 	 * to use the capture device or browse existing items, and the back button dialog.
-	 * 
+	 * @param id Unique id of the dialog to open
+	 * @return The constructed Dialog
 	 */
-	
 	protected Dialog onCreateDialog(int id) {
 	    Dialog dialog = null;
 	    switch(id) {
@@ -564,6 +578,7 @@ public class NewEggActivity
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	builder.setTitle(getString(R.string.new_egg_select_picture_source));
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
+	    		/** Same onClick for both options */
 	    	    public void onClick(DialogInterface dialog, int item) {
 	    	    	if(item==0){ //this one means that user wants to open the image gallery
 	    	    		startIntent(SELECT_PICTURE);
@@ -582,6 +597,7 @@ public class NewEggActivity
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	videoBuilder.setTitle(getString(R.string.new_egg_select_video_source));
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
+	    		/** Same onClick for both options */
 	    	    public void onClick(DialogInterface dialog, int item) {
 	    	    	if(item==1){ //video camera requested
 	    	    		startIntent(CAMERA_VIDEO_REQUEST);
@@ -601,23 +617,26 @@ public class NewEggActivity
         	       .setPositiveButton(
         	    		   getString(R.string.new_egg_dialogue_back_save),
         	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   NewEggActivity.this.saveAsDraft();
-        	           }
+        	    			   /** Clicking on "save" in the backbutton dialog */
+		        	           public void onClick(DialogInterface dialog, int id) {
+		        	        	   NewEggActivity.this.saveAsDraft();
+		        	           }
         	       })
         	       .setNeutralButton(
         	    		   getString(R.string.new_egg_dialogue_back_cancel),
         	    		   new DialogInterface.OnClickListener() {
-        	    	   public void onClick(DialogInterface dialog, int id) {
-        	    		   dialog.cancel();
-        	           }
+        	    			   /** Clicking on "keep editing" in the backbutton dialog */
+		        	    	   public void onClick(DialogInterface dialog, int id) {
+		        	    		   dialog.cancel();
+		        	           }
         	       })
         	       .setNegativeButton(
         	    		   getString(R.string.new_egg_dialogue_back_discard),
         	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   NewEggActivity.this.finish();
-        	           }
+        	    			   /** Clicking on "discard" in the backbutton dialog */
+		        	           public void onClick(DialogInterface dialog, int id) {
+		        	        	   NewEggActivity.this.finish();
+		        	           }
         	       });
         	dialog = backBuilder.create();
 	    	break;
@@ -639,12 +658,14 @@ public class NewEggActivity
 
 
 	/**
-	 * This method is used once media item has been selected or captured. Request code determines
-	 * what ever a picture, audio or video was received. The method sets the fileURL to point at the correct file
-	 * and sets the type of currentMediaItem . Automatically called after intent finishes succesfully.
+	 * This method is used once media item has been selected or captured. 
+	 * The method sets the fileURL to point at the correct file
+	 * and sets the type of currentMediaItem.
+	 * Automatically called after intent finishes successfully.
+	 * @param requestCode determines what type of media item (picture, audio or video) was received.
+	 * @param resultCode did the operation succeed 
+	 * @param data the intent containing the returned data
 	 */
-	
-	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
 			
@@ -707,7 +728,6 @@ public class NewEggActivity
 	/**
 	 * Private method for recovering the file url from selected or captured media file.
 	 */
-	
 	private String recoverMediaFileURL(int requestCode, Intent data){
 		Uri selectedImageUri = null;
 		if(requestCode==CAMERA_PIC_REQUEST){
@@ -739,7 +759,6 @@ public class NewEggActivity
 	/**
 	 * Internal help method for recovering a correct string representation of the URI of a file
 	 */
-	
 	private String getPath(Uri uri) {
 		String[] projection = { MediaStore.Images.Media.DATA };
 
@@ -758,11 +777,10 @@ public class NewEggActivity
 		}
 	}
 	
-	/*
+	/**
 	 * Private method for quick starting intents. Needed so we don't need to duplicate code AND for code
 	 * quality
 	 */
-	
 	private void startIntent(int intentType){
 		Intent intent = new Intent(); //all the cases are gonna need an intent
 		ContentValues values = null; //some cases need constantValues 
@@ -833,7 +851,6 @@ public class NewEggActivity
 	 * A local method for recovering data from an existing egg. Used when 
 	 * a draft is loaded for editing
 	 */
-	
 	private void recoverDataFromExistingEGG(){
 		int eggIDInt = currentEggID;
 		//FIXME currently supports only editing of drafts, not Eggs from the stream
@@ -897,12 +914,15 @@ public class NewEggActivity
 		return currentEggID == 0;
 	}
 
-
+	/**
+	 * Called when the location changes
+	 * @param loc The new location
+	 */
 	public void onLocationChanged(Location loc) {
 		final Location l = loc;
 		Log.d(TAG, "Loc changed");		
-		// Android allows only the UI thread to touch views
 		runOnUiThread(new Runnable() {
+			/** Android allows only the UI thread to touch views */
 		     public void run() {
 		    	 TextView t = (TextView) findViewById(R.id.locationcontainer);
 		    	 String format = (String)getText(R.string.new_egg_location_format);
@@ -911,9 +931,12 @@ public class NewEggActivity
 		    }
 		});
 	}
-	
+
+	/** Called when the location provider is disabled. Does nothing */
 	public void onProviderDisabled(String arg0) {}
+	/** Called when the location provider is enabled. Does nothing */
 	public void onProviderEnabled(String arg0) {}
+	/** Called when the location provider changes status. Does nothing */
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 	
 	

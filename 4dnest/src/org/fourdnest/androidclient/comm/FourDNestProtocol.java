@@ -1,37 +1,8 @@
 package org.fourdnest.androidclient.comm;
 
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.util.Log;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.cookie.DateUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.NameValuePair;
-import org.fourdnest.androidclient.Egg;
-import org.fourdnest.androidclient.FourDNestApplication;
-import org.fourdnest.androidclient.Nest;
-import org.fourdnest.androidclient.Tag;
-import org.fourdnest.androidclient.ThumbnailManager;
-import org.fourdnest.androidclient.tools.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -46,6 +17,36 @@ import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.cookie.DateUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.fourdnest.androidclient.Egg;
+import org.fourdnest.androidclient.FourDNestApplication;
+import org.fourdnest.androidclient.Nest;
+import org.fourdnest.androidclient.Tag;
+import org.fourdnest.androidclient.ThumbnailManager;
+import org.fourdnest.androidclient.tools.GenericUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 
 public class FourDNestProtocol implements Protocol {
 	private static final String TAG = "FourDNestProtocol";

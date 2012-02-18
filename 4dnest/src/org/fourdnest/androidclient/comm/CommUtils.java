@@ -38,6 +38,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.fourdnest.androidclient.FourDNestApplication;
 import org.fourdnest.androidclient.tools.GenericUtils;
+
 import android.net.Uri;
 import android.util.Log;
 

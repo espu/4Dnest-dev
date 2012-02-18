@@ -1,26 +1,18 @@
 package org.fourdnest.androidclient.comm;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.fourdnest.androidclient.Egg;
 import org.fourdnest.androidclient.ThumbnailManager;
-import org.fourdnest.androidclient.comm.CommUtils;
-import org.fourdnest.androidclient.tools.LocationHelper;
 import org.fourdnest.androidclient.tools.MapTools;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.net.Uri;
 import android.util.Log;
 
+/**
+ * Class for retrieving static map images from OpenStreetMap.
+ */
 public class OsmStaticMapGetter implements StaticMapGetter {
 	private static final String TAG = "StaticMapGetter";
 	private static final String BASEURI = "http://pafciu17.dev.openstreetmap.org/?module=map";
@@ -58,7 +50,7 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		Log.d("map_val", String.valueOf(val));
 		return val;
 	}
-	/*
+	/**
 	 * Set map limits (bound box)
 	 */
 	private String setBoundBox(String uriString, List<String> list) {
@@ -128,7 +120,4 @@ public class OsmStaticMapGetter implements StaticMapGetter {
 		return uriString + "&height=" + height;
 	}
 	
-
-
-
 }

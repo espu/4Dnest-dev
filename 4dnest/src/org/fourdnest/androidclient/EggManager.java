@@ -14,7 +14,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
@@ -60,7 +59,8 @@ public class EggManager {
      * Creates new NestManager with specified context and
      * role. Role is used to differentiate databases and thus
      * allow running multiple parallel EggManagers 
-     * @param context
+     * @param context Application context
+     * @param uniqueRole a string identifying the role of this manager (see class javadoc for details)
      */
     public EggManager(Context context, String uniqueRole) {        
         this.dbName = "org.4dnest.androidclient.eggs." + uniqueRole + ".db";   

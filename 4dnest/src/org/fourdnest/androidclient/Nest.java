@@ -6,6 +6,9 @@ import org.fourdnest.androidclient.comm.Protocol;
 import org.fourdnest.androidclient.comm.ProtocolFactory;
 import org.fourdnest.androidclient.comm.UnknownProtocolException;
 
+/**
+ * Represents the configuration of one server that the application can connect to. 
+ */
 public class Nest {
 		
 	private int id;
@@ -117,6 +120,9 @@ public class Nest {
 		this.baseURI = address;
 	}
 
+	/**
+	 * @return The numeric identifier for the protocol format.
+	 */
 	public int getProtocolId() {
 		return this.protocol.getProtocolId();
 	}
