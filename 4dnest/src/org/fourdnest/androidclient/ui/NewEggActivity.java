@@ -169,7 +169,7 @@ public class NewEggActivity
             }
         });
         thumbNailView.setOnClickListener(new OnClickListener() {
-
+        	/** Clicking the thumbnail activates the preview */ 
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to
                 // select a file
@@ -209,6 +209,7 @@ public class NewEggActivity
         
         Button sendButton = (Button) findViewById(R.id.new_photo_egg_send_egg_button);
         sendButton.setOnClickListener(new OnClickListener() {
+        	/** Clicking writes data from the UI elements to the egg, and sends it */
 			public void onClick(View v) {		
 				//TODO: Proper implementation, don't create new egg
 				// but fetch the actual given egg if provided (=Edit existing egg, for example
@@ -252,20 +253,19 @@ public class NewEggActivity
         
         Button draftButton = (Button) findViewById(R.id.edit_egg_save_draft_button);
         draftButton.setOnClickListener(new OnClickListener() {
-			
+        	/** Clicking the draft button saves the egg as draft */
 			public void onClick(View v) {
 				NewEggActivity.this.saveAsDraft();
 			}
 		});
         
         
-		/*
-		* This onClick listener is used to popup a dialogue that determines what ever to
-		* open the image gallery or the camera
-		 */
-        
     	((ImageButton) findViewById(R.id.select_image))
 		.setOnClickListener(new OnClickListener() {
+			/**
+			 * This onClick listener is used to popup a dialogue that determines what ever to
+			 * open the image gallery or the camera
+			 */		
 			public void onClick(View arg0) {
 				/*
 				 * If kiosk mode is enabled, open camera directly. Othervice 
@@ -279,13 +279,13 @@ public class NewEggActivity
 			}
 		});
     	
-		/*
-		* This onClick listener pops up a default internal android dialogue that asks what ever 
-		 * to open the audio gallery or the audio recorder.
-		 */
     	
        	((ImageButton) findViewById(R.id.select_audio))
     		.setOnClickListener(new OnClickListener() {
+    			/**
+    			 * This onClick listener pops up a default internal android dialogue that asks what ever 
+    			 * to open the audio gallery or the audio recorder.
+    			 */
     			public void onClick(View arg0) {
     				// in onCreate or any event where your want the user to
     				// select a file
@@ -298,14 +298,12 @@ public class NewEggActivity
     			}
     		});
        	
-		/*
-		* This onClick listener is used to popup a dialogue that determines what ever to
-		* open the video gallery or the video camera
-		 */
-        
-       	
        	((ImageButton) findViewById(R.id.select_video))
     		.setOnClickListener(new OnClickListener() {
+    			/**
+    	 		 * This onClick listener is used to popup a dialogue that determines what ever to
+    			 * open the video gallery or the video camera
+    			 */
     			public void onClick(View arg0) {
     				if(kioskMode){
     					startIntent(CAMERA_VIDEO_REQUEST);
@@ -580,6 +578,7 @@ public class NewEggActivity
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	builder.setTitle(getString(R.string.new_egg_select_picture_source));
 	    	builder.setItems(items, new DialogInterface.OnClickListener() {
+	    		/** Same onClick for both options */
 	    	    public void onClick(DialogInterface dialog, int item) {
 	    	    	if(item==0){ //this one means that user wants to open the image gallery
 	    	    		startIntent(SELECT_PICTURE);
@@ -598,6 +597,7 @@ public class NewEggActivity
 	    	AlertDialog.Builder videoBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.BlackDialog));
 	    	videoBuilder.setTitle(getString(R.string.new_egg_select_video_source));
 	    	videoBuilder.setItems(videoItems, new DialogInterface.OnClickListener() {
+	    		/** Same onClick for both options */
 	    	    public void onClick(DialogInterface dialog, int item) {
 	    	    	if(item==1){ //video camera requested
 	    	    		startIntent(CAMERA_VIDEO_REQUEST);
@@ -617,23 +617,26 @@ public class NewEggActivity
         	       .setPositiveButton(
         	    		   getString(R.string.new_egg_dialogue_back_save),
         	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   NewEggActivity.this.saveAsDraft();
-        	           }
+        	    			   /** Clicking on "save" in the backbutton dialog */
+		        	           public void onClick(DialogInterface dialog, int id) {
+		        	        	   NewEggActivity.this.saveAsDraft();
+		        	           }
         	       })
         	       .setNeutralButton(
         	    		   getString(R.string.new_egg_dialogue_back_cancel),
         	    		   new DialogInterface.OnClickListener() {
-        	    	   public void onClick(DialogInterface dialog, int id) {
-        	    		   dialog.cancel();
-        	           }
+        	    			   /** Clicking on "keep editing" in the backbutton dialog */
+		        	    	   public void onClick(DialogInterface dialog, int id) {
+		        	    		   dialog.cancel();
+		        	           }
         	       })
         	       .setNegativeButton(
         	    		   getString(R.string.new_egg_dialogue_back_discard),
         	    		   new DialogInterface.OnClickListener() {
-        	           public void onClick(DialogInterface dialog, int id) {
-        	        	   NewEggActivity.this.finish();
-        	           }
+        	    			   /** Clicking on "discard" in the backbutton dialog */
+		        	           public void onClick(DialogInterface dialog, int id) {
+		        	        	   NewEggActivity.this.finish();
+		        	           }
         	       });
         	dialog = backBuilder.create();
 	    	break;
@@ -918,8 +921,8 @@ public class NewEggActivity
 	public void onLocationChanged(Location loc) {
 		final Location l = loc;
 		Log.d(TAG, "Loc changed");		
-		// Android allows only the UI thread to touch views
 		runOnUiThread(new Runnable() {
+			/** Android allows only the UI thread to touch views */
 		     public void run() {
 		    	 TextView t = (TextView) findViewById(R.id.locationcontainer);
 		    	 String format = (String)getText(R.string.new_egg_location_format);
