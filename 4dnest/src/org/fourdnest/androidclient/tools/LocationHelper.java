@@ -31,6 +31,7 @@ public class LocationHelper {
 	
 	/**
 	 * Serializes given Location list to a JSON array
+	 * @param locations List of Locations to serialize
 	 * @return JSONObject representation of given list or null on failure
 	 */
 	public static JSONObject listToJSON(List<Location> locations) {
@@ -56,7 +57,7 @@ public class LocationHelper {
 	
 	/**
 	 * Converts a Location object to JSON object with relevant information
-	 * @param loc Location ot serialize
+	 * @param loc Location to serialize
 	 * @return JSON representation of Location or null on failure
 	 */
 	public static JSONObject locationToJSON(Location loc) {

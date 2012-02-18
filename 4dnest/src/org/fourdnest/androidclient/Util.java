@@ -25,6 +25,12 @@ public final class Util {
 		}
 	}
 	
+	/**
+	 * Checks whether the requested Service is already running
+	 * @param ctx Application context
+	 * @param serviceClass The class of the needed Service
+	 * @return true if the Service is running, false otherwise
+	 */
 	public static boolean isServiceRunning(Context ctx, Class<?> serviceClass) {
 	    ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
