@@ -18,8 +18,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-
-
+/**
+ * Manages the configurations of Nests.
+ * The singleton property of NestManager is maintained by FourDNestApplication. 
+ */
 public class NestManager {
 	
 	private static final String TAG = NestDatabase.class.getSimpleName();

@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.webkit.MimeTypeMap;
 
-
+/**
+ * Manages the storage locations of the full-size media files. 
+ */
 public class MediaManager {
     private static String MEDIA_LOCATION = "/fourdnest/media/";
     

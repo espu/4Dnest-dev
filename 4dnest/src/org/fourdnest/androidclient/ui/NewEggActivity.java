@@ -356,6 +356,10 @@ public class NewEggActivity
     	this.taggingTool = null;
     }
     
+    /**
+     * Called when the activity is no longer shown to the user.
+     * Overridden to stop listening to the location.
+     */
     @Override
     public void onPause() {
     	super.onPause();
@@ -366,7 +370,11 @@ public class NewEggActivity
     		Log.d(TAG, "Updates removed");
     	}
     }
-    
+
+    /**
+     * Called when the activity is no longer shown to the user.
+     * Overridden to start listening to the location.
+     */
     @Override
 	public void onResume() {
 		super.onResume();
